@@ -13,7 +13,7 @@
   col2<-colorRampPalette(colors()[c(70,491)])
   col2<-colorRampPalette(colors()[c(114,491)])
   col3<-colorRampPalette(c("yellow","red"))
-  
+
   if(!require(rootSolve)){ install.packages(rootSolve)}else{library(rootSolve)}
   
   # download and unzip the latest ceattle runs:

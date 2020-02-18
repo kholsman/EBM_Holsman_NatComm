@@ -202,7 +202,7 @@ This is the main script for running analysis and plotting results and requires R
     mean(firstY[4:6],na.rm=T)
     }
     
-  
+
 #-------------------------------------
 # 3. Final figures:
 #-------------------------------------
