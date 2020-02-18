@@ -7,15 +7,16 @@
   col2<-colorRampPalette(colors()[c(70,491)])
   col2<-colorRampPalette(colors()[c(114,491)])
   col3<-colorRampPalette(c("yellow","red"))
-  col4<-colorRampPalette(c(colIN1(6),"maroon"))
+  #col4<-colorRampPalette(c(colIN1(6),"maroon"))
   
+  plt<-c("Zissou1","Darjeeling1","Darjeeling2","FantasticFox1")
   wes<-colorRampPalette(c(wes_palette(n=5, name=plt[1])[1:5]))
   wes(6)
   col2<-colorRampPalette(c(wes(7)[c(3,1)],col2(3)[3]))
   col3<-colorRampPalette(c(wes(7)[4:7]))
 
 
-library("extrafont")
+if(!require(extrafont)){ install.packages(extrafont)}else{library(extrafont)}
 theme_kir_EBM <- function(...) {
     theme_kir(base_family="Helvetica",
               plot_title_family="Helvetica-Bold",
@@ -537,7 +538,7 @@ getBtarget<-function(fldrIN,nm="B0_set"){
 
 threshold<-function(
   x=seq(-3,10,.1),
-  hind=FALSE,
+  hind=NULL,
   Catch=C_019_CENaivecf_0_5_12_mc,
   TempIn=TempC_019_CENaivecf_0_5_12_mc,
   subyr=fut_yrs,

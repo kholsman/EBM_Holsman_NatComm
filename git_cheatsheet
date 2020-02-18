@@ -1,0 +1,18 @@
+
+# normal git stuff
+git log --graph --decorate --oneline
+
+# remove the last 4 commits:
+git reset HEAD~4
+
+
+# large file size stuff
+cd ~/GitHub_new/EBM_Holsman_NatComm
+
+git lfs track "*.Rdata"
+git add /Users/kholsman/GitHub_new/EBM_Holsman_NatComm/EBM_ceattlenew.Rdata
+git push origin master
+
+git lfs track "*.zip"
+
+git add /Users/kholsman/GitHub_new/EBM_Holsman_NatComm/data.zip

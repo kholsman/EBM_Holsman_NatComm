@@ -14,12 +14,18 @@
   col2<-colorRampPalette(colors()[c(114,491)])
   col3<-colorRampPalette(c("yellow","red"))
   
-            # load ROMSNPZ survey replicated and survey area indices:
+  if(!require(rootSolve)){ install.packages(rootSolve)}else{library(rootSolve)}
   
-            load("data/ROMSNPZ_output.Rdata")
-            load("data/ROMS_NPZ.Rdata")
-            load("data/ROMS_NPZ_covars_bcs_ext.Rdata")
-            
+  # download and unzip the latest ceattle runs:
+  if(!length(dir(paste0("data/runs/",fldr,"_0")))>0){
+    download.file("https://figshare.com/s/d9c35dbe0880f4169041",paste0("data/runs/",fldr,"_0.zip"))
+    system (paste0("cd data/runs; unzip ",fldr,"_0.zip"))
+  }
+  if(!length(dir(paste0("data/runs/",fldr,"_2")))>0){
+    download.file("https://figshare.com/s/d9c35dbe0880f4169041",paste0("data/runs/",fldr,"_2.zip"))
+    system (paste0("cd data/runs; unzip ",fldr,"_2.zip"))
+  }
+    
             # actual .dat files for CEATTLE multispecies assessment:
             retroFL       <-  "data/retro_data2018_long_ext_bcs.dat"
             futFL         <-  "data/proj_data2018_long_ext_bcs.dat"
@@ -29,8 +35,17 @@
             h         <-  13
             rfset     <-  c(19,59)
             rset      <-  c(1,5)[2]
-            simlist0  <-  dir(paste0("data/runs/",fldr,"_0/projections/summaryFigs"))
-            simlist2  <-  dir(paste0("data/runs/",fldr,"_2/projections/summaryFigs"))
+            
+            if(update.simlist){
+              simlist0  <-  dir(paste0("data/runs/",fldr,"_0/projections/summaryFigs"))
+              simlist2  <-  dir(paste0("data/runs/",fldr,"_2/projections/summaryFigs"))
+              save(simlist0,file=paste0("data/runs/",fldr,"_0/projections/simlist0.Rdata"))
+              save(simlist2,file=paste0("data/runs/",fldr,"_2/projections/simlist2.Rdata"))
+            }else{
+              load(paste0("data/runs/",fldr,"_0/projections/simlist0.Rdata"))
+              load(paste0("data/runs/",fldr,"_2/projections/simlist2.Rdata"))
+            }
+            
             mclist0   <-  simlist0[grep("_mc",simlist0)]
             mclist2   <-  simlist2[grep("_mc",simlist2)]
             datlist0  <-  datlist2  <-  ""
@@ -48,7 +63,8 @@
             # read in all the runs & create simlist:
             #_______________________________________
 
-
+            # skip this step (not needed for paper)
+           
             if(status) cat("read in main dat single spp projections\n")
             mode      <-  0
 
@@ -66,8 +82,7 @@
                   }
                   if(status) progress(100*round(i/length(simlist0),2))
             }
-
-
+            
             mode  <-  2
             if(status) cat("read in main dat multi spp projections\n")
             for(i in 1:length(simlist2)){
@@ -437,6 +452,7 @@
             methodIN     <-  2
 
           # Now get thresholds:
+            print("Now running threshold analyses... ")
             
             tmpall13_1  <-  threshold(s=1,knottIN=knottINtmp,simul_set=c(5,6,8,9,10,11),Catch=CCIN13,TempIn=TTIN13,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
             tmpall13_2  <-  threshold(s=2,knottIN=knottINtmp,simul_set=c(5,6,8,9,10,11),Catch=CCIN13,TempIn=TTIN13,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
@@ -451,7 +467,7 @@
             tmpall13_3_20y  <-  threshold(s=3,smooth_yr=20,knottIN=knottINtmp,simul_set=c(5,6,8,9,10,11),Catch=CCIN13,TempIn=TTIN13,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
 
 
-
+            print("threshold part 1 complete... ")
             Btmpall12_1  <-  threshold(s=1,knottIN=knottINtmp,simul_set=c(5,6,8,9,10,11),Catch=BBIN,TempIn=TTIN,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
             Btmpall12_2  <-  threshold(s=2,knottIN=knottINtmp,simul_set=c(5,6,8,9,10,11),Catch=BBIN,TempIn=TTIN,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
             Btmpall12_3  <-  threshold(s=3,knottIN=knottINtmp,simul_set=c(5,6,8,9,10,11),Catch=BBIN,TempIn=TTIN,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
@@ -460,7 +476,7 @@
             Btmpall13_2  <-  threshold(s=2,knottIN=knottINtmp,simul_set=c(5,6,8,9,10,11),Catch=BBIN13,TempIn=TTIN13,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
             Btmpall13_3  <-  threshold(s=3,knottIN=knottINtmp,simul_set=c(5,6,8,9,10,11),Catch=BBIN13,TempIn=TTIN13,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
 
-
+            print("threshold part 2 complete... ")
             tmpall12_1_0  <-  threshold(s=1,knottIN=knottINtmp,simul_set=c(5,6,8,9,10,11),Catch=CCIN0,TempIn=TTIN0,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
             tmpall12_2_0  <-  threshold(s=2,knottIN=knottINtmp,simul_set=c(5,6,8,9,10,11),Catch=CCIN0,TempIn=TTIN0,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
             tmpall12_3_0  <-  threshold(s=3,knottIN=knottINtmp,simul_set=c(5,6,8,9,10,11),Catch=CCIN0,TempIn=TTIN0,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
@@ -468,7 +484,8 @@
             tmpall13_1_0  <-  threshold(s=1,knottIN=knottINtmp,simul_set=c(5,6,8,9,10,11),Catch=CCIN130,TempIn=TTIN130,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
             tmpall13_2_0  <-  threshold(s=2,knottIN=knottINtmp,simul_set=c(5,6,8,9,10,11),Catch=CCIN130,TempIn=TTIN130,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
             tmpall13_3_0  <-  threshold(s=3,knottIN=knottINtmp,simul_set=c(5,6,8,9,10,11),Catch=CCIN130,TempIn=TTIN130,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
-
+            
+            print("threshold part 3 complete... ")
             Btmpall12_1_0  <-  threshold(s=1,knottIN=knottINtmp,simul_set=c(5,6,8,9,10,11),Catch=BBIN0,TempIn=TTIN0,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
             Btmpall12_2_0  <-  threshold(s=2,knottIN=knottINtmp,simul_set=c(5,6,8,9,10,11),Catch=BBIN0,TempIn=TTIN0,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
             Btmpall12_3_0  <-  threshold(s=3,knottIN=knottINtmp,simul_set=c(5,6,8,9,10,11),Catch=BBIN0,TempIn=TTIN0,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
@@ -476,13 +493,14 @@
             Btmpall13_1_0  <-  threshold(s=1,knottIN=knottINtmp,simul_set=c(5,6,8,9,10,11),Catch=BBIN130,TempIn=TTIN130,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
             Btmpall13_2_0  <-  threshold(s=2,knottIN=knottINtmp,simul_set=c(5,6,8,9,10,11),Catch=BBIN130,TempIn=TTIN130,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
             Btmpall13_3_0  <-  threshold(s=3,knottIN=knottINtmp,simul_set=c(5,6,8,9,10,11),Catch=BBIN130,TempIn=TTIN130,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
-
+           
+             print("threshold part 4 complete... ")
             tmp45_13  <-  threshold(knottIN=knottINtmp,simul_set=c(5,8,10),Catch=CCIN13,TempIn=TTIN13,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
             tmp85_13  <-  threshold(knottIN=knottINtmp,simul_set=c(6,9,11),Catch=CCIN13,TempIn=TTIN13,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
             tmp45_12  <-  threshold(knottIN=knottINtmp,simul_set=c(5,8,10),Catch=CCIN,TempIn=TTIN,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
             tmp85_12  <-  threshold(knottIN=knottINtmp,simul_set=c(6,9,11),Catch=CCIN,TempIn=TTIN,boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
 
-    
+            print("SUB_EBM_paper script complete without errors")
 
 
 

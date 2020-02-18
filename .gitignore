@@ -1,0 +1,11 @@
+data.zip
+data/runs/aclim_00_JunV2_2019_0.zip
+data/runs/aclim_00_JunV2_2019_2.zip
+.DS_Store
+assessment_scripts/CEATTLE/.DS_Store
+assessment_scripts/CEATTLE/src/.DS_Store
+data/runs/.DS_Store
+data/runs/aclim_00_JunV2_2019_0/.DS_Store
+data/runs/*
+EBM_ceattlenew.Rdata
+ignored_files

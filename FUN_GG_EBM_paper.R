@@ -10,18 +10,19 @@
   #load("EBM_ceattle.Rdata")
 
   # Load libraries
-  require(data.table)
-  require(mgcv)
-  library(reshape)
-  require(ggplot2)
-  require(dplyr)
-  require(wesanderson)
-  library(ggplot2)
-  library(scales)
-  library(grid)
-  library(ggforce)
-  if (!require("processx")) install.packages("processx")
-  if (!require("plotly")) install.packages("plotly")
+  if(!require(data.table)){ install.packages(data.table)}else{library(data.table)}
+  if(!require(mgcv)){ install.packages(mgcv)}else{library(mgcv)}
+  if(!require(reshape)){ install.packages(reshape)}else{library(reshape)}
+  if(!require(ggplot2)){ install.packages(ggplot2)}else{library(ggplot2)}
+  if(!require(dplyr)){ install.packages(dplyr)}else{library(dplyr)}
+  if(!require(wesanderson)){ install.packages(wesanderson)}else{library(wesanderson)}
+  if(!require(ggplot2)){ install.packages(ggplot2)}else{library(ggplot2)}
+  if(!require(scales)){ install.packages(scales)}else{library(scales)}
+  if(!require(ggforce)){ install.packages(ggforce)}else{library(ggforce)}
+  if(!require(grid)){ install.packages(grid)}else{library(grid)}
+  if(!require(processx)){ install.packages(processx)}else{library(processx)}
+  if(!require(plotly)){ install.packages(plotly)}else{library(plotly)}
+  
   
   # load Kir's theme:
   source("~/Documents/D_AFSC_Files/AFSC_code/R_scripts/Misc_scripts/THEMES_GGPLOT.r")

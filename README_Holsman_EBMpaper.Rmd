@@ -2,12 +2,10 @@
 title: "EBM Nature Communications main script"
 author: "Kirstin Holsman"
 date: "2/17/2020"
-institute: Alaska Fisheries Science Center, National Marine Fisheries Service, NOAA,
-  7600 Sand Point Way N.E., Bld. 4, Seattle, Washington 98115
 output:
   pdf_document:
     fig_caption: yes
-    highlight: zenburn
+    highlight: tango
     keep_tex: yes
     latex_engine: xelatex
   html_document:
@@ -25,17 +23,32 @@ output:
     keep_md: yes
 ---
 
-# Update the ACLIM EBS Multi-species Stock Assessment for the Holsman et al. 202X Nature Communications paper
+# Code used to generate intermediate and final data for Holsman et al. in review Nature Communications paper
 #### Kirstin Holsman
 #### kirstin.holsman@noaa.gov
-
+#### Alaska Fisheries Science Center, National Marine Fisheries Service, NOAA, 7600 Sand Point Way N.E., Bld. 4, Seattle, Washington 98115
 
 
 ## Input data:
-Raw input files can be found under the **data** folder and **assessment_scripts/CEATTLE/src/Data** folders. 
+
+### Option 1: Re-generate final data for plots
+If running plotting code below (recommended) you will need to download the final data "EBM_ceattlenew.Rdata" from figshare and place it in the main directory: "EBM_Holsman_NatComm/EBM_ceattlenew.Rdata".
+
+* access EBM_ceattlenew.Rdata here: https://figshare.com/s/6dea7722df39e07d79f0 and place it in the directory: EBM_Holsman_NatComm/EBM_ceattlenew.Rdata. 
+(Data DOI:10.6084/m9.figshare.11864505)
+
+### Option 2: Re-running the intermediate data (not recommended)
+If re-running the intermediate data analysis (not recommended) the following files will need to be downloaded unzipped and placed in the asssesment_files folder:
+
+* access aclim_00_JunV2_2019_2.zip here: https://figshare.com/s/3a1aaa86837b79d6aa07 and place it in the EBM_Holsman_NatComm/data/runs/aclim_00_JunV2_2019_2.zip and unzip.
+(Data DOI:10.6084/m9.figshare.11864586)
+
+* access aclim_00_JunV2_2019_0.zip here: https://figshare.com/s/d9c35dbe0880f4169041 and place it in the EBM_Holsman_NatComm/data/runs/aclim_00_JunV2_2019_0.zip and unzip
+(Data DOI:10.6084/m9.figshare.11864577)
+
 
 ## Intermediate data:
-Intermediate data can be found in the main EBM_Holsman_NatComm in the form of .Rdata files.
+Intermediate data can be found in the main EBM_Holsman_NatComm in the form of .Rdata files but can be recreated from the ADMB model using the EBM_Holsman_NatComm/assessment_scripts/README_EBM_Holsman_Analysis.pdf (not recommended; see below).
 
 ## Figures and tables:
 Final figures and tables (including illustrator files that were used to add fish icons) can be found in the **Figures** folder.
@@ -43,8 +56,9 @@ Final figures and tables (including illustrator files that were used to add fish
 
 This is the main script for running analysis and plotting results and requires R version 3.5.3 (available at https://cran.r-project.org/bin/macosx/el-capitan/base/). To update the analysis using .Rdata outputs run the R() code below as is currently configured. If you want to update the intermediate data, set "readdat" to TRUE in line 80 below. The CEATTLE stock assessment is also included but requires AD Model builder (http://www.admb-project.org). To run the assessment scripts (not recommended or tested outside of macOSX) see "README_EBM_Holsman_Analysis.pdf".
 
+### EMB_paper.R script:
 
-```{r EBM_paper, eval=FALSE, echo=FALSE}
+```{r EBM_paper, eval=FALSE, echo=TRUE}
 
 ## ------------------------------------------------
 ## plotting code for EBM paper 
@@ -64,14 +78,14 @@ This is the main script for running analysis and plotting results and requires R
   #-------------------------------------
   #   1. SET THINGS UP
   #-------------------------------------  
-    library(RmarineHeatWaves)
-    library(plyr)
-    library(dplyr)
-    library(ggplot2)
-    library(svMisc)  #install.packages("svMisc")
-    library( quantmod)
+   # library(RmarineHeatWaves)
+   # library(plyr)
+    if(!require(dplyr)){ install.packages(dplyr)}else{library(dplyr)}
+    if(!require(ggplot2)){ install.packages(ggplot2)}else{library(ggplot2)}
+    if(!require(svMisc)){ install.packages(svMisc)}else{library(svMisc)}
+    if(!require(quantmod)){ install.packages(quantmod)}else{library(quantmod)}
     
-    main  <-  path.expand("~/Documents/D_AFSC_Files/Manuscripts/00_EBM_ACLIM_CEATTLE/EBM_Holsman_NatComm")
+    main  <-  path.expand("~/GitHub_new/EBM_Holsman_NatComm/")
     setwd(main)
    
     update.figs     <-  FALSE
@@ -80,6 +94,7 @@ This is the main script for running analysis and plotting results and requires R
     readdat         <-  FALSE  # re-read in new data?
     status          <-  TRUE   # print updates
     dpiIN           <-  150
+    update.simlist  <-  FALSE  # only TRUE when re-running enitre CEATTLE fitting 
     
     
     getnm<-function(nm=mclist0[1]){
@@ -96,7 +111,11 @@ This is the main script for running analysis and plotting results and requires R
 
     source("FUN_GG_EBM_paper.R")
     source("FUN_EBM_paper.R")
+    
     if(readdat==FALSE){
+      
+      if(!any(dir()%in%"EBM_ceattlenew.Rdata"))
+        download.file("https://figshare.com/s/6dea7722df39e07d79f0",destfile="EBM_ceattlenew.Rdata")
         load("EBM_ceattlenew.Rdata")    
     }else{
         source("SUB_EBM_paper.R")
