@@ -1,0 +1,156 @@
+path<-"/Users/kkari/Dropbox/CEATTLE-master/ceattle-master"
+
+system(paste("cd",path,";./run.sh 0"))
+
+system(paste("cd",path,";./run.sh 2"))
+
+htype<-c(0:3,5:8)
+mtype<-c(0,2)
+rectype<-0:5
+
+for(m in mtype){
+	for(r in rectype){
+		for (h in htype){
+			txt<-paste("cd",path,"; ./CEATTLE_run_futNew.sh",m,r,h)
+			system(txt)
+		}
+	}
+}
+
+cd /Users/kkari/Dropbox/CEATTLE-master/ceattle-master
+./run.sh 0
+./run.sh 2
+
+
+  # //recMode : recruitment mode                                                 //
+  #   // 0
+  #   // # 0 = project under mean  rec   (no RS)
+  #   // # 1 = mean RS function (mean RS no covariates, ricker; rs_data4CEATTLE_0_0_0)
+  #   // # 2 = RS function plus SST (rs_data4CEATTLE_SST
+  #   // # 3 = RS function based on top AIC selected environm. parms for each spp (rs_data4CEATTLE_TOP)
+  #   // # 4 = RS function based on model with top R2 value (rs_data4CEATTLE_TopR2)
+  #   // # 5 = RS function based on Recfile_name (above)   
+  #   // # 6 = RS function plus bottom temp 
+  #   // # 7 = RS function plus Cold Pool
+  #   // # 8 = RS function plus full model plus EAT (tot)
+./run.sh 0
+
+./CEATTLE_run_futNew.sh 0 0 2
+./CEATTLE_run_futNew.sh 0 1 2
+./CEATTLE_run_futNew.sh 0 2 2
+./CEATTLE_run_futNew.sh 0 3 2
+./CEATTLE_run_futNew.sh 0 4 2
+./CEATTLE_run_futNew.sh 0 5 2
+./CEATTLE_run_futNew.sh 0 6 2
+./CEATTLE_run_futNew.sh 0 7 2
+./CEATTLE_run_futNew.sh 0 8 2
+
+
+./CEATTLE_run_futNew.sh 2 0 2
+./CEATTLE_run_futNew.sh 2 1 2
+./CEATTLE_run_futNew.sh 2 2 2
+./CEATTLE_run_futNew.sh 2 3 2
+./CEATTLE_run_futNew.sh 2 4 2
+./CEATTLE_run_futNew.sh 2 5 2
+./CEATTLE_run_futNew.sh 2 6 2
+./CEATTLE_run_futNew.sh 2 7 2
+./CEATTLE_run_futNew.sh 2 8 2
+
+
+./CEATTLE_run_futNew.sh 0 0 7
+./CEATTLE_run_futNew.sh 0 1 7
+./CEATTLE_run_futNew.sh 0 2 7
+./CEATTLE_run_futNew.sh 0 3 7
+./CEATTLE_run_futNew.sh 0 4 7
+./CEATTLE_run_futNew.sh 0 5 7
+./CEATTLE_run_futNew.sh 0 6 7
+./CEATTLE_run_futNew.sh 0 7 7
+./CEATTLE_run_futNew.sh 0 8 7
+
+./CEATTLE_run_futNew.sh 2 0 7
+./CEATTLE_run_futNew.sh 2 1 7
+./CEATTLE_run_futNew.sh 2 2 7
+./CEATTLE_run_futNew.sh 2 3 7
+./CEATTLE_run_futNew.sh 2 4 7
+./CEATTLE_run_futNew.sh 2 5 7
+./CEATTLE_run_futNew.sh 2 6 7
+./CEATTLE_run_futNew.sh 2 7 7
+./CEATTLE_run_futNew.sh 2 8 7
+
+
+./CEATTLE_run_futNew.sh 0 0 3
+./CEATTLE_run_futNew.sh 0 1 3
+./CEATTLE_run_futNew.sh 0 2 3
+./CEATTLE_run_futNew.sh 0 3 3
+./CEATTLE_run_futNew.sh 0 4 3
+./CEATTLE_run_futNew.sh 0 5 3
+./CEATTLE_run_futNew.sh 0 6 3
+./CEATTLE_run_futNew.sh 0 7 3
+./CEATTLE_run_futNew.sh 0 8 3
+
+./CEATTLE_run_futNew.sh 2 0 3
+./CEATTLE_run_futNew.sh 2 1 3
+./CEATTLE_run_futNew.sh 2 2 3
+./CEATTLE_run_futNew.sh 2 3 3
+./CEATTLE_run_futNew.sh 2 4 3
+./CEATTLE_run_futNew.sh 2 5 3
+./CEATTLE_run_futNew.sh 2 6 3
+./CEATTLE_run_futNew.sh 2 7 3
+./CEATTLE_run_futNew.sh 2 8 3
+
+
+./CEATTLE_run_futNew.sh 0 5 3
+./CEATTLE_run_futNew.sh 0 5 7
+./CEATTLE_run_futNew.sh 2 5 7
+
+
+./CEATTLE_run_fut_blended.sh 0 0 2 100
+./CEATTLE_run_fut_blended.sh 0 1 2 100
+./CEATTLE_run_fut_blended.sh 0 2 2 100
+./CEATTLE_run_fut_blended.sh 0 3 2 100
+./CEATTLE_run_fut_blended.sh 0 4 2 100
+./CEATTLE_run_fut_blended.sh 0 5 2 100
+
+
+
+./CEATTLE_run_fut_blended.sh 2 0 2 100
+./CEATTLE_run_fut_blended.sh 2 1 2 100
+./CEATTLE_run_fut_blended.sh 2 2 2 100
+./CEATTLE_run_fut_blended.sh 2 3 2 100
+./CEATTLE_run_fut_blended.sh 2 4 2 100
+./CEATTLE_run_fut_blended.sh 2 5 2 100
+
+
+./CEATTLE_run_fut_blended.sh 0 0 3 100
+./CEATTLE_run_fut_blended.sh 0 1 3 100
+./CEATTLE_run_fut_blended.sh 0 2 3 100
+./CEATTLE_run_fut_blended.sh 0 3 3 100
+./CEATTLE_run_fut_blended.sh 0 4 3 100
+./CEATTLE_run_fut_blended.sh 0 5 3 100
+
+./CEATTLE_run_fut_blended.sh 2 0 3 100
+./CEATTLE_run_fut_blended.sh 2 1 3 100
+./CEATTLE_run_fut_blended.sh 2 2 3 100
+./CEATTLE_run_fut_blended.sh 2 3 3 100
+./CEATTLE_run_fut_blended.sh 2 4 3 100
+./CEATTLE_run_fut_blended.sh 2 5 3 100
+
+
+./CEATTLE_run_fut_blended.sh 2 5 3 100
+
+./CEATTLE_run_fut_blended.sh 0 0 7 100
+./CEATTLE_run_fut_blended.sh 0 1 7 100
+./CEATTLE_run_fut_blended.sh 0 2 7 100
+./CEATTLE_run_fut_blended.sh 0 3 7 100
+./CEATTLE_run_fut_blended.sh 0 4 7 100
+./CEATTLE_run_fut_blended.sh 0 5 7 100
+
+./CEATTLE_run_fut_blended.sh 2 0 7 100
+./CEATTLE_run_fut_blended.sh 2 1 7 100
+./CEATTLE_run_fut_blended.sh 2 2 7 100
+./CEATTLE_run_fut_blended.sh 2 3 7 100
+./CEATTLE_run_fut_blended.sh 2 4 7 100
+./CEATTLE_run_fut_blended.sh 2 5 7 100
+
+
+

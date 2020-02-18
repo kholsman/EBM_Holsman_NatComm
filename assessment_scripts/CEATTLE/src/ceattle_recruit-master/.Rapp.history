@@ -1,0 +1,254 @@
+test
+test<-data.frame(#
+pred=c(1,10,100),prey1=c(1,1,1),prey2=c(1,1,12),prey3=c(NA,3,12))
+tprey=test[1,]
+tpred=1
+tprey
+preyw[tprey]
+tprey
+preyw
+preyw[as.numeric(tprey)]
+pryw<-preyw[as.numeric(tprey)]#
+	prdw<-predw[as.numeric(tpred)]
+prdw
+test<-data.frame(#
+pred=c(20,200,500),prey1=c(1,1,1),prey2=c(1,1,12),prey3=c(NA,3,12))
+tpred=test$pred[1]
+pryw<-preyw[as.numeric(tprey)]#
+	prdw<-predw[as.numeric(tpred)]
+preyw/(sum(preyw))
+pryw/(sum(pryw))
+pryw/(sum(pryw))pryw/(sum(pryw,na.rm=TRUE))
+pryw/(sum(pryw,na.rm=TRUE))
+(pryw/(sum(pryw,na.rm=TRUE)))*pryw
+sum((pryw/(sum(pryw,na.rm=TRUE)))*pryw)
+sum((pryw/(sum(pryw,na.rm=TRUE)))*pryw,na.rm=TRUE)
+mean(pryw)
+mean(pryw,na.rm=TRUE)
+length(pryw,na.rm=TRUE)
+length(pryw)
+length(na.rm(pryw))
+rm.na(pryw)
+is.na(pryw)
+pryw[-is.na(pryw)]
+pryw[-which(is.na(pryw))]
+sum((1/length(pryw[-which(is.na(pryw))]))*pryw,na.rm=TRUE)
+PPMR<-function(type1="W",tpred=test$pred[1],tprey=test[1,]){
+pryw<-preyw[as.numeric(tprey)]
+prdw<-predw[as.numeric(tpred)]
+if(type1=="W"){
+tmp<- sum((pryw/(sum(pryw,na.rm=TRUE)))*pryw,na.rm=TRUE)
+}
+if(type1=="N"){
+tmp<- sum((1/length(pryw[-which(is.na(pryw))]))*pryw,na.rm=TRUE)
+}
+return(tmp)
+}
+apply(test,2,PPMR,type1="W")
+apply(test,1,PPMR,type1="W")
+test
+PPMR_n<-PPMR_w<-rep(0,dim(test)[1])
+i<-1
+PPMR(type="W",tpred=test[i,1],tprey=test[i,-1])
+PPMR_n<-PPMR_w<-rep(0,dim(test)[1])
+for(i in 1:dim(test)[1]){
+PPMR_n[i]<-PPMR(type="N",tpred=test[i,1],tprey=test[i,-1])
+PPMR_w[i]<-PPMR(type="W",tpred=test[i,1],tprey=test[i,-1])
+}
+PPMR_n
+PPMR_w
+mean(pryw,na.rm=TRUE)
+PPMR<-function(type1="W",tpred=test$pred[1],tprey=test[1,]){
+pryw<-preyw[as.numeric(tprey)]
+prdw<-predw[as.numeric(tpred)]
+if(type1=="W"){
+tmp<- sum((pryw/(sum(pryw,na.rm=TRUE)))*pryw,na.rm=TRUE)
+}
+if(type1=="N"){
+tmp<- mean(pryw,na.rm=TRUE)
+}
+return(tmp)
+}
+PPMR_n<-PPMR_w<-rep(0,dim(test)[1])
+for(i in 1:dim(test)[1]){
+PPMR_n[i]<-PPMR(type="N",tpred=test[i,1],tprey=test[i,-1])
+PPMR_w[i]<-PPMR(type="W",tpred=test[i,1],tprey=test[i,-1])
+}
+PPMR_w
+PPMR_n
+PPMR<-function(type1="W",tpred=test$pred[1],tprey=test[1,]){
+pryw<-preyw[as.numeric(tprey)]
+prdw<-predw[as.numeric(tpred)]
+if(type1=="W"){
+tmp<- sum((pryw/(sum(pryw,na.rm=TRUE)))*pryw,na.rm=TRUE)
+}
+if(type1=="N"){
+tmp<- mean(pryw,na.rm=TRUE)
+}
+return(prdw/tmp)
+}
+PPMR_n<-PPMR_w<-rep(0,dim(test)[1])
+for(i in 1:dim(test)[1]){
+PPMR_n[i]<-PPMR(type="N",tpred=test[i,1],tprey=test[i,-1])
+PPMR_w[i]<-PPMR(type="W",tpred=test[i,1],tprey=test[i,-1])
+}
+PPMR_n
+PPMR_w
+test<-data.frame(
+pred=c(20,40,60),prey1=c(1,1,1),prey2=c(1,1,12),prey3=c(NA,3,12))
+PPMR<-function(type1="W",tpred=test$pred[1],tprey=test[1,]){
+pryw<-preyw[as.numeric(tprey)]
+prdw<-predw[as.numeric(tpred)]
+if(type1=="W"){
+tmp<- sum((pryw/(sum(pryw,na.rm=TRUE)))*pryw,na.rm=TRUE)
+}
+if(type1=="N"){
+tmp<- mean(pryw,na.rm=TRUE)
+}
+return(prdw/tmp)
+}
+PPMR_n<-PPMR_w<-rep(0,dim(test)[1])
+for(i in 1:dim(test)[1]){
+PPMR_n[i]<-PPMR(type="N",tpred=test[i,1],tprey=test[i,-1])
+PPMR_w[i]<-PPMR(type="W",tpred=test[i,1],tprey=test[i,-1])
+}
+pred
+test
+test<-data.frame(
+pred=c(20,40,60),prey1=c(1,1,1),prey2=c(1,1,12),prey3=c(NA,3,12))
+PPMR<-function(type1="W",tpred=test$pred[1],tprey=test[1,]){
+pryw<-preyw[as.numeric(tprey)]
+prdw<-predw[as.numeric(tpred)]
+if(type1=="W"){
+tmp<- sum((pryw/(sum(pryw,na.rm=TRUE)))*pryw,na.rm=TRUE)
+}
+if(type1=="N"){
+tmp<- mean(pryw,na.rm=TRUE)
+}
+return(prdw/tmp)
+}
+PPMR_n<-PPMR_w<-rep(0,dim(test)[1])
+for(i in 1:dim(test)[1]){
+PPMR_n[i]<-PPMR(type="N",tpred=test[i,1],tprey=test[i,-1])
+PPMR_w[i]<-PPMR(type="W",tpred=test[i,1],tprey=test[i,-1])
+}
+PPMR_n
+PPMR_w
+test<-data.frame(
+pred=c(20,40,60),prey1=c(1,1,1),prey2=c(1,1,1),prey3=c(1,1,1))
+PPMR<-function(type1="W",tpred=test$pred[1],tprey=test[1,]){
+pryw<-preyw[as.numeric(tprey)]
+prdw<-predw[as.numeric(tpred)]
+if(type1=="W"){
+tmp<- sum((pryw/(sum(pryw,na.rm=TRUE)))*pryw,na.rm=TRUE)
+}
+if(type1=="N"){
+tmp<- mean(pryw,na.rm=TRUE)
+}
+return(prdw/tmp)
+}
+PPMR_n<-PPMR_w<-rep(0,dim(test)[1])
+for(i in 1:dim(test)[1]){
+PPMR_n[i]<-PPMR(type="N",tpred=test[i,1],tprey=test[i,-1])
+PPMR_w[i]<-PPMR(type="W",tpred=test[i,1],tprey=test[i,-1])
+}
+PPMR_n
+PPMR_w
+predw[as.numeric(test$pred)]
+plot(predw[as.numeric(test$pred)],log(PPMR_n))
+log(PPMR_n)
+predw[as.numeric(test$pred)]
+plot(predw[as.numeric(test$pred)],log(PPMR_n),type="l")
+plot(log(predw[as.numeric(test$pred)]),log(PPMR_n),type="l")
+plot(log(predw[as.numeric(test$pred)]),log(PPMR_n),type="b")
+par(mfrow=c(2,1))
+plot(log(predw[as.numeric(test$pred)]),log(PPMR_n),type="b")
+par(mfrow=c(1,2))
+plot(log(predw[as.numeric(test$pred)]),log(PPMR_n),type="b")
+par(mfrow=c(1,2))
+plot(log(predw[as.numeric(test$pred)]),log(PPMR_n),type="b")
+plot(log(predw[as.numeric(test$pred)]),log(PPMR_w),type="b")
+PPMR_w
+PPMR_n
+test<-data.frame(
+pred=c(20,40,60),prey1=c(1,1,1),prey2=c(10,10,10),prey3=c(2,2,2))
+PPMR<-function(type1="W",tpred=test$pred[1],tprey=test[1,]){
+pryw<-preyw[as.numeric(tprey)]
+prdw<-predw[as.numeric(tpred)]
+if(type1=="W"){
+tmp<- sum((pryw/(sum(pryw,na.rm=TRUE)))*pryw,na.rm=TRUE)
+}
+if(type1=="N"){
+tmp<- mean(pryw,na.rm=TRUE)
+}
+return(prdw/tmp)
+}
+PPMR_n<-PPMR_w<-rep(0,dim(test)[1])
+for(i in 1:dim(test)[1]){
+PPMR_n[i]<-PPMR(type="N",tpred=test[i,1],tprey=test[i,-1])
+PPMR_w[i]<-PPMR(type="W",tpred=test[i,1],tprey=test[i,-1])
+}
+par(mfrow=c(1,2))
+plot(log(predw[as.numeric(test$pred)]),log(PPMR_n),type="b")
+plot(log(predw[as.numeric(test$pred)]),log(PPMR_w),type="b")
+bin1<-seq(1,60,5)
+bin1
+log(60)
+bin2<-seq(log(1),log(60),5)
+bin2
+log(60)
+log(600)
+log(6000)
+bin1<-seq(1,60,.5)
+bin2<-seq(log(1),log(60),.5)
+bin2
+bin1
+bin1<-seq(1,60,.5)
+bin2<-exp(seq(log(1),log(60),.5))
+bin1
+bin2
+bin2[-length(bin2)]
+bin2[-1]-bin2[-length(bin2)]
+(1/5)*0.1+(4/5)*10
+1000/8.02
+(4/5)*12
+(4/5)*13
+(4/5)*14
+(4/5)*8
+(4/5)*5
+(1/5)*0.1+(4/5)*5
+(1/5)*0.1+(4/5)*15
+(1/5)*0.5+(4/5)*15
+(1/5)*0.2+(4/5)*15
+(4/5)*15
+(1/5)*0.5+(4/5)*15
+1000/12.1
+(1/5)*0.5+(4/5)*6
+(1/5)*0.5+(4/5)*7
+8.2*4
+(1/5)*0.2+(4/5)*8.2
+(1/5)*0.1+(4/5)*10
+200/(1/5)*0.1+(4/5)*10)
+200/((1/5)*0.1+(4/5)*10)
+24.9((10/40.1)*0.1+(40/40.1)*10)
+((10/40.1)*0.1+(40/40.1)*10)
+(10/40.1)
+((.1/40.1)*0.1+(40/40.1)*10)
+200/((.1/40.1)*0.1+(40/40.1)*10)
+((9/10)*0.1+(1/10)*10)
+200/(((9/10)*0.1+(1/10)*10))
+((.9/10.9)*0.1+(10/10.9)*10)
+200/(((.9/10.9)*0.1+(10/10.9)*10))
+c<-c(10,rep(.1,9))
+c
+mean(c)
+300/mean(c)
+200/mean(c)
+c2<-c(rep(10,4),.1)
+c2
+mean(c2)
+rm(list=ls())
+rm(list=ls()); setwd("/Users/kkari/GitHub/CEATTLE/runs/kirs/test7_0");source("/Users/kkari/GitHub/CEATTLE/src/ceattle-master/Scripts/R_code/MAKE_recruitment_files.R")
+rm(list=ls()); setwd("/Users/kkari/GitHub/CEATTLE/runs/kirs/test7_0");source("/Users/kkari/GitHub/CEATTLE/src/ceattle-master/Scripts/R_code/MAKE_recruitment_files.R")
+max(c(2,3),na.rm=TRUE)
+rm(list=ls()); setwd("/Users/kkari/GitHub/CEATTLE/runs/test9_0");source("/Users/kkari/GitHub/CEATTLE/src/ceattle-master/Scripts/R_code/MAKE_recruitment_files.R")

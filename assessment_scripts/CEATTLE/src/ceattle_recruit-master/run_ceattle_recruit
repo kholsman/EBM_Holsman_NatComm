@@ -1,0 +1,716 @@
+########################################################
+# run_ceattle_recruit
+# script for running the recruitment model
+# Kirstin Holsman
+# kirstin.holsman@noaa.gov
+# Last Updated: May 2016
+# 
+# ./run_ceattle_recruit --> will run the recruitment model
+#  Other notes
+# chmod +x run_ceattle_recruit
+# !/bin/bash
+# cd dropbox/msm-master 
+# cd Dropbox/Manuscripts/recruitment_ROMS/ceattle_recruit 
+########################################################
+
+########################################################
+# Functions 
+########################################################
+
+
+    function MKDIR_KIR {
+     if [ ! -f "$1" ]; then
+      mkdir -p "$1" 2>/dev/null
+     fi
+     # if there is no directory, make a directory
+    }
+
+    function MKFILE_KIR {
+     if [ ! -f "$1" ]; then
+      mk -p "$1" 2>/dev/null
+     fi
+     # if there is no file, make a file
+    }
+    function RM_KIR {
+     if [ -f "$1" ]; then
+      rm "$1" 2>/dev/null
+     fi
+     # if there is a directory or file, remove it
+    }
+
+    containsElement () {
+      local e
+      for e in "${@:2}"; do [[ "$e" == "$1" ]] && return 1; done
+      return 0
+    }
+    function RUN_REC_old {
+        # defunct
+        oldval=${array[1]}
+        unset tmp; unset RSvar_name
+        declare -a tmp
+        IFSold2=$IFS
+        IFS=""
+        echo "# "${covar_names[@]}" #"> "$inputfile"
+        echo ${array[@]}> "$inputfile"
+        echo ${Eat_cov_num_array[@]}>> "$inputfile"
+        echo ${cov_type_array[@]}>> "$inputfile"
+        IFS=$IFSold2
+        nocovars="TRUE"
+        T2="TRUE"
+        IFS=""
+        yourValue=0
+
+        RSvar_name=${RSvar_name_main[@]}'_0'
+        echo $RSvar_name" "${array[@]}>> $logfile
+        ./ceattle_recruit -species $sp_num -nox -maxph 10
+         MAKE_RS_FILES
+
+        RSvar_name=${RSvar_name_main[@]}'_0_BLM'
+        echo $RSvar_name" "${array[@]}>> $logfile
+        ./ceattle_recruit -BLM -species $sp_num -nox -maxph 10
+        MAKE_RS_FILES
+
+        RSvar_name=${RSvar_name_main[@]}'_0_LM'
+        echo $RSvar_name" "${array[@]}>> $logfile
+        ./ceattle_recruit -LM -species $sp_num -nox -maxph 10
+        MAKE_RS_FILES
+
+        IFS=$IFSold
+        nn=$((${ncov}+1))     
+        for (( i=1; i<$nn; i++ ))
+            do 
+            # echo $i
+            # turn on each covariate one by one
+            unset tmp
+            #unset RSvar_name
+            declare -a tmp
+            if [[ $i -gt 1 ]]; then
+                 array[i-2]=$oldval
+            fi
+            oldval=${array[$i-1]}
+            array[$i-1]=2
+            IFSold2=$IFS
+            IFS=""
+            # echo ${array[@]}
+            
+            echo "# "${covar_names[@]}" #"> "$inputfile"
+            echo ${array[@]}> "$inputfile"
+            echo ${Eat_cov_num_array[@]}>> "$inputfile"
+            echo ${cov_type_array[@]}>> "$inputfile"
+
+            IFS=$IFSold2
+            yourValue=0
+            #IFS=" " 
+            tmp=${RSvar_name_main[@]}
+            for (( c=0; c<${ncov}; c++ ))
+            do 
+              if [[ "${array[$c]}" -gt "$yourValue" ]]; then
+                tmp[0]=${tmp[0]}_${covar_names[$c]} 
+              fi
+            done
+            IFS=$IFSold
+            RSvar_name=(${tmp[0]})
+            echo $RSvar_name" "${array[@]}>> $logfile
+            ./ceattle_recruit -species $sp_num -nox -maxph 10
+             MAKE_RS_FILES
+
+            RSvar_name=${tmp[0]}'_BLM'
+            echo $RSvar_name" "${array[@]}>> $logfile
+            ./ceattle_recruit -BLM -species $sp_num -nox -maxph 10
+            MAKE_RS_FILES
+
+            RSvar_name=${tmp[0]}'_LM'
+            echo $RSvar_name" "${array[@]}>> $logfile
+            ./ceattle_recruit -LM -species $sp_num -nox -maxph 10
+            MAKE_RS_FILES
+
+            if [[ $i==$nn ]]; then
+                echo 'anaylsis complete for species '$sp_num
+                array[i-1]=$oldval
+                echo "# "${covar_names[@]}" #"> "$inputfile"
+                echo ${array[@]}> "$inputfile"
+                echo ${Eat_cov_num_array[@]}>> "$inputfile"
+                echo ${cov_type_array[@]}>> "$inputfile"
+            fi
+            #copy_MSM_RS_files
+        done
+    }
+
+    function RUN_REC {
+        # This is the core function for the script
+        unset tmp; unset RSvar_name  
+            # declare tmp and RSvar_name
+        declare -a tmp
+        IFSold2=$IFS
+        IFS=""
+        unset use_array
+        declare -a use_array
+        nn=$((${#covar_array[@]}+1)) 
+        mm=$((${m}))   
+        for (( ni=0; ni<$nn; ni++ ));do
+             if [[ "${covar_array[$ni]}" = 1 ]]; then
+                 use_array[$ni]=5
+                 # if the array value is 1, then assign a phase value of 5 to the use_array
+             fi
+
+             if [[ "${covar_array[$ni]}" = 0 ]]; then
+                use_array[$ni]=-4
+                # if the array value is 1, then assign a phase value of -4 to the use_array
+            fi
+           
+        done
+
+        # _________________________________
+        #  Now run recruitment models
+        # _________________________________
+
+        echo "# "${covar_names[@]}" #"> "$inputfile"
+        echo ${use_array[@]}> "$inputfile"
+        echo ${Eat_cov_num_array[@]}>> "$inputfile"
+        echo ${cov_type_array[@]}>> "$inputfile"
+
+        IFS=$IFSold2
+        nocovars="TRUE"
+        T2="TRUE"
+        IFS=""
+        yourValue=0
+        opt=${mod_names[$((${m}+1))]}
+        unset temp2
+        temp2="${opt%\"}"
+        temp2="${temp2#\"}"
+        echo "$temp2"
+
+        # _________________________________
+        #  Model 1: Ricker model  - no ration covariates here
+        # _________________________________
+
+        RSvar_name=${RSvar_name_main[@]}'_'$temp2
+        #RSvar_name=(${tmp[0]})
+        echo $RSvar_name" "${use_array[@]}>> $logfile
+        ./ceattle_recruit -species $sp_num -nox -maxph 10
+         MAKE_RS_FILES
+        # _________________________________
+        #  Model 2: Linear model with biomass(t-1) as a covariate  - no ration covariates here
+        # _________________________________
+
+        RSvar_name=${RSvar_name_main[@]}'_'$temp2'_BLM'
+       # RSvar_name=${tmp[0]}'_BLM'
+        echo $RSvar_name" "${use_array[@]}>> $logfile
+        ./ceattle_recruit -BLM -species $sp_num -nox -maxph 10
+        MAKE_RS_FILES
+        # _________________________________
+        #  Model 3: Linear model  - no ration covariates here
+        # _________________________________
+        #RSvar_name=${tmp[0]}'_LM'
+         RSvar_name=${RSvar_name_main[@]}'_'$temp2'_LM'
+        echo $RSvar_name" "${use_array[@]}>> $logfile
+        ./ceattle_recruit -LM -species $sp_num -nox -maxph 10
+        MAKE_RS_FILES
+
+
+         # now same but with ration if ration variables are being called
+         runEat=0
+        for (( ee=0; ee<${#Eat_cov_num_array[@]}; ee++ ));do
+            unset myval
+            myval=$((${Eat_cov_num_array[$ee]}-1))
+            if [[ "${covar_array[$myval]}" = 1 ]]; then
+            
+                # if temp2 == Eat_cov_num_array [1 or 2 or ....]
+                # then change cov_type_array to 2
+                cov_type_array[$myval]=1
+                runEat=1
+                # then run model
+                # then covert it back
+            fi
+        done
+
+        if [[ "$runEat" = 1 ]]; then
+
+            echo "# "${covar_names[@]}" #"> "$inputfile"
+            echo ${use_array[@]}> "$inputfile"
+            echo ${Eat_cov_num_array[@]}>> "$inputfile"
+            echo ${cov_type_array[@]}>> "$inputfile"
+
+            IFS=$IFSold2
+            nocovars="TRUE"
+            T2="TRUE"
+            IFS=""
+            yourValue=0
+            opt=${mod_names[$((${m}+1))]}
+            unset temp2
+            temp2="${opt%\"}"
+            temp2="${temp2#\"}"
+            echo "$temp2"
+
+            # _________________________________
+            #  Model 1: Ricker model  with (zoop-ration) as a covariate
+            # _________________________________
+            RSvar_name=${RSvar_name_main[@]}'_Eat_'$temp2
+            #RSvar_name=(${tmp[0]})
+            echo $RSvar_name" "${use_array[@]}>> $logfile
+            ./ceattle_recruit -species $sp_num -nox -maxph 10
+             MAKE_RS_FILES
+            # _________________________________
+            #  Model 2: Linear model with biomass(t-1) as a covariate with (zoop-ration) as a covariate
+            # _________________________________
+
+            RSvar_name=${RSvar_name_main[@]}'_Eat_'$temp2'_BLM'
+           # RSvar_name=${tmp[0]}'_BLM'
+            echo $RSvar_name" "${use_array[@]}>> $logfile
+            ./ceattle_recruit -BLM -species $sp_num -nox -maxph 10
+            MAKE_RS_FILES
+            # _________________________________
+            #  Model 2: Linear model with (zoop-ration) as a covariate
+            # _________________________________
+            #RSvar_name=${tmp[0]}'_LM'
+             RSvar_name=${RSvar_name_main[@]}'_Eat_'$temp2'_LM'
+            echo $RSvar_name" "${use_array[@]}>> $logfile
+            ./ceattle_recruit -LM -species $sp_num -nox -maxph 10
+            MAKE_RS_FILES
+
+             IFS=$IFSold
+        fi
+         # now reset values
+
+        if [[ $m==$nmods ]]; then
+            echo 'anaylsis complete for species '$sp_num
+        fi
+            nn=$((${#covar_array[@]}+1)) 
+            mm=$((${m}))   
+            unset use_array; unset cov_type_array
+            declare -a use_array; declare -a cov_type_array
+            for (( ni=0; ni<$nn; ni++ ));do
+                 use_array[$ni]=-4
+                 cov_type_array[$ni]=0
+            done
+            echo "# "${covar_names[@]}" #"> "$inputfile"
+            echo ${use_array[@]}> "$inputfile"
+            echo ${Eat_cov_num_array[@]}>> "$inputfile"
+            echo ${cov_type_array[@]}>> "$inputfile"
+        #fi
+            #copy_MSM_RS_files
+        
+    }
+
+    function RUN_REC_noCovs {
+        
+        oldval=${array[1]}
+        unset tmp; unset RSvar_name
+        declare -a tmp
+        IFSold2=$IFS
+        IFS=""
+        echo "# "${covar_names[@]}" #"> "$inputfile"
+        echo ${array[@]}> "$inputfile"
+        echo ${Eat_cov_num_array[@]}>> "$inputfile"
+        echo ${cov_type_array[@]}>> "$inputfile"
+        IFS=$IFSold2
+        nocovars="TRUE"
+        T2="TRUE"
+        IFS=""
+        yourValue=0
+
+        RSvar_name=${RSvar_name_main[@]}'_0'
+        echo $RSvar_name" "${array[@]}>> $logfile
+        ./ceattle_recruit -species $sp_num -nox -maxph 10
+         MAKE_RS_FILES
+
+        RSvar_name=${RSvar_name_main[@]}'_0_BLM'
+        echo $RSvar_name" "${array[@]}>> $logfile
+        ./ceattle_recruit -BLM -species $sp_num -nox -maxph 10
+        MAKE_RS_FILES
+
+        RSvar_name=${RSvar_name_main[@]}'_0_LM'
+        echo $RSvar_name" "${array[@]}>> $logfile
+        ./ceattle_recruit -LM -species $sp_num -nox -maxph 10
+        MAKE_RS_FILES
+
+        IFS=$IFSold
+    }
+
+
+    #remove_MSM_RS_files
+    function RM_RS_FILES {
+         rm -rf RS_fits
+         MKDIR_KIR RS_fits
+    }
+    #make_MSM_RS_files
+
+
+    function CP_RS_FILES {
+        MKDIR_KIR ../$var_name/results/RS_fits/
+        cd ../$var_name/results/
+        RM_RS_FILES
+        cd ..
+        cp -r ../RS_fits/* ../$var_name/results/RS_fits
+    }
+
+    function MAKE_RS_FILES {
+     #remove_MSM_RS_files
+     cp  ceattle_recruit.rep      ../RS_fits/ceattle_recruit$RSvar_name.rep
+     cp  rs_data_output.dat ../RS_fits/rs_data_output_$RSvar_name.dat
+     cp  rs_data4CEATTLEcopy.dat ../RS_fits/rs_data4CEATTLEcopy_$RSvar_name.dat
+     cp  $sp_name'_data.dat'       ../RS_fits/$RSvar_name.dat
+     cp  ceattle_recruit.std      ../RS_fits/ceattle_recruit_$RSvar_name.std
+     cp  $sp_name'_control.ctl'      ../RS_fits/ceattle_recruit_$RSvar_name.ctl
+     cp  admodel.hes      ../RS_fits/admodel_$RSvar_name.hes
+     rm ceattle_recruit.b*
+     rm ceattle_recruit.log*
+     rm ceattle_recruit.p*
+     rm ceattle_recruit.r*
+     rm ceattle_recruit.std
+     #rm ceattle_recruit.rep
+     rm rs_data_output.dat
+     rm rs_data4CEATTLEcopy.dat
+
+    }
+
+    function CLEAN_UP_MAIN_REC {
+        for (( ss=1; ss<=$nspp; ss++ ));do 
+            sp_num=$ss
+            sp_name=${species[$(($ss-1))]}
+            RSvar_name_main=RS$sp_num
+            RM_KIR $sp_name'_'*
+            
+            RM_KIR $sp_name'_data.dat'
+            RM_KIR $sp_name'_control.ctl'
+            RM_KIR $sp_name'covar_names.txt'
+
+        done
+            RM_KIR admodel.hes
+            RM_KIR ceattle_recruit.rep
+            RM_KIR rs_data4CEATTLE.dat
+            RM_KIR ceattle_recruit.obj
+            RM_KIR ceattle_recruit.cpp
+            RM_KIR ceattle_recruit.htp
+            RM_KIR admodel.cov
+            RM_KIR admodel.dep
+            RM_KIR ceattle_recruit.cor
+            RM_KIR ceattle_recruit.eva
+            RM_KIR eigv.rpt
+            RM_KIR fmin.log
+            RM_KIR variance
+
+    }
+###########################################
+## Now for the main script
+###########################################
+     #statements
+     # cd /Users/kkari/Dropbox/CEATTLE-master/ceattle_recruit-master
+
+    cd ceattle_recruit
+    rd=$(pwd)
+    pwd
+     #  loop through all covariates 
+    # the reset are environmental covars that have high correlation and should be evaluated individualy
+    # cp -r ../rec_files/RS_models.ctl RS_models.ctl 
+    IFSold=$IFS
+    rm -rf ../RS_fits
+    MKDIR_KIR ../RS_fits            # make the RS_fits directory
+    unset species
+    inputfile="../rec_files/spnames.ctl"         # make the RS_fits directory
+    nspp=1
+    
+
+    declare -a species
+    while IFS=" ,#" read -r -a stmp
+        do
+        #echo ${stmp[@]}
+        nspp=${#stmp[@]}
+        for (( i=0; i<${nspp}; i++ )); 
+         do
+          species[i]=${stmp[$i]} #itr*6+1-6
+         done
+    done < "$inputfile"
+    echo ${species[@]}
+
+    declare -a mod_names
+    declare -a covars
+    unset mod_names
+    unset covars
+    unset ncov
+    unset nmods
+    unset line
+
+    k=1
+    inputfile="RS_models.ctl"
+    # read the input control file that delinates the covariates to use in each model; but here only the name and covar names are read in
+    while IFS=" ,#,  ," read -r -e -a line;do
+            
+            # first read the first line that has the model names
+            if [ "$k" ==  1  ];then
+                #echo "Line # $k: $line"
+                    echo reading first line
+                   #mod_names=$line
+                unset ntmp
+                ntmp=${#line[@]}
+                #nmods=${#line[@]}
+                nmods=$((${#line[@]}-1))
+
+                # echo $ntmp
+                 unset mod_names
+                    for (( i=0; i<${ntmp}; i++ )); 
+                        do
+                        mod_names[i]=${line[$i]} #itr*6+1-6
+                    done
+
+            fi       
+            if [ "$k" == 2 ];then
+                #echo "Line # $k: $line"
+                # then read the second line that has the model covariate names e.g.,(" Ben_avg")
+                #covars=$line 
+                unset ntmp
+                ntmp=${#line[@]}
+                ncov=$((${#line[@]}-1))
+                # echo $ntmp
+                 unset covars
+                    for (( i=0; i<${ntmp}; i++ )); 
+                        do
+                        covars[i]=${line[$i]} #itr*6+1-6
+                    done
+            fi
+            # else
+            #     #skip
+            #      echo skip
+            # fi
+            ((k++))
+
+    done < "$inputfile"
+
+# echo ${mod_names[@]}
+# echo ${covars[@]}
+# echo $ncov
+# echo $nmods
+kk=1
+declare -a rat_modn
+unset rat_modn
+tmpn=("fallZavg" "springZavg")
+
+# find the ration covariate numbers
+for (( i=1; i<$((${ncov}+1)) ; i++ )); 
+    do
+
+        nn=$(($i+1)) # skip the first value as it is blank (i +1 )
+        opt=${covars[$nn]}
+        IFS=""
+        temp="${opt%\"}"
+        temp="${temp#\"}"
+        # echo "$temp"
+        # echo "HERE"
+        if [ "$temp" = "${tmpn[0]}" ];then
+            rat_modn[kk]=$(($i))
+            # echo $temp, i=$i, nn=$nn
+            ((kk++))
+        fi
+        if [ "$temp" = "${tmpn[1]}" ];then
+            rat_modn[kk]=$(($i))
+            # echo $temp , i=$i, nn=$nn
+            ((kk++))
+        # else
+        #     echo skip
+        fi
+done
+
+# echo ${rat_modn[@]}
+
+# clean up the main directory and get it ready to fit recruitment files
+
+CLEAN_UP_MAIN_REC
+for (( s=1; s<=$nspp; s++ ));do 
+    sp_num=$s
+    sp_name=${species[$(($s-1))]}
+    RSvar_name_main=RS$sp_num
+    logfile="../"$RSvar_name_main"_log.csv"
+
+    echo "# Model Covariates #"> $logfile
+    covarfilename=$sp_name'_control.ctl'
+     cp ../rec_files/$sp_name'_control.ctl' $sp_name'_control.ctl'
+     cp ../rec_files/$sp_name'_data.dat' $sp_name'_data.dat'
+     cp ../rec_files/$sp_name'covar_names.txt' $sp_name'covar_names.txt'
+
+    inputfile=$covarfilename
+    while IFS=" ,#,  ,\n" read -e -r -a cov_phase; do
+             
+            nline=$(($nline+1)) # increase counter by 1
+            if [ "$nline" ==  1  ];then
+                    echo reading first line
+                    ncov=${#cov_phase[@]}
+                    for (( i=0; i<${ncov}; i++ )); 
+                        do
+                        array[i]=${cov_phase[$i]} #itr*6+1-6
+                        covar_names[i]=$(($i+1))
+                    done
+
+            elif [ "$nline" == 2 ];then
+                    echo reading second line
+                    echo ${cov_phase[@]}
+                    tmpn=${#cov_phase[@]}
+                    echo $tmpn
+                   for (( i=0; i<${tmpn}; i++ )); 
+                        do
+                        Eat_cov_num_array[i]=${cov_phase[$i]} #itr*6+1-6
+                    done
+
+            else
+                 echo reading third line
+                    tmpn=${#cov_phase[@]}
+                   for (( i=0; i<${tmpn}; i++ )); 
+                        do
+                        cov_type_array[i]=${cov_phase[$i]} #itr*6+1-6
+                    done
+            fi
+
+    done < "$inputfile"
+
+    cp  $sp_name'covar_names.txt' ../RS_fits/$sp_name'covar_names.txt'
+   
+    ##_____________________________________________________
+    ## first run Bev_Holt
+    ##_____________________________________________________
+
+     ./ceattle_recruit -BevHolt -species $sp_num -nox -maxph 10
+    RSvar_name=$RSvar_name_main'_BH'
+    MAKE_RS_FILES
+    echo $RSvar_name" "${array[@]}>> $logfile
+    unset startarray ; unset startcovar_names
+    echo run no covariate models
+    
+
+    declare -a startarray
+    declare -a startcovar_names
+    startarray=(${array[@]})
+    startcovar_names=(${covar_names[@]})
+    IFS=$IFSold
+    RUN_REC_noCovs
+    # read .ctl file and extract number of covars
+
+    ##_____________________________________________________
+    ## For each model in the set 1) run main effects, 2) run main effects modified by ration
+    ##_____________________________________________________
+    
+    for (( m=1; m<${nmods}; m++ ));do
+        unset array ; unset cov_phase_array; unset Eat_cov_num_array; unset array_tmp; unset covar_names; unset cov_type_array; unset covar_names_tmp 
+        declare -a array
+        declare -a cov_phase_array
+        declare -a cov_type_array
+        declare -a Eat_cov_num_array
+        declare -a covar_array
+        declare -a array_tmp
+        declare -a covar_names
+        nline=0
+ 
+        #echo model = $m
+        unset target_val
+        target_val=$(($m+2))  # set target value to model
+
+        inputfile="RS_models.ctl" 
+        k=1
+        unset covar_array
+        #covar_array is the array of covariates to be evaluated in this model
+
+        while IFS=" ,#,  " read -r -e -a line;do
+            if [ "$k" == $target_val ];then
+                ncov=${#line[@]}
+                for (( i=0; i<${ncov}; i++ )); 
+                    do
+                    covar_array[i]=${line[$i]} #itr*6+1-6
+                    #if [ ${array_tmp[$i]} ==  1  ];then
+                        
+                        #echo $i will be evaluated, ${covars[$i]}
+                    #fi
+                done
+            fi
+            ((k++))
+        done < "$inputfile"
+        # echo model = $m, ${covar_array[@]}
+        # echo ${covar_array[@]}
+        # echo ${#covar_array[@]}
+
+
+        inputfile=$covarfilename
+        while IFS=" ,#,  ,\n" read -e -r -a cov_phase; do
+             
+            nline=$(($nline+1)) # increase counter by 1
+            if [ "$nline" ==  1  ];then
+                    echo reading first line
+                    ncov=${#cov_phase[@]}
+                    for (( i=0; i<${ncov}; i++ )); 
+                        do
+                        array[i]=${cov_phase[$i]} #itr*6+1-6
+                        covar_names[i]=$(($i+1))
+                    done
+
+            elif [ "$nline" == 2 ];then
+                    echo reading second line
+                    # echo ${cov_phase[@]}
+                    tmpn=${#cov_phase[@]}
+                    echo $tmpn
+                   for (( i=0; i<${tmpn}; i++ )); 
+                        do
+                        Eat_cov_num_array[i]=${cov_phase[$i]} #itr*6+1-6
+                    done
+
+            else
+                 echo reading third line
+                    tmpn=${#cov_phase[@]}
+                  
+                   for (( i=0; i<${tmpn}; i++ )); 
+                        do
+                        cov_type_array[i]=${cov_phase[$i]} #itr*6+1-6
+                    done
+            fi
+        done < "$inputfile"
+        # echo ${array[@]}
+        # echo ${covar_names[@]}
+        # echo ${cov_type_array[@]}
+        # echo ${Eat_cov_num_array[@]}
+        # echo HERE
+
+        RUN_REC
+
+    done
+    RM_KIR $sp_name'_control.ctl'
+    RM_KIR $sp_name'_data.dat'
+    RM_KIR $sp_name'covar_names.txt'
+done
+        # RM_KIR 'RS_models.ctl'
+
+
+
+# copy_MSM_RS_files
+# #Rscript setwd("/Users/kkari/Dropbox/msm-master/MSM_RS")
+
+# rm -rf fits_4_MSM
+# rm -rf AIC_results
+# rm -rf ../$var_name/results/AIC_results/
+# rm -rf ../$var_name/results/fits_4_MSM/
+
+# mkdir_kir ../$var_name/results/fits_4_MSM
+# mkdir_kir ../$var_name/results/AIC_results
+# Rscript selectRS_USE.R
+
+# cp RS_fits/rs_data4MSM_BH.dat ../$var_name/results/fits_4_MSM/rs_data4MSM_BH.dat
+# cp msm_rs.dat ../$var_name/results/fits_4_MSM/msm_rs.dat 
+# cp rs_data4MSM.dat ../$var_name/results/fits_4_MSM/rs_data4msm.dat
+# cp RS_fits/msm_rs_0_0_0.ctl ../$var_name/results/fits_4_MSM/msm_rs.ctl
+# cp msm_rs_init.ctl ../$var_name/results/fits_4_MSM/msm_rs_init.ctl
+
+# cp -r fits_4_MSM/* ../$var_name/results/fits_4_MSM/
+# cp -r AIC_results/* ../$var_name/results/AIC_results/
+
+# cp RS_fits/newRecFig1.jpg ../$var_name/results/AIC_results/newRecFig1.jpg
+# cp RS_fits/newRecFig2.jpg ../$var_name/results/AIC_results/newRecFig2.jpg
+
+
+# #cp all_parameter_values.csv ../$var_name/results/all_parameter_values.csv
+
+#  ###now copy files to results folder
+# # cp rs_data4MSM_TOP.dat ../$var_name/results/rs_data4MSM_TOP.dat
+# # cp rs_data4MSM_AICmn.dat ../$var_name/results/rs_data4MSM_AICmn.dat
+
+cd ..
+
+ #cp -r MSM_RS/* $var_name/results/$RS_var_nameAll
+ ## clean up MSM_RS folder
+
+echo Hincast and SR analysis completed
+

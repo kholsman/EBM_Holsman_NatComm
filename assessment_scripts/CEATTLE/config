@@ -1,0 +1,20 @@
+# default_nm
+'ceattle'
+# output_dir
+runs
+# model_path
+src/ceattle-master
+# rec_path
+src/ceattle_recruit-master
+# data_path
+src/Data
+# SingleSpp_path
+src/SingleSppSub
+# MSE_path
+src/ceattle-master/Scripts/Shell_scripts/mse.sh
+# cntl_path
+src/Control_files
+# rec_cntl
+ceattle_recruit/RS_models.ctl
+# testread
+12345

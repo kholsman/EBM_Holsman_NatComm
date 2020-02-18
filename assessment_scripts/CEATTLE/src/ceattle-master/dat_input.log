@@ -1,0 +1,38 @@
+# do_fut
+0
+# iseed
+1234
+# simMode
+0
+# seed
+ 0 0 0 0 0 0
+# niter
+3
+# MNConst
+0.001
+# flname
+ceattle
+# foldername
+results/
+# simname
+results/ceattle_R.rep
+# datafile_name
+dat_input_files/01_assessment_2018/2018_asmt_corrected2.dat
+# stomfile_name
+dat_input_files/01_assessment_2018/stomach2018.dat
+# Fprofile_datafile
+dat_input_files/01_assessment_2018/F_profile.dat
+# ATFfile_name
+dat_input_files/01_assessment_2018/ATF_Misc.dat
+# Recfile_name
+fits_4_CEATTLE/rs_data4CEATTLE_full_avg.dat
+# retrofile_name
+dat_input_files/01_assessment_2018/retro_data2018_asssmnt_ALLCOV.dat
+# futfile_name
+dat_input_files/01_assessment_2018/proj_data2018_long_ext_bcs_ALLCOV.dat
+# catch_in_name
+dat_input_files/01_assessment_2018/catch_in.dat
+# setC_name
+dat_input_files/01_assessment_2018/set_catch.dat
+# setF_name
+dat_input_files/01_assessment_2018/setF40_datfiles/F40In_2_1_9.dat

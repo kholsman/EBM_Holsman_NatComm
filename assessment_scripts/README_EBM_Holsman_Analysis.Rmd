@@ -1,0 +1,427 @@
+---
+institute: Alaska Fisheries Science Center, National Marine Fisheries Service, NOAA,
+  7600 Sand Point Way N.E., Bld. 4, Seattle, Washington 98115
+output:
+  pdf_document:
+    fig_caption: yes
+    highlight: zenburn
+    keep_tex: yes
+    latex_engine: xelatex
+  html_document:
+    df_print: kable
+    fig_caption: yes
+    theme: flatly
+  header-includes:
+  - \usepackage{inputenc}
+  - \usepackage{unicode-math}
+  - \pagenumbering{gobble}
+
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
+---
+
+# Update the ACLIM EBS Multi-species Stock Assessment for the Holsman et al. 202X Nature Communications paper
+#### Kirstin Holsman
+#### kirstin.holsman@noaa.gov
+
+**_last updated : Feb 2020_**
+
+**This code runs the ACLIM update loop for CEATTLE.**
+This document steps through the process of fitting the CEATTLE model to ROMSNPZ data and projecting the model to get multispecies reference points. To ensure that the model runs correctly, it is best to run all steps on the same machine otherwise some errors may arise (still debugging the tmpfile.txt and paths in a few r-scripts, but they run correctly if started at step 1).
+
+_The code below assumed a model run name of **aclim_00_JunV2_2019** (designated using -m), **aclim2018_0A.ctl** and **aclim2018_0B.ctl** (designated using -ctl) and various sub-run names (designated using -f)._
+
+The compiled results from the model runs can be found in the zipped folder: **EBM_Holsman_NatComm/data/runs.zip**. However, if you want to run the model from start (takes multiple hours for the full suite) you will need to follow these steps:
+
+1. To run the model you will first need to install AD Model builder: http://www.admb-project.org
+
+2. On a mac (untested on PC): then need to navigate to the directory with the compiled model and the files and ensure that you have the following control and data files (e.g.,
+"~/EBM_Holsman_NatComm/data/assessment_scripts/CEATTLE"):
+
+ * CEATTLE/src/Control_files/aclim2018_2A.ctl  
+ * CEATTLE/src/Control_files/aclim2018_0A.ctl  
+
+3. open terminal and run the following code:
+
+# Step 1: Estimate parameters conditioned on historical data
+
+**_-o overwrites folders with the same name_**
+```{bash, eval=FALSE}
+
+
+	cd ~/EBM_Holsman_NatComm/data/assessment_scripts/CEATTLE/src/ceattle-master
+	# run multi spp in estimation mode:
+	./CEATTLE_run.sh 2 -f aclim_00_JunV2_2019 -ctl aclim2018_2A -o 
+
+  ## Step 1.5: Get M2 vector from multispecies model and 
+  ## follow holsman et al. 2018 assessment methods and center the M1 vector for single spp on that value
+
+ R
+	
+	  # set up directories
+    
+    DIR_main  <- path.expand("~/GitHub/CEATTLE")
+  	source(file.path(DIR_main,"src/ceattle-master/Scripts/R_code/ASSESSMENT_RUN_FUN.R"))
+  	
+  	      main  <-   file.path(DIR_main,"runs")
+  	setwd(main)
+  	    filenm  <-   "aclim_00_JunV2_2019"
+  	   modelnm  <-   "aclim_00_JunV2_2019"
+       	 ctl_0  <-   "aclim2018_0A.ctl"
+      	 ctl_2  <-   "aclim2018_2A.ctl"
+      	 #fl_0<-   file.path(main,paste0(filenm,"_0"))
+      	  fl_2  <-   file.path(main,paste0(filenm,"_2"))
+      	
+  	# get control file name from multispp:
+  	     ctlfl<-   dir(fl_2)[grep(".ctl",dir(fl_2))[1]]
+    
+    # get single spp dat filename
+  	      tt<-   scan(file=file.path(fl_2,ctlfl),what=character(),sep="\n")
+  	datafile_name<-  tt[grep("#datafile_name",tt)+1]
+  	     msmfl<-   strsplit(datafile_name,".dat")[[1]][1]
+      #  ctl_0<-   strsplit(ctlfl,".ctl")[[1]][1]
+  	     ssfl<-   paste0(substr(msmfl,1,nchar(msmfl)-1),"0.dat")
+    
+    # load results from Multispp:
+	  load(file.path(fl_2,"results/CEATTLE_results.Rdata"))
+      	  M2_1<-   apply(tmp$M2_1,2,mean)
+      	  M2_2<-   apply(tmp$M2_2,2,mean)
+      	  M2_3<-   apply(tmp$M2_3,2,mean)
+      	  
+        	  M1<-   list()
+       M1[[1]]<-   round(M2_1+tmp$M1_1[1,],4)
+       M1[[2]]<-   round(M2_2+tmp$M1_2[1,],4)
+       M1[[3]]<-   round(M2_3+tmp$M1_3[1,],4)
+        	  
+	  # now replace m1 vector in single spp data file and
+	  # replace the ctl file with new datfilename
+  	replace_dat(
+  	    flin=file.path(fl_2,ctlfl),
+  	    flout=file.path(DIR_main,"src/Control_files",ctl_0),
+  	    nm="datafile_name",skip=0,rplac=list(ssfl))
+  	
+    # make new datafile
+  	replace_dat(
+  	  flin=file.path(DIR_main,"src/Data",datafile_name),
+  	  flout=file.path(DIR_main,"src/Data",ssfl),
+  	  nm="M1_base",rplac=M1,skip=1)
+  	  
+ q("no")
+
+  # now run single spp and plot it	
+	cd ~/GitHub/CEATTLE/src/ceattle-master
+	# run single spp in estimation mode:
+	./CEATTLE_run.sh 0 -f aclim_00_JunV2_2019 -ctl aclim2018_0A -o -plot
+	
+		
+	
+```
+# Step 2: Project under constant climate and mean Ricker RS to get B0 for both modes
+
+This is based on ACLIM methodology (not yet published) that sets a universal B0 for all climate scenarios in the projection mode. The universal B0 is specific to single- or multi-species modes and is not yet fully automated.
+**_note that if you are going between machines at this step verify that the user directory is correctly named in tmpfile.txt_**  
+
+```{bash, eval=FALSE}
+	cd ~/GitHub/CEATTLE/src/ceattle-master
+  # make sure in the CTL file that cr =1.8 (hold ATF at mean F, get B40, then get ATF B40)
+	
+  # R ~mean R/S to get B0 without climate (assuming constant conditions)
+	
+
+  ./CEATTLE_run_fut.sh 0 -r 1 -h 3 -f aclim_00_JunV2_2019 -ctl aclim2018_0A -plot
+  ./CEATTLE_run_fut.sh 0 -r 6 -h 3 -f aclim_00_JunV2_2019 -ctl aclim2018_0A -plot
+  ./CEATTLE_run_fut.sh 0 -r 5 -h 3 -f aclim_00_JunV2_2019 -ctl aclim2018_0A -plot
+  ./CEATTLE_run_fut.sh 0 -r 7 -h 3 -f aclim_00_JunV2_2019 -ctl aclim2018_0A -plot
+  ./CEATTLE_run_fut.sh 0 -r 2 -h 3 -f aclim_00_JunV2_2019 -ctl aclim2018_0A -plot
+	
+  # R ~mean R/S to get B0 without climate (assuming constant conditions)
+  ./CEATTLE_run_fut.sh 2 -r 1 -h 3 -f aclim_00_JunV2_2019 -ctl aclim2018_2A -plot
+  # bottom temp only:
+	./CEATTLE_run_fut.sh 2 -r 6 -h 3 -f aclim_00_JunV2_2019 -ctl aclim2018_2A -plot
+  # full set only:
+  ./CEATTLE_run_fut.sh 2 -r 5 -h 3 -f aclim_00_JunV2_2019 -ctl aclim2018_2A -plot
+  # cold pool only:
+  ./CEATTLE_run_fut.sh 2 -r 7 -h 3 -f aclim_00_JunV2_2019 -ctl aclim2018_2A -plot
+  # SST only:
+  ./CEATTLE_run_fut.sh 2 -r 2 -h 3 -f aclim_00_JunV2_2019 -ctl aclim2018_2A -plot
+
+
+
+# Step 3: Get universal SSB0 values
+
+	
+  R
+    
+    #-------------------------------------
+    # SET UP
+    #-------------------------------------
+    
+      # Set the control rule to find B40 under no climate (1.7)
+        hcrset<- 1.8
+
+    	# set up directories
+      DIR_main<- path.expand("~/GitHub/CEATTLE")
+       data_fl<- file.path(DIR_main,"src/Data/dat_input_files/01_assessment_2018")
+          main<- file.path(DIR_main,"runs")
+      setwd(main)
+          fn_0<- path.expand(file.path(DIR_main,"/src/Data/dat_input_files/set_FabcFofl_0.dat"))
+          fn_2<- path.expand(file.path(DIR_main,"src/Data/dat_input_files/set_FabcFofl_2.dat"))
+      
+      source(file.path(DIR_main,"src/ceattle-master/Scripts/R_code/ASSESSMENT_RUN_FUN.R"))
+      
+        filenm<- "aclim_00_JunV2_2019"
+    	 modelnm<- "aclim_00_JunV2_2019"
+      ctl_main<- file.path(DIR_main,"src/Control_files")
+    	    fl_0<- file.path(main,paste0(filenm,"_0"))
+    	    fl_2<- file.path(main,paste0(filenm,"_2"))
+    	   ctl_0<- strsplit(dir(fl_0)[grep(".ctl",dir(fl_0))[1]],fl_0)[[1]]
+         ctl_2<- strsplit(dir(fl_2)[grep(".ctl",dir(fl_2))[1]],fl_2)[[1]]
+      ctl_flnm<- substr(ctl_0,1,nchar(ctl_0)-7)
+            tt<- scan(file=file.path(ctl_main,ctl_0),what=character(),sep="\n")
+       futfile<- tt[grep("futfile_name",tt)+1]
+            tt<- scan(file.path(DIR_main,"src/Data",futfile),what=character(),sep="\n")
+      
+      # create Aclim ctl file B
+          nscen<-   as.numeric(tt[grep("n_fut_itr",tt)[1]+1])
+             st<-   grep("ncov_fut",tt)+3;ed<-st+nscen-1
+           mods<-   tt[st:ed]
+      
+      for(i in 1:nscen){     
+            ttt<-   strsplit(mods,split=" ")[[i]]
+        mods[i]<-   ttt[length(ttt)]
+      }
+           nspp<-   3
+
+
+    	
+  	#-------------------------------------
+    # GET BO VALUES --> B0_list
+    #-------------------------------------
+
+    	   B0_list<-   list()
+            	 r<-   1
+            	 h<-   3
+            hcrr<-   hcrset
+            	 m<-   0
+
+      B0_list[["B0_0"]]<-   getB0(
+               mn=   main,
+           flname=   filenm,
+              rec=   r, 
+             hvst=   h, 
+             mode=   0,
+              hcr=   hcrr)
+
+      B0_list[["B0_2"]]<-   getB0(
+               mn=   main,
+           flname=   filenm, 
+              rec=   r, 
+             hvst=   h, 
+             mode=   2,
+              hcr=   hcrr)
+     
+    #-------------------------------------
+    # REPLACE c_mult (1,7) with (1,8) and B0_set with B0 from no-climate runs
+    #-------------------------------------   	
+
+    # first for single spp:
+    #______________________________________________
+
+
+             tt0<-   B0_list[["B0_0"]]
+            tmp0<-   tt0[tt0$Scen==1,]$targetSSB0 
+
+      # copy these values to aclim2018_0B.ctl
+      replace_ctl(
+             flin=   file.path(ctl_main,"aclim2018_0A.ctl"),
+            flout=   file.path(ctl_main,"aclim2018_0B.ctl"),
+               nm=   "c_mult",
+            rplac=   c(1,8))
+        
+      replace_ctl(
+             flin=   file.path(ctl_main,"aclim2018_0B.ctl"),
+            flout=   file.path(ctl_main,"aclim2018_0B.ctl"),
+               nm=   "B0_set",
+            rplac=   tmp0)
+        
+      replace_ctl(
+             flin=   file.path(ctl_main,"aclim2018_0B.ctl"),
+            flout=   file.path(ctl_main,"aclim2018_0B.ctl"),
+               nm=   "msmMode",
+            rplac=   0)
+  	
+
+    # then for multi spp:
+    #______________________________________________
+
+  
+             tt2<-   B0_list[["B0_2"]]
+            tmp2<-   tt2[tt2$Scen==1,]$targetSSB0    
+
+      # copy these values to aclim2018_2B.ctl
+      replace_ctl(
+             flin=  file.path(ctl_main,"aclim2018_2A.ctl"),
+            flout=  file.path(ctl_main,"aclim2018_2B.ctl"),
+               nm=  "c_mult",
+            rplac=  c(1,8))
+        
+      replace_ctl(
+             flin=  file.path(ctl_main,"aclim2018_2B.ctl"),
+            flout=  file.path(ctl_main,"aclim2018_2B.ctl"),
+               nm=  "B0_set",
+            rplac=  tmp2)
+        
+      replace_ctl(
+             flin=  file.path(ctl_main,"aclim2018_2B.ctl"),
+            flout=  file.path(ctl_main,"aclim2018_2B.ctl"),
+               nm=  "msmMode",
+            rplac=  2)
+
+    
+    # update B0_list and save
+    #______________________________________________
+    	B0_list[["setB0vals"]]<-data.frame(
+        ssm=B0_list[["B0_0"]][B0_list[["B0_0"]]$Scen==1,]$targetSSB0,
+        msm=B0_list[["B0_2"]][B0_list[["B0_2"]]$Scen==1,]$targetSSB0)
+      
+      B0_list[["setBfvals"]]<-data.frame(
+    	  ssm=B0_list[["B0_0"]][B0_list[["B0_0"]]$Scen==1,]$SSB,
+    	  msm=B0_list[["B0_2"]][B0_list[["B0_2"]]$Scen==1,]$SSB)
+    	B0_list[["efctv_B2100ratio"]]<-B0_list[["setBfvals"]]/B0_list[["setB0vals"]]
+    	
+    #	save(B0_list,file=file.path(fl_0,"B0_list.Rdata"))
+
+    	save(B0_list,file=file.path(paste0(modelnm,"_0"),"B0_list.Rdata"))
+      save.image(file=file.path(fl_0,"assmntStuffA.Rdata"))
+  	   
+  q("no")
+
+
+# Step 4: Calculate F40 for different recruitment models
+### There are two steps needed here to calculate a F40 from the B0 universal in Step 2 (i.e., B0 based on constant #climate, rather than refit for each climate scenario).  
+###1. update the B0_set values in .ctl (B) files using targetB0 values from Step 2  (note that these don't match the #dynamic B0)
+###2. set CR to 1.8 in each .ctl file as well and run to find F40 based on cont (by holding ATF at historical F)  
+
+	# R ~mean R/S using set B0 from above
+
+  cd ~/GitHub/CEATTLE/src/ceattle-master
+  
+	# R ~R/S f(specified covars)
+
+
+  ./CEATTLE_run_fut.sh 0 -r 5 -h 3 -f aclim_00_JunV2_2019_setB0 -m aclim_00_JunV2_2019 -ctl aclim2018_0B -plot
+  ./CEATTLE_run_fut.sh 2 -r 5 -h 3 -f aclim_00_JunV2_2019_setB0 -m aclim_00_JunV2_2019 -ctl aclim2018_2B -plot
+  
+  ./CEATTLE_run_fut.sh 0 -r 6 -h 3 -f aclim_00_JunV2_2019_setB0 -m aclim_00_JunV2_2019 -ctl aclim2018_0B -plot
+  ./CEATTLE_run_fut.sh 2 -r 6 -h 3 -f aclim_00_JunV2_2019_setB0 -m aclim_00_JunV2_2019 -ctl aclim2018_2B -plot
+
+	./CEATTLE_run_fut.sh 0 -r 1 -h 3 -f aclim_00_JunV2_2019_setB0 -m aclim_00_JunV2_2019 -ctl aclim2018_0B -plot
+	./CEATTLE_run_fut.sh 2 -r 1 -h 3 -f aclim_00_JunV2_2019_setB0 -m aclim_00_JunV2_2019 -ctl aclim2018_2B -plot
+	
+
+	# R ~R/S f(SST)
+	./CEATTLE_run_fut.sh 0 -r 2 -h 3 -f aclim_00_JunV2_2019_setB0 -m aclim_00_JunV2_2019 -ctl aclim2018_0B -plot
+	./CEATTLE_run_fut.sh 2 -r 2 -h 3 -f aclim_00_JunV2_2019_setB0 -m aclim_00_JunV2_2019 -ctl aclim2018_2B -plot
+
+	# R ~R/S f( top 2)
+	./CEATTLE_run_fut.sh 0 -r 4 -h 3 -f aclim_00_JunV2_2019_setB0 -m aclim_00_JunV2_2019 -ctl aclim2018_0B -plot
+	./CEATTLE_run_fut.sh 2 -r 4 -h 3 -f aclim_00_JunV2_2019_setB0 -m aclim_00_JunV2_2019 -ctl aclim2018_2B -plot
+	
+	# R ~R/S f( top aic)
+	./CEATTLE_run_fut.sh 0 -r 3 -h 3 -f aclim_00_JunV2_2019_setB0 -m aclim_00_JunV2_2019 -ctl aclim2018_0B -plot
+	./CEATTLE_run_fut.sh 2 -r 3 -h 3 -f aclim_00_JunV2_2019_setB0 -m aclim_00_JunV2_2019 -ctl aclim2018_2B -plot
+	
+
+```
+
+# Step 5: Create target F40 dat files and run projections including MCMC
+
+```{bash, eval=FALSE} 	
+	# now create a data file for each sub scenario
+  # Be SURE TO REPLACE the modelnm "aclim_00_JunV2_2019" below:
+	R
+      rm(list=ls())
+      DIR_main        <- path.expand("~/GitHub/CEATTLE")
+      ctl_main        <- file.path(DIR_main,"src/Control_files")
+      
+      source(file.path(DIR_main,"src/ceattle-master/Scripts/R_code/ASSESSMENT_RUN_FUN.R"))
+      main            <- file.path(DIR_main,"runs")
+      setwd(main)
+
+      fn_0            <- path.expand(file.path(DIR_main,"/src/Data/dat_input_files/set_FabcFofl_0.dat"))
+      fn_2            <- path.expand(file.path(DIR_main,"src/Data/dat_input_files/set_FabcFofl_2.dat"))
+      filenm          <- "aclim_00_JunV2_2019_setB0"
+      modelnm         <- "aclim_00_JunV2_2019"
+      f40dat_flnm     <- "dat_input_files/aclim/setF40_datfiles"
+      datapath        <- "dat_input_files/aclim"
+
+      # set the control rule to find F given set B0 (1.8)
+      hcrset         <- 1.8
+      nspp           <- 3 	
+
+
+      fl_0           <- file.path(main,paste0(modelnm,"_0"))
+      fl_2           <- file.path(main,paste0(modelnm,"_2"))
+      ctl_0          <- strsplit(dir(fl_0)[grep(".ctl",dir(fl_0))[1]],fl_0)[[1]]
+      ctl_2          <- strsplit(dir(fl_2)[grep(".ctl",dir(fl_2))[1]],fl_2)[[1]]
+      ctl_flnm       <- substr(ctl_2,1,nchar(ctl_2)-7)
+      f40fn          <- file.path(DIR_main,paste0("src/Data/",datapath,"/setF40_datfiles"))
+      ctlfl          <- dir(fl_2)[grep(".ctl",dir(fl_2))[1]]
+      tt             <- scan(file=file.path(fl_2,ctlfl),what=character(),sep="\n")
+      futfile        <- tt[grep("futfile_name",tt)+1]
+      tt             <- scan(file.path(DIR_main,"src/Data",futfile),what=character(),sep="\n")
+      nscen          <- as.numeric(tt[grep("n_fut_itr",tt)[1]+1])
+      st             <- grep("ncov_fut",tt)+3;ed<-st+nscen-1
+      mods           <- tt[st:ed]
+      
+      for(i in 1:nscen)
+      {     
+        ttt          <- strsplit(mods,split=" ")[[i]]
+        mods[i]      <- ttt[length(ttt)]
+      }
+      nspp           <- 3
+
+  
+  	# get model names from the control file:   #setwd(path.expand("~/GitHub/CEATTLE/runs"))
+    setwd("../docs_archived/ACLIM_run_docs")
+   
+    
+
+    ### THIS RUNS THE FULL SET OF simulations
+      #__________________________________________________________________
+      #__________________________________________________________________
+     # hscns      <-    c(12,20,21,41,42,43,44,45,50:56)
+      hscns       <-    12 # base set of status quo (no 2 MT cap but does have sloping HCR)
+     # hscns_part2 <-   c(hscns,15,57:58,70)  # for later MSEs
+      hscns_part2 <-   hscns
+
+      updateBaseRuns      <- 1    # Update the fundamental runs?
+      run_harvestMod      <- 1    # Run the full set of harvest modes
+      run_harvestModMCMC  <- 1    # Run MCMC?
+      
+      hcns2     <-    c(13,20,21,57,58,70)
+      hcns2     <-    13
+      nitr      <-    100   # Number of MCMC runs
+      
+      source("sub1ACLIM_CEATTLE_RUN_CF.R")
+      
+      #__________________________________________________________________
+      #__________________________________________________________________
+   
+
+    # single spp: now copy these into set FP_in value of the _0B.ctl
+    tmp0             <- BatF40[["B0_0"]]$Fabc[BatF40[["B0_0"]]$Scen==1]
+    replace_ctl(mode=0,
+                fl="~/GitHub/CEATTLE/src/Control_files/aclim2018_0B.ctl",
+                nm="FP_in ",rplac=tmp0,new=TRUE)
+          
+    # multi spp: now copy these into set FP_in value of the _2B.ctl 
+    tmp2             <- BatF40[["B0_2"]]$Fabc[BatF40[["B0_2"]]$Scen==1]
+    replace_ctl(mode=2,fl="~/GitHub/CEATTLE/src/Control_files/aclim2018_2B.ctl",nm="FP_in ",rplac=tmp2,new=TRUE)
+     
+  q("no")
+  
+```	
+

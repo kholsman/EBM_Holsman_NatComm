@@ -1,0 +1,278 @@
+preds<-c(1,3,4,5)
+den<-Outputs$Density_kgperkm2_xct#
+#
+preds<-c(1,3,4,5)#
+prey<-2#
+indx<-matrix(0,4,dim(den)[3])#
+for (y in 1:dim(den)[3]){#
+	for(pred in 1:length(preds)){#
+		indx[pred,y]<-sum((den[,pred,y]*(den[,prey,y]/sum(den[,prey,y])))/sum(den[,pred,y]))#
+	}#
+}
+colnames(den[1,,])
+plot(as.numeric(colnames(den[1,,])),indx[,1])
+indx[,1]
+plot(as.numeric(colnames(den[1,,])),indx[1,])
+plot(as.numeric(colnames(den[1,,])),indx[1,],type="b")
+plot(as.numeric(colnames(den[1,,])),indx[1,],type="b",ylim=c(0,1))
+lines(as.numeric(colnames(den[2,,])),indx[1,],type="b",ylim=c(0,1))#
+lines(as.numeric(colnames(den[3,,])),indx[1,],type="b",ylim=c(0,1))#
+lines(as.numeric(colnames(den[4,,])),indx[1,],type="b",ylim=c(0,1))
+plot(as.numeric(colnames(den[1,,])),indx[1,],type="b",ylim=c(0,1))#
+lines(as.numeric(colnames(den[1,,])),indx[2,],type="b",ylim=c(0,1))#
+lines(as.numeric(colnames(den[1,,])),indx[3,],type="b",ylim=c(0,1))#
+lines(as.numeric(colnames(den[1,,])),indx[4,],type="b",ylim=c(0,1))
+plot(as.numeric(colnames(den[1,,])),indx[1,],type="b",ylim=c(0,.2))
+plot(as.numeric(colnames(den[1,,])),indx[1,],type="b",ylim=c(0,.2))
+plot(as.numeric(colnames(den[1,,])),indx[1,],type="b",ylim=c(0,.2))#
+lines(as.numeric(colnames(den[1,,])),indx[2,],type="b",ylim=c(0,1))#
+lines(as.numeric(colnames(den[1,,])),indx[3,],type="b",ylim=c(0,1))#
+lines(as.numeric(colnames(den[1,,])),indx[4,],type="b",ylim=c(0,1))
+plot(as.numeric(colnames(den[1,,])),indx[1,],type="b",ylim=c(0,.1))#
+lines(as.numeric(colnames(den[1,,])),indx[2,],type="b",col="red",pch=16)#
+lines(as.numeric(colnames(den[1,,])),indx[3,],type="b",col="blue",pch=16)#
+lines(as.numeric(colnames(den[1,,])),indx[4,],type="b",col="green",pch=16)
+colnames(den[1,,])
+colnames(den[,2,])
+colnames(den[,1,])
+colnames(den[,,1])
+colnames(den[,,1])[preds]
+plot(as.numeric(colnames(den[1,,])),indx[1,],type="b",ylim=c(0,.1),pch=16)#
+lines(as.numeric(colnames(den[1,,])),indx[2,],type="b",col="red",pch=16)#
+lines(as.numeric(colnames(den[1,,])),indx[3,],type="b",col="blue",pch=16)#
+lines(as.numeric(colnames(den[1,,])),indx[4,],type="b",col="green",pch=16)#
+legend("topright",colnames(den[,,1])[preds],col=c("black","red","blue","green",pch=16))
+legend("topright",colnames(den[,,1])[preds],col=c("black","red","blue","green",pch=16),lty=1)
+legend("topright",colnames(den[,,1])[preds],col=c("black","red","blue","green"),pch=16,lty=1)
+plot(as.numeric(colnames(den[1,,])),indx[1,],type="b",ylim=c(0,.1),pch=16)#
+lines(as.numeric(colnames(den[1,,])),indx[2,],type="b",col="red",pch=16)#
+lines(as.numeric(colnames(den[1,,])),indx[3,],type="b",col="blue",pch=16)#
+lines(as.numeric(colnames(den[1,,])),indx[4,],type="b",col="green",pch=16)#
+legend("topright",colnames(den[,,1])[preds],col=c("black","red","blue","green"),pch=16,lty=1,box.lty=0)
+paste("./CEATTLE_run_fut.sh 0 -rand ",i," -f ",mname," -h 2 -r 0 -ctl ",ctlname,sep="")
+i<-1
+mname<-"test"
+paste("./CEATTLE_run_fut.sh 0 -rand ",i," -f ",mname," -h 2 -r 0 -ctl ",ctlname,sep="")
+ctlname<-mname<-"test2"
+paste("./CEATTLE_run_fut.sh 0 -rand ",i," -f ",mname," -h 2 -r 0 -ctl ",ctlname,sep="")
+root<-"/Users/kkari/GitHub/CEATTLE"
+setwd(file.path(root,"src/ceattle-master"))
+#  | mn_Hind
+#  | CCCMA
+#  | CESM_rcp45
+#  | CESM_rcp85
+#  | ECHOG
+#  | GFDL_rcp45
+#  | GFDL_rcp85
+#  | MIROC_A1B
+#  | MIROC_rcp45
+#  | MIROC_rcp85
+#  |
+sim_names<-c(
+"mn_Hind",
+"CCCMA_A1B",
+"CESM_rcp45",
+"CESM_rcp85",
+"ECHOG_A1B",
+"GFDL_rcp45",
+"GFDL_rcp85",
+"MIROC_A1B",
+"MIROC_rcp45",
+"MIROC_rcp85")
+nsim<-length(sim_names)
+col_1<-colorRampPalette(c(colors()[74],"orange","blue4"))
+col_1<-colorRampPalette(c("gray","orange"))
+col_2<-colorRampPalette(c("gray","green3"))
+col_3<-colorRampPalette(c("gray","blue4"))
+plot_col_sim<-plot_col_mod<-rep(0,nsim)
+cc<-grep("A1B",sim_names)
+plot_col_sim[cc]<-col_1(5)[length(cc)]
+cc<-grep("rcp45",sim_names)
+plot_col_sim[cc]<-col_2(5)[length(cc)]
+cc<-grep("rcp85",sim_names)
+plot_col_sim[cc]<-col_3(5)[length(cc)]
+plot_col_sim[1]<-"red"
+cc<-c(grep("CCCMA",sim_names),grep("CESM",sim_names))
+plot_col_mod[cc]<-col_1(5)[length(cc)]
+cc<-grep("GFDL",sim_names)
+plot_col_mod[cc]<-col_2(5)[length(cc)]
+cc<-grep("MIROC",sim_names)
+plot_col_mod[cc]<-col_3(5)[length(cc)]
+cc<-grep("ECHOG",sim_names)
+plot_col_mod[cc]<-"purple"
+plot_col_mod[1]<-"red"
+mname<-"aclim"
+ctlname<-mname
+nitr<-1000
+graphics.off()
+## thorson indices
+load("/Users/kkari/Library/Containers/com.apple.mail/Data/Library/Mail Downloads/7C8B32EA-12F7-44DA-8EED-DB70246F690D/Outputs.RData")
+den<-Outputs$Density_kgperkm2_xct
+preds<-c(1,3,4,5)
+prey<-2
+indx<-matrix(0,4,dim(den)[3])
+for (y in 1:dim(den)[3]){
+for(pred in 1:length(preds)){
+indx[pred,y]<-sum((den[,pred,y]*(den[,prey,y]/sum(den[,prey,y])))/sum(den[,pred,y]))
+}
+}
+plot(as.numeric(colnames(den[1,,])),indx[1,],type="b",ylim=c(0,.1),pch=16)
+lines(as.numeric(colnames(den[1,,])),indx[2,],type="b",col="red",pch=16)
+lines(as.numeric(colnames(den[1,,])),indx[3,],type="b",col="blue",pch=16)
+lines(as.numeric(colnames(den[1,,])),indx[4,],type="b",col="green",pch=16)
+legend("topright",colnames(den[,,1])[preds],col=c("black","red","blue","green"),pch=16,lty=1,box.lty=0)
+names(Outputs)
+area<-Outputs$Area_km2_x
+area
+tmpindx<-(den[,prey,y]/sum(den[,prey,y])
+tmpindx<-(den[,prey,y]/sum(den[,prey,y]))
+tmpindx<-(den[,prey,y]/sum(den[,prey,y]))
+tmpindx
+(den[,pred,y]/sum(den[,pred,y]))
+predinx<-(den[,pred,y]/sum(den[,pred,y]))
+sum(prey_indx*pred_indx*a_indx)
+prey_indx<-(den[,prey,y]/sum(den[,prey,y]))
+pred_indx<-(den[,pred,y]/sum(den[,pred,y]))
+a_indx<-area/sum(area)
+sum(prey_indx*pred_indx*a_indx)
+prey_indx
+indx<-pred_indx/prey_indx
+indx
+indx[prey_indx==0]<-0
+mean(indx)
+prey_indx<-(den[,prey,y]/sum(den[,prey,y]))
+pred_indx<-(den[,pred,y]/sum(den[,pred,y]))
+a_indx<-area/sum(area)
+indx<-pred_indx/prey_indx
+pred_indx
+prey_indx<-(area*den[,prey,y]/sum(area*den[,prey,y]))
+pred_indx<-(area*den[,pred,y]/sum(area*den[,pred,y]))
+prey_indx
+plot(prey_indx)
+plot(prey_indx^-1)
+round(prey_indx)
+round(prey_indx,3)
+round(prey_indx,4)
+prey_indx<-round(area*den[,prey,y]/sum(area*den[,prey,y])),4)
+(area*den[,prey,y]/sum(area*den[,prey,y]))
+prey_indx<-round(area*den[,prey,y]/sum(area*den[,prey,y]),4)
+pred_indx<-round(area*den[,pred,y]/sum(area*den[,pred,y]),4)
+prey_indx<-round(area*den[,prey,y]/sum(area*den[,prey,y]),4)
+prey_indx
+pred_indx
+indx<-pred_indx/prey_indx
+indx[prey_indx==0]<-0
+indx
+mean(indx)
+indx<-pred_indx*prey_indx
+indx[prey_indx==0]<-0
+mean(indx)
+sum(indx)
+prey_indx<-(area*den[,prey,y]/sum(area*den[,prey,y]))
+pred_indx<-(area*den[,pred,y]/sum(area*den[,pred,y]))
+a_indx<-area/sum(area)
+indx<-pred_indx*prey_indx
+indx[prey_indx==0]<-0
+sum(indx)
+load("/Users/kkari/Library/Containers/com.apple.mail/Data/Library/Mail Downloads/7C8B32EA-12F7-44DA-8EED-DB70246F690D/Outputs.RData")
+den<-Outputs$Density_kgperkm2_xct
+area<-Outputs$Area_km2_x
+preds<-c(1,3,4,5)
+prey<-2
+indx_y<-matrix(0,4,dim(den)[3])
+for (y in 1:dim(den)[3]){
+for(pred in 1:length(preds)){
+prey_indx<-(area*den[,prey,y]/sum(area*den[,prey,y]))
+pred_indx<-(area*den[,pred,y]/sum(area*den[,pred,y]))
+a_indx<-area/sum(area)
+indx<-pred_indx*prey_indx
+indx[prey_indx==0]<-0
+indx_y[pred,y]<-sum(indx)
+}
+}
+plot(as.numeric(colnames(den[1,,])),indx_y[1,],type="b",ylim=c(0,.1),pch=16)
+lines(as.numeric(colnames(den[1,,])),indx_y[2,],type="b",col="red",pch=16)
+lines(as.numeric(colnames(den[1,,])),indx_y[3,],type="b",col="blue",pch=16)
+lines(as.numeric(colnames(den[1,,])),indx_y[4,],type="b",col="green",pch=16)
+legend("topright",colnames(den[,,1])[preds],col=c("black","red","blue","green"),pch=16,lty=1,box.lty=0)
+plot(as.numeric(colnames(den[1,,])),indx_y[1,],type="b",ylim=c(0,.6),pch=16)
+lines(as.numeric(colnames(den[1,,])),indx_y[2,],type="b",col="red",pch=16)
+lines(as.numeric(colnames(den[1,,])),indx_y[3,],type="b",col="blue",pch=16)
+lines(as.numeric(colnames(den[1,,])),indx_y[4,],type="b",col="green",pch=16)
+plot(as.numeric(colnames(den[1,,])),indx_y[1,],type="b",ylim=c(0,.06),pch=16)
+lines(as.numeric(colnames(den[1,,])),indx_y[2,],type="b",col="red",pch=16)
+lines(as.numeric(colnames(den[1,,])),indx_y[3,],type="b",col="blue",pch=16)
+lines(as.numeric(colnames(den[1,,])),indx_y[4,],type="b",col="green",pch=16)
+legend("topright",colnames(den[,,1])[preds],col=c("black","red","blue","green"),pch=16,lty=1,box.lty=0)
+plot(as.numeric(colnames(den[1,,])),indx_y[1,],type="b",ylim=c(0,.06),pch=16)
+lines(as.numeric(colnames(den[1,,])),indx_y[2,],type="b",col="red",pch=16)
+lines(as.numeric(colnames(den[1,,])),indx_y[3,],type="b",col="blue",pch=16)
+lines(as.numeric(colnames(den[1,,])),indx_y[4,],type="b",col="green",pch=16)
+legend("topright",colnames(den[,,1])[preds],col=c("black","red","blue","green"),pch=16,lty=1,box.lty=0)
+rm(list=ls())
+root<-"/Users/kkari/GitHub/CEATTLE"
+setwd(file.path(root,"src/ceattle-master"))
+#  | mn_Hind
+#  | CCCMA
+#  | CESM_rcp45
+#  | CESM_rcp85
+#  | ECHOG
+#  | GFDL_rcp45
+#  | GFDL_rcp85
+#  | MIROC_A1B
+#  | MIROC_rcp45
+#  | MIROC_rcp85
+#  |
+sim_names<-c(
+"mn_Hind",
+"CCCMA_A1B",
+"CESM_rcp45",
+"CESM_rcp85",
+"ECHOG_A1B",
+"GFDL_rcp45",
+"GFDL_rcp85",
+"MIROC_A1B",
+"MIROC_rcp45",
+"MIROC_rcp85")
+nsim<-length(sim_names)
+col_1<-colorRampPalette(c(colors()[74],"orange","blue4"))
+col_1<-colorRampPalette(c("gray","orange"))
+col_2<-colorRampPalette(c("gray","green3"))
+col_3<-colorRampPalette(c("gray","blue4"))
+plot_col_sim<-plot_col_mod<-rep(0,nsim)
+cc<-grep("A1B",sim_names)
+plot_col_sim[cc]<-col_1(5)[length(cc)]
+cc<-grep("rcp45",sim_names)
+plot_col_sim[cc]<-col_2(5)[length(cc)]
+cc<-grep("rcp85",sim_names)
+plot_col_sim[cc]<-col_3(5)[length(cc)]
+plot_col_sim[1]<-"red"
+cc<-c(grep("CCCMA",sim_names),grep("CESM",sim_names))
+plot_col_mod[cc]<-col_1(5)[length(cc)]
+cc<-grep("GFDL",sim_names)
+plot_col_mod[cc]<-col_2(5)[length(cc)]
+cc<-grep("MIROC",sim_names)
+plot_col_mod[cc]<-col_3(5)[length(cc)]
+cc<-grep("ECHOG",sim_names)
+plot_col_mod[cc]<-"purple"
+plot_col_mod[1]<-"red"
+mname<-"aclim"
+ctlname<-mname
+nitr<-1000
+graphics.off()
+for(i in 1:nitr){
+print(paste("iteration ",i,", CEATTLE 0_0_2"))
+txt<-paste("./CEATTLE_run_fut.sh 0 -rand ",i," -f ",mname," -h 2 -r 0 -ctl ",ctlname,sep="")
+system(txt)
+}
+for(i in 1:nitr){
+print(paste("iteration ",i,", CEATTLE 0_5_2"))
+txt<-paste("./CEATTLE_run_fut.sh 0 -rand ",i," -f ",mname," -h 2 -r 5 -ctl ",ctlname,sep="")
+system(txt)
+}
+i<-1
+for(i in 1:nitr){
+print(paste("iteration ",i,", CEATTLE 2_5_2"))
+txt<-paste("./CEATTLE_run_fut.sh 2 -rand ",i," -f ",mname," -h 2 -r 5 -ctl ",ctlname,sep="")
+system(txt)
+}
