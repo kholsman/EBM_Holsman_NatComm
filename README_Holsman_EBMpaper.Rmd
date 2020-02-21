@@ -115,7 +115,8 @@ This is the main script for running analysis and plotting results and requires R
     if(readdat==FALSE){
       
       if(!any(dir()%in%"EBM_ceattlenew.Rdata"))
-        download.file("https://figshare.com/s/6dea7722df39e07d79f0",destfile="EBM_ceattlenew.Rdata")
+        stop("EBM_ceattlenew.Rdata file not found, please go to https://figshare.com/s/6dea7722df39e07d79f0 and download file into EBM_Holsman_NatComm/EBM_ceattlenew.Rdata")}
+          #download.file("https://figshare.com/s/6dea7722df39e07d79f0",destfile="EBM_ceattlenew.Rdata")
       load("EBM_ceattlenew.Rdata")    
     }else{
         source("SUB_EBM_paper.R")
