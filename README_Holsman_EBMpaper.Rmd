@@ -23,11 +23,17 @@ output:
     keep_md: yes
 ---
 
-# Code used to generate intermediate and final data for Holsman et al. in review Nature Communications paper
+
+
+# Data and code are under review and subject to change. Do not use without permission from lead author: kirstin.holsman@noaa.gov
+
 #### Kirstin Holsman
 #### kirstin.holsman@noaa.gov
 #### Alaska Fisheries Science Center, National Marine Fisheries Service, NOAA, 7600 Sand Point Way N.E., Bld. 4, Seattle, Washington 98115
 
+---
+
+Code used to generate intermediate and final data for Holsman et al. in review Nature Communications paper
 
 ## Input data:
 
@@ -48,7 +54,7 @@ If re-running the intermediate data analysis (not recommended) the following fil
 
 
 ## Intermediate data:
-Intermediate data can be found in the main EBM_Holsman_NatComm in the form of .Rdata files but can be recreated from the ADMB model using the EBM_Holsman_NatComm/assessment_scripts/README_EBM_Holsman_Analysis.pdf (not recommended; see below).
+Intermediate data can be found in the main EBM_Holsman_NatComm in the form of .Rdata files but can be recreated (although this is not recommended; see below) from the ADMB model using the EBM_Holsman_NatComm/assessment_scripts/README_EBM_Holsman_Analysis.pdf.
 
 ## Figures and tables:
 Final figures and tables (including illustrator files that were used to add fish icons) can be found in the **Figures** folder.
@@ -113,10 +119,11 @@ This is the main script for running analysis and plotting results and requires R
     source("FUN_EBM_paper.R")
     
     if(readdat==FALSE){
-      
       if(!any(dir()%in%"EBM_ceattlenew.Rdata"))
-        stop("EBM_ceattlenew.Rdata file not found, please go to https://figshare.com/s/6dea7722df39e07d79f0 and download file into EBM_Holsman_NatComm/EBM_ceattlenew.Rdata")}
-          #download.file("https://figshare.com/s/6dea7722df39e07d79f0",destfile="EBM_ceattlenew.Rdata")
+        stop("EBM_ceattlenew.Rdata file not found, please go to 
+          https://figshare.com/s/6dea7722df39e07d79f0 
+          and download file into EBM_Holsman_NatComm/EBM_ceattlenew.Rdata")
+        #download.file("https://figshare.com/s/6dea7722df39e07d79f0",destfile="EBM_ceattlenew.Rdata")
       load("EBM_ceattlenew.Rdata")    
     }else{
         source("SUB_EBM_paper.R")
