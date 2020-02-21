@@ -24,9 +24,9 @@
     
   }
   if(!length(dir(paste0("data/runs/",fldr,"_2")))>0){
-    #download.file("https://figshare.com/s/d9c35dbe0880f4169041",paste0("data/runs/",fldr,"_2.zip"))
+    #download.file("https://figshare.com/s/3a1aaa86837b79d6aa07",paste0("data/runs/",fldr,"_2.zip"))
     #system (paste0("cd data/runs; unzip ",fldr,"_2.zip"))
-    stop(paste0("data/runs/",fldr,"_2 file not found, please go to https://figshare.com/s/d9c35dbe0880f4169041 and download file into data/runs/",fldr,"_2.zip and unzip)") ) 
+    stop(paste0("data/runs/",fldr,"_2 file not found, please go to https://figshare.com/s/3a1aaa86837b79d6aa07 and download file into data/runs/",fldr,"_2.zip and unzip)") ) 
     
   }
     
