@@ -7,3 +7,7 @@ data/
 data/ignore_this/*
 R/NotShared/*
 R/NotShared
+EBM_Holsman_NatComm.Rproj
+.Rproj.user
+.drake
+.DS_Store
