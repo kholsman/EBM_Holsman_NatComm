@@ -13,7 +13,7 @@ lib_list <- c(
     "svMisc",
     "quantmod",
     "rootSolve",
-   # "drake",
+    "readxl",   # "drake",
     
   # These for making plots:
     "ggplot2", 

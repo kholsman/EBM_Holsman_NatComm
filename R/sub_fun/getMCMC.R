@@ -1,8 +1,12 @@
-getMCMC<-function(datin="dat_019_CENaivecf_0_5_12_mc",
+
+
+getMCMC<-function(datin=dat_2_5_13_mc,
                   nspp=3,
                   nitr=20,
                   agein=1,
                   valin='SSB_total_biom'){
+  
+  datin%>%filter(age==agein)%>%
   eval(parse(text=paste0("tmp<-grabDat(datIn=",datin,1,",valIn=valin,age=agein)")))
   nrc             <-dim(tmp[[1]][,-1])
   tmpmc           <-array(NA,c(nspp,nitr,nrc[1],nrc[2]))

@@ -1,23 +1,69 @@
-calcRisk<-function(delta=grabDat(datIn=dat_019_CENaivecf_0_5_12,
-                                 valIn="Catch_total_biom")[[sp]],limm=lim[l],
-                   Yrbin=c(2017,2025,2050,2075,2100),esmlist=list(rcp45_n,rcp85NoBio_n),mn=FALSE){
-  #delta<-tmpC<-C_2_5_12[[sp]]
-  nbin<-length(Yrbin) 
-  nlist<-length(esmlist)
-  risk<-data.frame(matrix(NA,nlist,nbin-1))
-  colnames(risk)<-paste(paste0("(",Yrbin[-nbin]),paste0(Yrbin[-1],"]"),sep=",")
-  rownames(risk)<-1:nlist
-  rownames(risk)<-c("rcp45","rcp85")
-  tmpC<-delta
-  for(esm in 1:nlist){
-    cc<-esmlist[[esm]]
-    for(y in 1:(nbin-1)){
-      rr<-which(tmpC$Year>Yrbin[y]&tmpC$Year<=Yrbin[y+1] )
-      delta[,-1]<- round((tmpC[,-1]- tmpC$persistence)/ tmpC$persistence,5)*100
-      risk[esm,y]<-100*round(length(which(unlist(delta[rr,cc])<=(limm)))/length(unlist(delta[rr,cc])),4)
-      if(mn) risk[esm,y]<-round(mean(unlist(delta[rr,cc])),2)
-      #risk[esm,y]<-100*round(length(which(unlist(delta[rr,cc])<=(limm)))/length(unlist(delta[rr,cc])),4)
-    }
-  }
-  return(risk)
+#calcRiskV2.R
+
+calcRisk<-function(dat2IN,dat2IN_mc,limitIN = limlist[l]){
+  cat("calculating risk, may take a few mins.")
+  # get subset for each delta calculation:
+  datuse_B      <- dat2IN    %>% select("MC_n",sp=species,"Scenario","Year","bottomT_C","SSB_total_biom")
+  datuse_C      <- dat2IN    %>% select("MC_n",sp=species,"Scenario","Year","bottomT_C","Catch_total_biom")
+  datuseMCMC_B  <- dat2IN_mc %>% select("MC_n",sp=species,"Scenario","Year","bottomT_C","SSB_total_biom")
+  datuseMCMC_C  <- dat2IN_mc %>% select("MC_n",sp=species,"Scenario","Year","bottomT_C","Catch_total_biom")
+  
+  # Now calculate risk:
+  tmpC <- calcDelta(datIN     = datuse_C,
+                    limm      = limitIN,
+                    delta_var_nm = "Catch_total_biom" )      %>%
+    group_by(  YrBin, rcp, sp, delta_var_nm, belowLim)       %>%
+    select(    YrBin, rcp, sp, delta_var_nm, belowLim)       %>%
+    summarize( A = sum(belowLim), B = length(belowLim) )  %>%
+    group_by(  YrBin, rcp, sp )                           %>% 
+    summarise( sumA = sum(A), sumB = sum(B) )             %>%
+    mutate(    riskC = 100 * round( sumA/sumB ,4) )       %>%
+    select(    YrBin, rcp, sp, riskC)
+  
+  tmpB <- calcDelta(datIN     = datuse_B,
+                    limm      = limitIN,
+                    delta_var_nm = "SSB_total_biom" )        %>%
+    group_by(  YrBin, rcp, sp, delta_var_nm, belowLim)       %>%
+    select(    YrBin, rcp, sp, delta_var_nm, belowLim)       %>%
+    summarize( A = sum(belowLim), B = length(belowLim) )  %>%
+    group_by(  YrBin, rcp, sp )                           %>% 
+    summarise( sumA = sum(A), sumB = sum(B) )             %>%
+    mutate(    riskB = 100 * round( sumA/sumB ,4) )       %>%
+    select(    YrBin, rcp, sp, riskB)
+  cat("..")
+  tmpC_mc <- calcDelta(datIN     = datuseMCMC_C,
+                       limm      = limitIN,
+                       delta_var_nm = "Catch_total_biom" )   %>%
+    group_by(  MC_n, YrBin, rcp, sp, delta_var_nm, belowLim) %>%
+    select(    MC_n, YrBin, rcp, sp, delta_var_nm, belowLim) %>%
+    summarize( A = sum(belowLim), B = length(belowLim) )  %>%
+    group_by(  MC_n, YrBin, rcp, sp)                      %>% 
+    summarise( sumA = sum(A), sumB = sum(B) )             %>%
+    mutate(    risk = 100* round (sumA /sumB,4) )         %>%
+    select(    MC_n, YrBin, rcp, sp, risk)                %>%
+    group_by(  YrBin, rcp, sp)                            %>% 
+    summarise( riskCmn = mean(risk), riskCsd = sd(risk))  %>%
+    mutate(    riskCcv = riskCsd/riskCmn )                %>%
+    select(    YrBin, rcp, sp, riskCmn, riskCsd, riskCcv)
+  cat("..")
+  tmpB_mc <- calcDelta(datIN     = datuseMCMC_B,
+                       limm      = limitIN,
+                       delta_var_nm = "SSB_total_biom" )     %>%
+    group_by(  MC_n, YrBin, rcp, sp, delta_var_nm, belowLim) %>%
+    select(    MC_n, YrBin, rcp, sp, delta_var_nm, belowLim) %>%
+    summarize( A = sum(belowLim), B = length(belowLim) )  %>%
+    group_by(  MC_n, YrBin, rcp, sp)                      %>% 
+    summarise( sumA = sum(A), sumB = sum(B) )             %>%
+    mutate(    risk = 100* round (sumA /sumB,4) )         %>%
+    select(    MC_n, YrBin, rcp, sp, risk)                %>%
+    group_by(  YrBin, rcp, sp)                            %>% 
+    summarise( riskBmn = mean(risk), riskBsd = sd(risk))  %>%
+    mutate(    riskBcv = riskBsd/riskBmn )                %>%
+    select(    YrBin, rcp, sp, riskBmn, riskBsd, riskBcv)
+  cat("..")
+  tmp           <- merge(x=data.frame(tmpC),y=data.frame(tmpB),by=c("YrBin","rcp","sp"))
+  tmp_mc        <- merge(x=data.frame(tmpC_mc),y=data.frame(tmpB_mc),by=c("YrBin","rcp","sp"))
+  out           <- merge(x=data.frame(tmp),y=data.frame(tmp_mc),by=c("YrBin","rcp","sp"))
+  cat("Complete")
+  return(out)
 }

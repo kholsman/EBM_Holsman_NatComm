@@ -5,48 +5,71 @@
 # updated 2020
 # ----------------------------------------
 cat("loading data, may take a few mins...")
-# load data for paper analyses:
 
-# load Kir's ggplot theme:
+# load ggplot theme:
 source("R/sub_scripts/THEMES_GGPLOT.r")
-theme_kir_EBM <- function(...) {
-  theme_kir(base_family="Helvetica",
-            plot_title_family="Helvetica-Bold",
-            subtitle_family="Helvetica",
-            panel_face="bold",
-            caption_family="Helvetica",
-            plot_title_just ="r",
-            axis_title_size = 12,
-            ...)
-}
-theme_kir_EBM <- function(...) {
-  theme_kir(base_family="ArialNarrow",
-            plot_title_family="ArialNarrow-Bold",
-            subtitle_family="ArialNarrow",
-            panel_face="bold",
-            caption_family="ArialNarrow",
-            plot_title_just ="r",
-            axis_title_size = 12,
-            ...)
-}
-
 
 #_______________________________________
 # Read in simulation data and list of sims:
 #_______________________________________
+
 # multispp results:
 load("data/sim/sim_msm.Rdata")
 load("data/sim/mclist2.Rdata")
 load("data/sim/simlist2.Rdata")
 load("data/sim/empty2.Rdata")
+run_def <- readxl::read_xlsx("data/sim/Run_Defintions.xlsx",sheet="Sheet1")
 
-# Single spp:
+# Single spp: Not in paper so not loaded
 # load("data/sim/sim_ssm.Rdata")
 # load("data/sim/mclist0.Rdata")
 # load("data/sim/simlist0.Rdata")
 # load("data/sim/empty0.Rdata")
+#_______________________________________
+# Load ROMSNPZ covariates:
+#_______________________________________
+load("data/raw/covariates.Rdata")
+Scenarios     <-  unique(covariates$Scenario)
+A1B_n         <-  grep("A1B",Scenarios)
+bio_n         <-  grep("bio",Scenarios)
+rcp45_n       <-  grep("rcp45",Scenarios)
+rcp85_n       <-  grep("rcp85",Scenarios)
+rcp85NoBio_n  <-  setdiff(rcp85_n,bio_n)
+plotList      <-  Scenario_set  <- c(1,rcp45_n,rcp85NoBio_n)
+esnm          <-  list(c(rcp45_n,rcp85NoBio_n))
+esmlist       <-  list(rcp45_n,rcp85NoBio_n)
+
+sim_msm    <- sim_msm%>%filter(Scenario%in%Scenario_set)
+# subset of downscaled projections used for the paper = Scenario_set
+# bio runs are a sensitivity set of runs to evaluate nutrient forcing
+# of boundary conditions, not used here bc they are highly similar to 
+# non-bio runs (See Kearney et al. 2020 and Hermann et al. 2019 for more info
+# A1B not used bc they were AR4 runs and only went to 2040
+# print(as.character(Scenarios[Scenario_set]))
+# ACLIM Projection simulations
+# "###########################################################"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    
+# [1]  "#  | mn_Hind"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
+# [2]  "#  | MIROC_A1B"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+# [3]  "#  | ECHOG_A1B"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+# [4]  "#  | CCCMA_A1B"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 
+# [5]  "#  | GFDL_rcp45"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+# [6]  "#  | GFDL_rcp85"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+# [7]  "#  | GFDL_rcp85_bio"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+# [8]  "#  | MIROC_rcp45"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+# [9]  "#  | MIROC_rcp85"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               
+# [10] "#  | CESM_rcp45"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+# [11] "#  | CESM_rcp85"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
+# [12] "#  | CESM_rcp85_bio"                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
+#  "###########################################################"  
 
 cat("Load Data Complete")
+
+
+
+
+
+
+
 if(1==10){
   if(readdat==FALSE){
     if(!any(dir("data/out")%in%"EBM_ceattlenew.Rdata"))

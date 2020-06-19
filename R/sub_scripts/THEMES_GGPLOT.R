@@ -27,26 +27,26 @@
 #' 
 
 require("extrafont")
-theme_kir_EBM <- function(...) {
-  theme_kir(base_family="Helvetica",
-            plot_title_family="Helvetica-Bold",
-            subtitle_family="Helvetica",
-            panel_face="bold",
-            caption_family="Helvetica",
-            plot_title_just ="r",
-            axis_title_size = 12,
-            ...)
-}
-theme_kir_EBM <- function(...) {
-  theme_kir(base_family="ArialNarrow",
-            plot_title_family="ArialNarrow-Bold",
-            subtitle_family="ArialNarrow",
-            panel_face="bold",
-            caption_family="ArialNarrow",
-            plot_title_just ="r",
-            axis_title_size = 12,
-            ...)
-}
+# theme_kir_EBM <- function(...) {
+#   theme_kir(base_family="Helvetica",
+#             plot_title_family="Helvetica-Bold",
+#             subtitle_family="Helvetica",
+#             panel_face="bold",
+#             caption_family="Helvetica",
+#             plot_title_just ="r",
+#             axis_title_size = 12,
+#             ...)
+# }
+# theme_kir_EBM <- function(...) {
+#   theme_kir(base_family="ArialNarrow",
+#             plot_title_family="ArialNarrow-Bold",
+#             subtitle_family="ArialNarrow",
+#             panel_face="bold",
+#             caption_family="ArialNarrow",
+#             plot_title_just ="r",
+#             axis_title_size = 12,
+#             ...)
+# }
 
 
 theme_hrbrmstr <- function(base_family="Hind",
@@ -328,6 +328,27 @@ theme_kir2<-function (base_size = 11, base_family = "", base_line_size = base_si
           strip.text = element_text(colour = "white", size = rel(0.8), 
           margin = margin(0.8 * half_line, 0.8 * half_line, 0.8 * half_line, 0.8 * half_line)), 
           complete = TRUE)
+}
+
+# theme_kir_EBM <- function(...) {
+#   theme_kir(base_family="Helvetica",
+#             plot_title_family="Helvetica-Bold",
+#             subtitle_family="Helvetica",
+#             panel_face="bold",
+#             caption_family="Helvetica",
+#             plot_title_just ="r",
+#             axis_title_size = 12,
+#             ...)
+# }
+theme_kir_EBM <- function(...) {
+  theme_kir(base_family="ArialNarrow",
+            plot_title_family="ArialNarrow-Bold",
+            subtitle_family="ArialNarrow",
+            panel_face="bold",
+            caption_family="ArialNarrow",
+            plot_title_just ="r",
+            axis_title_size = 12,
+            ...)
 }
 
 

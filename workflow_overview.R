@@ -51,3 +51,26 @@
 # setup.R
 
 
+# Notes on Assessment appraoch:
+
+# aclim_00_JunV2_2019_setB0   these files were used to set the target B0 for B40 iterative calculations
+
+#mnF = last 5 years of the estimation period of ceattle
+# 0_1_9mnF and 0_5_9mnF are the same F40s based on meanF from the past 5 years (so not F40, but target F)
+
+#F40In_0_1_9Naive.dat is based on scenario=1, ie persistence of hist climate for each R model:
+#e.g., F40In_0_1_9Naive.dat is RS only (no cliamte)
+#  F40In_0_5_9Naive.dat is using climate indices but held constant
+
+
+# _059_mnFcf  uses F40In_0_5_9mnF.dat
+# 
+# _059_cf  uses F40In_0_5_9.dat  as the target F
+# 
+# _059_CENaivecf  uses F40In_0_5_9Naive.dat
+
+
+
+
+
+
