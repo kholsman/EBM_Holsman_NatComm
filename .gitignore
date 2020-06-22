@@ -7,7 +7,7 @@ data/sim/NotShared
 data/out/NotShared
 data/ignore_this
 R/NotShared/*
-R/NotShared
+R/NotShared/*
 EBM_Holsman_NatComm.Rproj
 .Rproj.user
 .drake
