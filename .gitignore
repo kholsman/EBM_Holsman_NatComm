@@ -6,6 +6,7 @@
 data/in/NotShared
 data/out/NotShared
 data/out/*
+data/in/*
 data/ignore_this
 R/NotShared/*
 R/NotShared/*
@@ -16,3 +17,4 @@ EBM_Holsman_NatComm.Rproj
 Figures/NotShared
 !data/out/add_out_filesHere
 !data/in/add_in_filesHere
+!data/in/raw
