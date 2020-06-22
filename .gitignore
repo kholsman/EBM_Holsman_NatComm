@@ -3,8 +3,9 @@
 .Rhistory
 .RData
 .Ruserdata
-data/sim/NotShared
+data/in/NotShared
 data/out/NotShared
+data/out/*
 data/ignore_this
 R/NotShared/*
 R/NotShared/*
@@ -13,5 +14,3 @@ EBM_Holsman_NatComm.Rproj
 .drake
 .DS_Store
 Figures/NotShared
-data/out/NotShared
-data/sim/NotShared
