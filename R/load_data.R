@@ -25,6 +25,25 @@ run_def <- readxl::read_xlsx("data/sim/Run_Defintions.xlsx",sheet="Sheet1")
 # load("data/sim/mclist0.Rdata")
 # load("data/sim/simlist0.Rdata")
 # load("data/sim/empty0.Rdata")
+
+#_______________________________________
+# Load simulations, risk calcs, and threshold results (or run these if not in folder):
+#_______________________________________
+if(1==10){
+  if(update.outputs){
+    source("R/sub_scripts/SUB_EBM_paper.R")
+  }else{
+    if(!any(dir()%in%"EBM_ceattlenew.Rdata"))
+      stop("EBM_ceattlenew.Rdata file not found, please go to 
+           https://figshare.com/s/6dea7722df39e07d79f0 
+           and download file into EBM_Holsman_NatComm/EBM_ceattlenew.Rdata")
+    #download.file("https://figshare.com/s/6dea7722df39e07d79f0",destfile="EBM_ceattlenew.Rdata")
+    load("EBM_ceattlenew.Rdata")    
+    
+    for(fn in dir(out_dir))
+      load(file.path(out_dir,fn))
+  }
+}
 #_______________________________________
 # Load ROMSNPZ covariates:
 #_______________________________________

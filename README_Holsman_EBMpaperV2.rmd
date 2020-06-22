@@ -15,7 +15,7 @@ output:
   header-includes:
   - \usepackage{inputenc}
   - \usepackage{unicode-math}
-  - \pagenumbering{gobble}
+  - \pagenumbering{gobble}ls()
 
   word_document:
     fig_caption: yes

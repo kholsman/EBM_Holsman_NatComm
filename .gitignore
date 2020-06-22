@@ -12,3 +12,4 @@ EBM_Holsman_NatComm.Rproj
 .drake
 .DS_Store
 Figures/NotShared
+data/out/NotShared

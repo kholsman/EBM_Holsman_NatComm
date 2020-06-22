@@ -7,24 +7,25 @@
   
   # set up directory paths:
   #-------------------------------------------
-    main      <- getwd()
-    fun_dir   <- "R/sub_Fun" # function subdirectory - is this used?
-   
+    main            <- getwd()
+    fun_dir         <- "R/sub_Fun" # function subdirectory - is this used?
+    out_dir         <- "data/out" # function subdirectory - is this used?
+    
+    # Specify URL where file is stored
+    url <- "https://www.stats.govt.nz/assets/Uploads/Annual-enterprise-survey/Annual-enterprise-survey-2017-financial-year-provisional/Download-data/annual-enterprise-survey-2017-financial-year-provisional-csv.csv"
+    
+    # Specify destination where file should be saved
+    destfile <- "C:/Users/ ... Your Path ... /my folder/output.csv"
+    
+    # Apply download.file function in R
+    download.file(url, destfile)
+    
   # switches and options:
   #-------------------------------------------
     update.figs     <-  FALSE  # set to true to re-save figs
+    update.outputs  <-  TRUE   # overwrite the existing Rdatafiles in data/out
+    status          <-  TRUE   # print progress
     
-  # These switches for KHolsman during simulation updates:
-  #-------------------------------------------
-    retroFL         <-  "data/raw/retro_data2018_long_ext_bcs.dat"
-    futFL           <-  "data/raw/proj_data2018_long_ext_bcs.dat"
-    fldr_nm         <-  "aclim_00_JunV2_2019"  # folder with the CEATTLE assessment runs
-    UpdateMCMC      <-  1      # update MCMC? 1 = TRUE, 0 = FALSE
-    readdat         <-  FALSE  # re-read in new data?
-    status          <-  TRUE   # print updates
-    update.simlist  <-  FALSE  # only TRUE when re-running CEATTLE simulations 
-    update.romsnpz  <-  FALSE  # only TRUE when re-running CEATTLE simulations
-  
   # Some settings for which scenarios to evaluate:
   #-------------------------------------------
     start_yr        <-  1979        # first year of the hindcast simulation
@@ -82,6 +83,17 @@
                binJvAD=c(0,40,1000),
                splistIN=c("Arrowtooth","Arrow or Kam", "Kamchat fl"),doNEBS=F,plotIT=T)
     )
+    
+    # These switches for KHolsman during simulation updates:
+    #-------------------------------------------
+    retroFL         <-  "data/raw/retro_data2018_long_ext_bcs.dat"
+    futFL           <-  "data/raw/proj_data2018_long_ext_bcs.dat"
+    fldr_nm         <-  "aclim_00_JunV2_2019"  # folder with the CEATTLE assessment runs
+    UpdateMCMC      <-  1      # update MCMC? 1 = TRUE, 0 = FALSE
+    readdat         <-  FALSE  # re-read in new data?
+    update.simlist  <-  FALSE  # only TRUE when re-running CEATTLE simulations 
+    update.romsnpz  <-  FALSE  # only TRUE when re-running CEATTLE simulations
+    
     
   # Plotting stuff:
   #-------------------------------------------

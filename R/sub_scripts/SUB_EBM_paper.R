@@ -12,7 +12,7 @@
 ## ------------------------------------------------
 
   source("R/make.R")       # loads packages, data, setup, etc.
-
+  tmp_ls <- ls()
   # ------------------------------------------------
   # Multispecies assessment simulations (run in ADMB)
   #
@@ -27,13 +27,19 @@
         dat_2_5_13 <- sim_msm%>%filter(recMode==as.character(rset),hMode=="13", is.na(MC_n)==T)
     
       # Random recruitment draws included as MC:
-        dat_2_5_3_mc  <- sim_msm%>%filter(recMode==as.character(rset),hMode=="3", MC_n>0)
+        #dat_2_5_3_mc  <- sim_msm%>%filter(recMode==as.character(rset),hMode=="3", MC_n>0)
         dat_2_5_12_mc <- sim_msm%>%filter(recMode==as.character(rset),hMode=="12", MC_n>0)
         dat_2_5_13_mc <- sim_msm%>%filter(recMode==as.character(rset),hMode=="13", MC_n>0)
         
-        dat2 <- as_tibble(dat_2_5_12_mc)%>%filter(age==6,Scenario%in%c(1,9))
-        preview(datIN=dat2,var="ABC_total_biom")
-        
+        preview(datIN=as_tibble(dat_2_5_12_mc)%>%filter(age==6,Scenario%in%c(1,9)),var="ABC_total_biom")
+   if(update.outputs){
+    save(list=c("dat_2_5_12",
+                 "dat_2_5_12_mc"
+                 ),file=file.path(out_dir,"multispp_nocap_simulations.Rdata"))   
+    save(list=c("dat_2_5_13",
+                 "dat_2_5_13_mc"
+     ),file=file.path(out_dir,"multispp_cap_simulations.Rdata"))  
+   }
   # ------------------------------------------------
   # Risk Evaluations:Find the risk of collapse and decline in catch for each simulation:
   # ------------------------------------------------
@@ -86,6 +92,9 @@
            }
          }
        #}
+       if(update.outputs)
+         save(list=c("risk12","risk13"),file=file.path(out_dir,"risk.Rdata"))  
+       
        
    # ------------------------------------------------
    # Threshold analyses:Evaluate tipping points and thresholds of deltaC and temperature:
@@ -99,7 +108,7 @@
         select(names(dat_2_5_13),sp = species)     %>%
         mutate(Year = start_yr + future_year-1)
       
-      tmpMC      <- dat_2_5_12_mc                  %>%
+      tmpMC_12      <- dat_2_5_12_mc                  %>%
         filter(age==6,Scenario%in%Scenario_set, 
                hModev2=="H12_219_CENaivecf")  %>%
         select(names(dat_2_5_12),sp = species)     %>%
@@ -112,52 +121,80 @@
                 limm      = -10,
                 delta_var_nm = "Catch_total_biom" ) 
       
-      tmpall13_1  <-  threshold(datIN = tmpd%>%filter(sp==1),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
-      tmpall13_2  <-  threshold(datIN = tmpd%>%filter(sp==2),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
-      tmpall13_3  <-  threshold(datIN = tmpd%>%filter(sp==3),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
+      C_thresh_13_1  <-  threshold(datIN = tmpd%>%filter(sp==1),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
+      C_thresh_13_2  <-  threshold(datIN = tmpd%>%filter(sp==2),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
+      C_thresh_13_3  <-  threshold(datIN = tmpd%>%filter(sp==3),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
      
-      tmp45_13    <-  threshold(datIN = tmpd%>%filter(sp==1),knotsIN=t_knots,simul_set=c(5,8,10),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
-      tmp85_13    <-  threshold(datIN = tmpd%>%filter(sp==1),knotsIN=t_knots,simul_set=c(6,9,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
+      C_thresh_45_13    <-  threshold(datIN = tmpd%>%filter(sp==1),knotsIN=t_knots,simul_set=c(5,8,10),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
+      C_thresh_85_13    <-  threshold(datIN = tmpd%>%filter(sp==1),knotsIN=t_knots,simul_set=c(6,9,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
       
-      tmpall13_1_20y  <-  threshold(datIN = tmpd%>%filter(sp==1),smooth_yr=20,knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
-      tmpall13_2_20y  <-  threshold(datIN = tmpd%>%filter(sp==2),smooth_yr=20,knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
-      tmpall13_3_20y  <-  threshold(datIN = tmpd%>%filter(sp==3),smooth_yr=20,knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
-    
+      C_thresh_13_1_20y  <-  threshold(datIN = tmpd%>%filter(sp==1),smooth_yr=20,knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
+      C_thresh_13_2_20y  <-  threshold(datIN = tmpd%>%filter(sp==2),smooth_yr=20,knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
+      C_thresh_13_3_20y  <-  threshold(datIN = tmpd%>%filter(sp==3),smooth_yr=20,knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
+      (rm(tmpd))
       tmpd <-  calcDelta(datIN     = tmpMC_12,
                          limm      = -10,
                          delta_var_nm = "Catch_total_biom" ) 
       
-      tmpall12_1  <-  threshold(datIN = tmpd%>%filter(sp==1),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
-      tmpall12_2  <-  threshold(datIN = tmpd%>%filter(sp==2),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
-      tmpall12_3  <-  threshold(datIN = tmpd%>%filter(sp==3),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
+      C_thresh_12_1  <-  threshold(datIN = tmpd%>%filter(sp==1),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
+      C_thresh_12_2  <-  threshold(datIN = tmpd%>%filter(sp==2),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
+      C_thresh_12_3  <-  threshold(datIN = tmpd%>%filter(sp==3),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
       
-      tmp45_12    <-  threshold(datIN = tmpd%>%filter(sp==1),knotsIN=t_knots,simul_set=c(5,8,10),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
-      tmp85_12    <-  threshold(datIN = tmpd%>%filter(sp==1),knotsIN=t_knots,simul_set=c(6,9,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
+      C_thresh_45_12    <-  threshold(datIN = tmpd%>%filter(sp==1),knotsIN=t_knots,simul_set=c(5,8,10),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
+      C_thresh_85_12    <-  threshold(datIN = tmpd%>%filter(sp==1),knotsIN=t_knots,simul_set=c(6,9,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
       
       cat("\n threshold part 1 complete... ")
       
       # Then for delta Biomass:
       # ---------------------------------------------
-      
+      (rm(tmpd))
       tmpd <-  calcDelta(datIN     = tmpMC_13,
                          limm      = -10,
                          delta_var_nm = "SSB_total_biom" ) 
       
-      Btmpall13_1  <-  threshold(datIN = tmpd%>%filter(sp==1),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
-      Btmpall13_2  <-  threshold(datIN = tmpd%>%filter(sp==2),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
-      Btmpall13_3  <-  threshold(datIN = tmpd%>%filter(sp==3),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
-    
-      tmpd_12 <-  calcDelta(datIN     = tmpMC,
+      B_thresh_13_1  <-  threshold(datIN = tmpd%>%filter(sp==1),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
+      B_thresh_13_2  <-  threshold(datIN = tmpd%>%filter(sp==2),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
+      B_thresh_13_3  <-  threshold(datIN = tmpd%>%filter(sp==3),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
+      (rm(tmpd))
+      tmpd <-  calcDelta(datIN     = tmpMC_12,
                          limm      = -10,
                          delta_var_nm = "SSB_total_biom" )   
       
-      Btmpall12_1  <-  threshold(datIN = tmpd%>%filter(sp==1),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
-      Btmpall12_2  <-  threshold(datIN = tmpd%>%filter(sp==2),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
-      Btmpall12_3  <-  threshold(datIN = tmpd%>%filter(sp==3),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
+      B_thresh_12_1  <-  threshold(datIN = tmpd%>%filter(sp==1),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
+      B_thresh_12_2  <-  threshold(datIN = tmpd%>%filter(sp==2),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
+      B_thresh_12_3  <-  threshold(datIN = tmpd%>%filter(sp==3),knotsIN=t_knots,simul_set=c(5,6,8,9,10,11),boot_nobs=boot_nobsIN,rndN=rndNIN,method=methodIN,boot_n=nitrIN)
                 
     print("\n threshold analysis complete... ")
+    if(update.outputs){
+      
+      save(list=c(
+        "C_thresh_13_1",
+        "C_thresh_13_2",
+        "C_thresh_13_3",
+        "C_thresh_45_13",
+        "C_thresh_85_13",
+        "C_thresh_13_1_20y",
+        "C_thresh_13_2_20y",
+        "C_thresh_13_3_20y",
+        "C_thresh_12_1",
+        "C_thresh_12_2",
+        "C_thresh_12_3",
+        "C_thresh_45_12",
+        "C_thresh_85_12"),file=file.path(out_dir,"Catch_thresholds.Rdata"))
+        
+      save(list=c(
+        "B_thresh_13_1",
+        "B_thresh_13_2",
+        "B_thresh_13_3",
+        "B_thresh_12_1",
+        "B_thresh_12_2",
+        "B_thresh_12_3"
+      ),file=file.path(out_dir,"Biomass_thresholds.Rdata"))
+     
+    }
    
 print("SUB_EBM_paper script complete without errors")
+
 
 
 

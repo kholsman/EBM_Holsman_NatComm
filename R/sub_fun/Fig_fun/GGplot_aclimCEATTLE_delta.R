@@ -6,11 +6,13 @@
 #' @param dat is a data.frame with t=date and dat=data to plot
 GGplot_aclimCEATTLE_delta<-function(
   esm_namesIN=simnames,
-  nmLIST  = list("2 MT cap"="dat_2MT_219_CENaivecf1_2_5_13","no cap"="dat_219_CENaivecf_2_5_12"),
-  datLIST = list(dat1=B0_2MT_219_CENaivecf1_2_5_13_mc,dat2=B0_219_CENaivecf_2_5_12_mc),
+  ageLIST = list(6,6),
+  nmLIST  = list("2 MT cap"="dat_2_5_13","no cap"="dat_2_5_12"),
+  nmLIST_mc = list(dat1=dat_2_5_13_mc,dat2=dat_2_5_12_mc),
   valLIST = list(valIn1="SSB0_total_biom", valIn2="SSB0_total_biom"),
+  hLIST   = list("H13_2MT_219_CENaivecf1","H12_219_CENaivecf"),
+  plotSet = list("RCP 4.5" = c(1,rcp45_n),"RCP 8.5" = c(1,rcp85NoBio_n)),
   deltaIN = FALSE,
-  plotSet = list("RCP 4.5" = c(1,rcp45_n_sim),"RCP 8.5" = c(1,rcp85NoBio_n_sim)),
   h       = 3,
   w       = 4.75,
   plotpersist = TRUE,
@@ -24,7 +26,8 @@ GGplot_aclimCEATTLE_delta<-function(
   fn      = "BT",
   ltyy    = c("solid","solid"),
   lwdd    = c(.7,.4),
-  coll    = c(colors()[320],col2(6)[c(2,3,4)],col3(6)[c(3,4,6)]),
+  coll    = list(c(colors()[320],col2(6)[c(2,3,4)]),
+                 c(colors()[320],col3(6)[c(3,4,6)])),
   ylabb   = "Spawning biomass (million tons)",
   xlabb   = "Year", 
   ylabIN  =  c(sp1=20,sp2=2,sp3=1.4),
@@ -39,40 +42,21 @@ GGplot_aclimCEATTLE_delta<-function(
   add0line   = FALSE,
   alpha      = c(20,40), 
   prob       = c(.1,.50,.9),
-  plot_marginIN         = c(1, 1, 1, 1),
+  plot_marginIN       = c(1, 1, 1, 1),
   plot_title_marginIN = 0,
   subtitle_marginIN   = 0,
-  caption_marginIN    = 0
-){
+  caption_marginIN    = 0){
+  
   
   dev.new(height=h,width=w)
+  DAT    <- deltaDAT    <- list()
   ndat   <- length(nmLIST)
-  DAT    <- list()
-  for(ll in 1:ndat)
-    eval(parse(text = paste0("DAT[[ll]]<-grabDat(datIn=",nmLIST[ll],",valIn='",valLIST[ll],"')") ))
-  nspp   <-  length(DAT[[1]])
-  
-  if(deltaIN)
-    for(ll in 1:ndat)
-      for(sp in 1:nspp)
-        DAT[[ll]][[sp]][,-(1)]  <-  100*(DAT[[ll]][[sp]][,-(1)]-DAT[[ll]][[sp]][,2])/DAT[[ll]][[sp]][,2]
-  
-  yr     <-  DAT[[ll]][[1]]$Year
   nset   <-  length(plotSet)  # number of contrasts
   maxx   <-  0
   for(i in 1:length(plotSet))
     maxx <-  max(length(plotSet[[i]]),maxx)
-  
-  
-  #splevels        <- 1:3
-  splevels        <- paste0(letters[1:3],") ",c(sppINFO[[1]]$plotSPP,sppINFO[[2]]$plotSPP,sppINFO[[3]]$plotSPP))
-  splabels        <- paste0(letters[1:3],") ",c(sppINFO[[1]]$plotSPP,sppINFO[[2]]$plotSPP,sppINFO[[3]]$plotSPP))
-  
-  splevels        <- paste0(c(sppINFO[[1]]$plotSPP,sppINFO[[2]]$plotSPP,sppINFO[[3]]$plotSPP))
-  splabels        <- paste0(c(sppINFO[[1]]$plotSPP,sppINFO[[2]]$plotSPP,sppINFO[[3]]$plotSPP))
-  
-  #splabels        <- paste0(rep(" ",3),c(sppINFO[[1]]$plotSPP,sppINFO[[2]]$plotSPP,sppINFO[[3]]$plotSPP))
-  
+  splevels         <- paste0(c(sppINFO[[1]]$plotSPP,sppINFO[[2]]$plotSPP,sppINFO[[3]]$plotSPP))
+  splabels         <- paste0(c(sppINFO[[1]]$plotSPP,sppINFO[[2]]$plotSPP,sppINFO[[3]]$plotSPP))
   rcplevels        <- names(plotSet)
   rcplabels        <- names(plotSet)
   
@@ -80,105 +64,101 @@ GGplot_aclimCEATTLE_delta<-function(
   names(sp.labs)   <- splabels
   rcp.labs         <- rcplevels
   names(rcp.labs)  <- rcplabels
+  nHCR             <- length(names(nmLIST))
+  hcr              <- names(nmLIST)        
+  mnNAME           <- paste0('prob',prob[((length(prob)-1)/2)+1]*100,collapse=",")
+  col_df           <- data.frame(coll =  as.character(unlist(coll)), Scenario = unlist(plotSet))
+  probNames        <- paste0('prob',prob*100)
+  nprob            <- length(probNames)
+  mnprobNames      <- paste0('mnhind_prob',prob*100)
+  p_names          <- map_chr(prob, ~paste0(.x*100, "%"))
+  p_funs           <- purrr::map(prob, ~purrr::partial(quantile, probs = .x, na.rm = TRUE)) %>% purrr::set_names(nm = probNames)
+  # p_funs
   
-  print(sp.labs)
-  
-  #splevels<-c(sppINFO[[1]]$plotSPP,sppINFO[[2]]$plotSPP,sppINFO[[3]]$plotSPP))
-  correctOrder    <- c(esm_namesIN[plotSet[[1]]],esm_namesIN[plotSet[[2]]][-1])  # system constant in correct sort order.
-  #correctOrder    <- factor(paste(1:length(correctOrder),correctOrder))
-  correctOrderLab <- c(esm_namesIN[plotSet[[1]]],esm_namesIN[plotSet[[2]]][-1])
-  
-  eval(parse(text= paste0("qnt1<-qnt2<-data.frame(Year=NA,sp=NA,scen=NA,scenario=NA,HCR=NA,scenario_hcr=NA,rcp=NA,order=NA,",
-                          paste0('prob',prob*100,'=NA',collapse=","),",",paste0('mnhind_prob',prob*100,'=NA',collapse=","),
-                          ",meanHindRun=NA,meanFutRun=NA,coll=NA,sublab=NA,laby=NA,labx=NA)")))
-  
+
+  # get and reshape data
   for(ll in 1:ndat){
-    kk  <-  1
-    dat1<-datLIST[[ll]]
-    for(i  in 1:nset){
-      for(jj in 1:length(plotSet[[i]])){
-        kk  <-  kk + 1
-        for(sp in 1:nspp){
-          tq      <-  t(exp(apply(log(dat1[sp,,,plotSet[[i]][jj]]),2,quantile,probs=prob)))
-          if(deltaIN)  
-            tq      <-  t((apply(100*( dat1[sp,,,plotSet[[i]][jj]]  - dat1[sp,,,1]  )/dat1[sp,,,1] ,2,quantile,probs=prob)))
-          
-          mnhind  <-  t(exp(apply(log(dat1[sp,,,1]),2,quantile,probs=prob)))
-          if(deltaIN)  
-            mnhind  <-  mnhind*0
-          
-          if(any(tq > ylimm_up[sp]))  
-            tq[tq > ylimm_up[sp]]  <-  ylimm_up[sp]
-          
-          if(any(tq < ylimm_dwn[sp]))  
-            tq[tq < ylimm_dwn[sp]]  <-  ylimm_dwn[sp]
-          
-          if(any(mnhind  > ylimm_up[sp]))  
-            mnhind[mnhind > ylimm_up[sp]]  <-  ylimm_up[sp]
-          
-          if(any(mnhind  < ylimm_dwn[sp]))  
-            mnhind[mnhind < ylimm_dwn[sp]]  <-  ylimm_dwn[sp]
-          
-          tmpq1  <-  data.frame(Year=as.numeric(rownames(tq)),
-                                sp=factor(sppINFO[[sp]]$plotSPP,levels=splevels),
-                                scen=esm_namesIN[plotSet[[i]]][jj],
-                                scenario = correctOrder[grep(esm_namesIN[plotSet[[i]]][jj],correctOrder)], 
-                                HCR = names(nmLIST)[ll],
-                                scenario_hcr = paste(correctOrder[grep(esm_namesIN[plotSet[[i]]][jj],correctOrder)],names(nmLIST)[ll]), 
-                                rcp = names(plotSet)[i],
-                                order = grep(esm_namesIN[plotSet[[i]]][jj],correctOrder),
-                                tq,mnhind,
-                                DAT[[ll]][[sp]][,-1][, plotSet[[i]][1] ],
-                                DAT[[ll]][[sp]][,-1][, plotSet[[i]][jj] ],
-                                coll=coll[kk],sublab=NA,laby=NA,labx=NA)
-          
-          colnames(tmpq1)<-colnames(qnt1)
-          if(!is.null(sublab)){
-            tmpq1$sublab[1]  <-  letters[sp*i+(nspp-sp)*(i-1)]
-            tmpq1$laby  <-  as.numeric(ylabIN[sp])
-            tmpq1$labx  <-  as.numeric(xlabIN[sp])
-          }
-          
-          qnt1<-rbind(qnt1,tmpq1)
-        }
-      }
+    
+    eval(parse(text = paste("tmpd<- ",nmLIST[[ll]]) ))
+    
+    tmpd <- tmpd%>% 
+      filter(age==ageLIST[[ll]],
+             Scenario%in%plotSet[[ll]], 
+             hModev2==hLIST[[ll]])         %>%
+      select(names(tmpd),sp = species)     %>%
+      mutate(Year = start_yr + future_year-1,
+             scenario = Scenarios[Scenario],
+             rcp  = factor(names(plotSet)[ll],levels=names(plotSet)),
+             HCR  = factor(names(nmLIST)[ll],levels=names(nmLIST)), 
+             coll = col_df$coll[match(Scenario,col_df$Scenario)],
+             var_nm  = valLIST[[ll]] )
+    
+    tmp_delta <-  calcDelta(datIN   = tmpd,
+                       limm         = -10,
+                       delta_var_nm = valLIST[[ll]] ) 
+    tmpd      <- tmpd %>%
+      select(Year,rcp,HCR,sp,bottomT_C,coll,scenario,Scenario,var_nm,value = valLIST[[ll]])
+    tmpd <- merge(tmpd,tmp_delta,by=c("sp", "Year", "Scenario","rcp"),all.x=T)
+    
+    rm(tmp_delta)
+    
+  # now for MC runs:
+    
+    tmpdmc <- nmLIST_mc[[ll]]
+    
+    tmpdmc <- tmpdmc%>% 
+      filter(age==ageLIST[[ll]],
+             Scenario%in%plotSet[[ll]], 
+             hModev2==hLIST[[ll]])         %>%
+      select(names(tmpdmc),sp = species)     %>%
+      mutate(Year = start_yr + future_year-1,
+             scenario = Scenarios[Scenario],
+             rcp  = factor(names(plotSet)[ll],levels=names(plotSet)),
+             HCR  = factor(names(nmLIST)[ll],levels=names(nmLIST)), 
+             coll = col_df$coll[match(Scenario,col_df$Scenario)],
+             var_nm  = valLIST[[ll]] )
+    
+    tmp_delta <-  calcDelta(datIN   = tmpdmc,
+                            limm         = -10,
+                            delta_var_nm = valLIST[[ll]] ) 
+    tmpdmc      <- tmpdmc %>%
+      select(Year,MC_n,rcp,HCR,sp,bottomT_C,coll,scenario,Scenario,var_nm,value = valLIST[[ll]])
+    
+    tmpd2 <- merge(tmpdmc,tmp_delta,by=c("sp","MC_n", "Year", "Scenario","rcp"),all.x=T)
+    
+    tmpd2      <- tmpd2 %>%
+      group_by(Year,rcp,HCR,sp,bottomT_C,coll,scenario,Scenario,var_nm)%>%
+      summarize_at(vars(value), funs(!!!p_funs))
+    
+    tmpd3 <- merge(tmpd2,tmpd,by=c("sp", "Year", "Scenario","rcp","HCR",
+                                   "bottomT_C","coll","scenario","var_nm"),all.x=T)
+    
+    # now get quantiles:
+    rm(list=c("tmpd","tmpd2","tmp_delta"))
+    
+    if(ll==1){
+      DAT <- tmpd3
+    }else{
+      DAT <- rbind(DAT,tmpd3)
     }
   }
+  DAT$pch <- pchh[as.numeric(factor(DAT$HCR))]
+  nspp    <-  length(unique(deltaDAT $sp))
+  yr      <-  sort(unique(DAT$Year))
   
-  qnt<-qnt1[-1,]
-  qnt$sp  <-factor(qnt$sp,levels=splevels)
-  qnt$rcp <-factor(qnt$rcp,levels=unique(names(plotSet)))
-  qnt$HCR <- factor(qnt$HCR, levels =unique(names(nmLIST)))
-  qnt$scenario_hcr <- factor(qnt$scenario_hcr, levels =unique(qnt$scenario_hcr))
-  #qnt$scen  <-  factor(qnt$scen,levels=unique( esm_namesIN[unlist(plotSet)])) 
-  qnt$scen  <-  factor(qnt$scen,levels=correctOrder) 
-  qnt$scenario  <-  factor(qnt$scenario,levels=correctOrder) 
+  # Now plot it:
   
-  qnt$projLine<-projLine
-  
-  nHCR <-  length(names(nmLIST))
-  hcr  <-  names(nmLIST)        
-  mnNAME<-paste0('prob',prob[((length(prob)-1)/2)+1]*100,collapse=",")
-  
-  p <-     ggplot(data=qnt[qnt$HCR==hcr[1],], aes(x = Year, y = meanFutRun/ydiv),colour=scenario)
-  # New facet label names for dose variable
+  p <-     ggplot(DAT%>%filter(HCR==hcr[1]), aes(x = Year, y = value/ydiv),colour=scenario)
   p <- p + facet_grid(sp~rcp,scales=scalesIN, labeller = labeller(sp = sp.labs, rcp = rcp.labs))
-  
-  # if(add0line)   p <- p + geom_hline(data=qnt, aes(yintercept = zeroline),col="lightgray")
-  p <- p + geom_vline(data=qnt[qnt$HCR==hcr[1],], aes(xintercept=projLine),col="gray",size=1,linetype="dashed") 
-  
+  p <- p + geom_vline(aes(xintercept=projLine),col="gray",size=1,linetype="dashed") 
+  pchIN <-  DAT%>%filter(HCR==hcr[1])%>%select(pch)
   # add moving average:
-  probNames<-paste0('prob',prob*100)
-  nprob<- length(probNames)
-  mnprobNames<-paste0('mnhind_prob',prob*100)
-  
   if(plotpersist)
-    p <-  p+ geom_line(data=qnt, aes(x = Year, y = meanHindRun/ydiv,colour=scenario,linetype=HCR,size=HCR))
+    p <-  p+ geom_line( aes(x = Year, y = value/ydiv,colour=scenario,linetype=HCR))
   
   for(nn in 1:((nprob-1)/2))
-    eval(parse(text=paste0("p <-  p+ geom_ribbon(data=qnt,aes(x = Year, ymin = ",probNames[nn],"/ydiv, ymax =",probNames[1+(nprob-nn)],"/ydiv,fill=scenario),alpha=alpha[2]/100)")))
-  p <-  p + geom_line(data=qnt, aes(x = Year, y = prob50/ydiv,colour=scenario,linetype=HCR,size=HCR))
-  p <-  p + geom_line(data=qnt, aes(x = Year, y = prob50/ydiv,colour=scenario,linetype=HCR,size=HCR))
+    eval(parse(text=paste0("p <-  p+ geom_ribbon(aes(x = Year, ymin = ",probNames[nn],"/ydiv, ymax =",probNames[1+(nprob-nn)],"/ydiv,fill=scenario),alpha=alpha[2]/100)")))
+  p <-  p + geom_line(aes(x = Year, y = prob50/ydiv,colour=scenario,linetype=HCR),size=.7)
   p <-  p + scale_color_manual(values=coll)
   p <-  p + scale_fill_manual(values=coll, name="fill")
   p <-  p + scale_linetype_manual(values=ltyy)
