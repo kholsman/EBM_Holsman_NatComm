@@ -8,17 +8,15 @@
   # set up directory paths:
   #-------------------------------------------
     main            <- getwd()
-    fun_dir         <- "R/sub_Fun" # function subdirectory - is this used?
-    out_dir         <- "data/out" # function subdirectory - is this used?
+    fun_dir         <- file.path(main,"R/sub_Fun")
+    in_dir          <- file.path(main,"data/in")
+    out_dir         <- file.path(main,"data/out")  
     
     # Specify URL where file is stored
     url <- "https://www.stats.govt.nz/assets/Uploads/Annual-enterprise-survey/Annual-enterprise-survey-2017-financial-year-provisional/Download-data/annual-enterprise-survey-2017-financial-year-provisional-csv.csv"
     
-    # Specify destination where file should be saved
-    destfile <- "C:/Users/ ... Your Path ... /my folder/output.csv"
-    
     # Apply download.file function in R
-    download.file(url, destfile)
+#    download.file(url, out_dir)
     
   # switches and options:
   #-------------------------------------------
@@ -86,8 +84,8 @@
     
     # These switches for KHolsman during simulation updates:
     #-------------------------------------------
-    retroFL         <-  "data/raw/retro_data2018_long_ext_bcs.dat"
-    futFL           <-  "data/raw/proj_data2018_long_ext_bcs.dat"
+    retroFL         <-  "data/in/raw/retro_data2018_long_ext_bcs.dat"
+    futFL           <-  "data/in/raw/proj_data2018_long_ext_bcs.dat"
     fldr_nm         <-  "aclim_00_JunV2_2019"  # folder with the CEATTLE assessment runs
     UpdateMCMC      <-  1      # update MCMC? 1 = TRUE, 0 = FALSE
     readdat         <-  FALSE  # re-read in new data?

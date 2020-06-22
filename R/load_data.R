@@ -14,11 +14,11 @@ source("R/sub_scripts/THEMES_GGPLOT.r")
 #_______________________________________
 
 # multispp results:
-load("data/sim/sim_msm.Rdata")
-load("data/sim/mclist2.Rdata")
-load("data/sim/simlist2.Rdata")
-load("data/sim/empty2.Rdata")
-run_def <- readxl::read_xlsx("data/sim/Run_Defintions.xlsx",sheet="Sheet1")
+load(file.path(in_dir,"sim_msm.Rdata"))
+load(file.path(in_dir,"mclist2.Rdata"))
+load(file.path(in_dir,"simlist2.Rdata"))
+load(file.path(in_dir,"empty2.Rdata"))
+run_def <- readxl::read_xlsx(file.path(in_dir,"Run_Defintions.xlsx",sheet="Sheet1"))
 
 # Single spp: Not in paper so not loaded
 # load("data/sim/sim_ssm.Rdata")
@@ -47,7 +47,7 @@ if(1==10){
 #_______________________________________
 # Load ROMSNPZ covariates:
 #_______________________________________
-load("data/raw/covariates.Rdata")
+load(file.path(in_dir,"raw/covariates.Rdata"))
 Scenarios     <-  unique(covariates$Scenario)
 A1B_n         <-  grep("A1B",Scenarios)
 bio_n         <-  grep("bio",Scenarios)
@@ -82,11 +82,6 @@ sim_msm    <- sim_msm%>%filter(Scenario%in%Scenario_set)
 #  "###########################################################"  
 
 cat("Load Data Complete")
-
-
-
-
-
 
 
 if(1==10){
