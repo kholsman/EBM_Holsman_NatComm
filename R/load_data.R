@@ -4,61 +4,61 @@
 # kirstin.holsman@noaa.gov
 # updated 2020
 # ----------------------------------------
-cat("loading data, may take a few mins...")
+  cat("loading data, this may take a few mins...")
+  
+  # load ggplot theme:
+  source("R/sub_scripts/THEMES_GGPLOT.r")
 
-# load ggplot theme:
-source("R/sub_scripts/THEMES_GGPLOT.r")
+  #_______________________________________
+  # Read in simulation data and list of sims:
+  #_______________________________________
+  
+  # multispp results:
+  load(file.path(in_dir,"sim_msm.Rdata"))
+  load(file.path(in_dir,"target_B_2.Rdata"))
+  load(file.path(in_dir,"mclist2.Rdata"))
+  load(file.path(in_dir,"simlist2.Rdata"))
+  load(file.path(in_dir,"empty2.Rdata"))
+  run_def <- readxl::read_xlsx(file.path(in_dir,"Run_Defintions.xlsx"),sheet="Sheet1")
 
-#_______________________________________
-# Read in simulation data and list of sims:
-#_______________________________________
+  cat("simulation data loaded ('data/in')...")
+  #_______________________________________
+  # Load simulations, risk calcs, and threshold results (or run these if not in folder):
+  #_______________________________________
 
-# multispp results:
-load(file.path(in_dir,"sim_msm.Rdata"))
-load(file.path(in_dir,"mclist2.Rdata"))
-load(file.path(in_dir,"simlist2.Rdata"))
-load(file.path(in_dir,"empty2.Rdata"))
-run_def <- readxl::read_xlsx(file.path(in_dir,"Run_Defintions.xlsx",sheet="Sheet1"))
-
-# Single spp: Not in paper so not loaded
-# load("data/sim/sim_ssm.Rdata")
-# load("data/sim/mclist0.Rdata")
-# load("data/sim/simlist0.Rdata")
-# load("data/sim/empty0.Rdata")
-
-#_______________________________________
-# Load simulations, risk calcs, and threshold results (or run these if not in folder):
-#_______________________________________
-if(1==10){
-  if(update.outputs){
-    source("R/sub_scripts/SUB_EBM_paper.R")
-  }else{
-    if(!any(dir()%in%"EBM_ceattlenew.Rdata"))
-      stop("EBM_ceattlenew.Rdata file not found, please go to 
-           https://figshare.com/s/6dea7722df39e07d79f0 
-           and download file into EBM_Holsman_NatComm/EBM_ceattlenew.Rdata")
-    #download.file("https://figshare.com/s/6dea7722df39e07d79f0",destfile="EBM_ceattlenew.Rdata")
-    load("EBM_ceattlenew.Rdata")    
-    
-    for(fn in dir(out_dir))
+  
+    for(fn in outfn){
+      if(!any(dir(out_dir)%in%fn))
+        stop(paste0(fn," file not found in: \t \t",out_dir,
+                    "\n\nplease go to: https://figshare.com/s/6dea7722df39e07d79f0","",
+                    "\n\nand download file into: \t \t",out_dir,"/",fn))
       load(file.path(out_dir,fn))
-  }
-}
-#_______________________________________
-# Load ROMSNPZ covariates:
-#_______________________________________
-load(file.path(in_dir,"raw/covariates.Rdata"))
-Scenarios     <-  unique(covariates$Scenario)
-A1B_n         <-  grep("A1B",Scenarios)
-bio_n         <-  grep("bio",Scenarios)
-rcp45_n       <-  grep("rcp45",Scenarios)
-rcp85_n       <-  grep("rcp85",Scenarios)
-rcp85NoBio_n  <-  setdiff(rcp85_n,bio_n)
-plotList      <-  Scenario_set  <- c(1,rcp45_n,rcp85NoBio_n)
-esnm          <-  list(c(rcp45_n,rcp85NoBio_n))
-esmlist       <-  list(rcp45_n,rcp85NoBio_n)
-
-sim_msm    <- sim_msm%>%filter(Scenario%in%Scenario_set)
+    }
+  cat("analysis data loaded ('data/out')...")
+  #_______________________________________
+  # Load ROMSNPZ covariates:
+  #_______________________________________
+    load(file.path(in_dir,"covariates.Rdata"))
+    for(fn in "covariates.Rdata"){
+      if(!any(dir(in_dir)%in%fn))
+        stop(paste0(fn," file not found in: \t \t",in_dir,
+                    "\n\nplease go to: https://figshare.com/s/6dea7722df39e07d79f0","",
+                    "\n\nand download file into: \t \t",in_dir,"/",fn))
+      load(file.path(in_dir,fn))
+    }
+    
+    Scenarios     <-  unique(covariates$Scenario)
+    A1B_n         <-  grep("A1B",Scenarios)
+    bio_n         <-  grep("bio",Scenarios)
+    rcp45_n       <-  grep("rcp45",Scenarios)
+    rcp85_n       <-  grep("rcp85",Scenarios)
+    rcp85NoBio_n  <-  setdiff(rcp85_n,bio_n)
+    plotList      <-  Scenario_set  <- c(1,rcp45_n,rcp85NoBio_n)
+    esnm          <-  list(c(rcp45_n,rcp85NoBio_n))
+    esmlist       <-  list(rcp45_n,rcp85NoBio_n)
+    
+    sim_msm    <- sim_msm%>%filter(Scenario%in%Scenario_set)
+    cat("covariate data loaded ('data/in')...")
 # subset of downscaled projections used for the paper = Scenario_set
 # bio runs are a sensitivity set of runs to evaluate nutrient forcing
 # of boundary conditions, not used here bc they are highly similar to 

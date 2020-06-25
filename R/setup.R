@@ -5,24 +5,28 @@
 # updated 2020
 # ----------------------------------------
   
-  # set up directory paths:
-  #-------------------------------------------
+    # set up directory paths:
+    #-------------------------------------------
     main            <- getwd()
     fun_dir         <- file.path(main,"R/sub_Fun")
     in_dir          <- file.path(main,"data/in")
     out_dir         <- file.path(main,"data/out")  
     
-    # Specify URL where file is stored
-    url <- "https://www.stats.govt.nz/assets/Uploads/Annual-enterprise-survey/Annual-enterprise-survey-2017-financial-year-provisional/Download-data/annual-enterprise-survey-2017-financial-year-provisional-csv.csv"
-    
-    # Apply download.file function in R
-#    download.file(url, out_dir)
-    
-  # switches and options:
-  #-------------------------------------------
-    update.figs     <-  FALSE  # set to true to re-save figs
+    # switches and options:
+    #-------------------------------------------
+    update.figs     <-  TRUE  # set to true to re-save figs
     update.outputs  <-  TRUE   # overwrite the existing Rdatafiles in data/out
     status          <-  TRUE   # print progress
+    scaleIN         <-  1      # controls the ratio (relative scaling of window)
+    dpiIN           <-  150    # dpi for figures (set to lower res for smaller file size- these will be about 3.5 MB)
+    
+    outfn           <- c("Biomass_thresholds.Rdata",
+                         "Catch_thresholds.Rdata",
+                         "0_5_3_nohcr_simulations.Rdata",
+                         "multispp_cap_simulations.Rdata",
+                         "multispp_nocap_simulations.Rdata",
+                         "risk.Rdata")
+              
     
   # Some settings for which scenarios to evaluate:
   #-------------------------------------------
@@ -42,25 +46,14 @@
  
     #-------------------------------------------    
     # threhold settings:
-    
-    # s            <-  1
-    # itr          <-  1
-    # adj          <-  0
-    # yrs          <-  sort(unique(start_yr + dat_2_5_12$future_year-1))
-    # hind_yrs     <-  match(1979:2017,yrs)
-    # fut_yrs      <-  match(2018:max(yrs),yrs)
-    # ref_yrs      <-  match(yrs,2007:2017)
-    # sim          <-  rcp45_n
-    # sim          <-  rcp85NoBio_n  # don't include the bio runs
     rndNIN       <-  6 # sig digits for rounding the first and second derivatives
     boot_nobsIN  <-  1000  # this controls the sensitivity of the analysis
     nitrIN       <-  1000
     t_knots      <-  4   # numnber of knots for the threshold gams
     methodIN     <-  2   # method for getting the threshold significance
    
- # Species stuff: (used for plotting and manipulating data)
- #-------------------------------------------
-    update.figs     <-  FALSE
+   # Species stuff: (used for plotting and manipulating data)
+   #-------------------------------------------
     sppINFO<-list(
     plk=list(abv="plk",
                guildIN="Walleye pollock",
@@ -93,74 +86,54 @@
     update.romsnpz  <-  FALSE  # only TRUE when re-running CEATTLE simulations
     
     
-  # Plotting stuff:
-  #-------------------------------------------
-  # The width of figures, when printed, 
-  # will usually be 5.5 cm (2.25 inches or 1 column) 
-  # or 12.0 cm (4.75 inches or 2 columns). 
-  
-  dpiIN           <-  150    # dpi for figures
-  
-  # set up color palettes
-  col1<-colorRampPalette(colors()[c(280,320)])
-  col2<-colorRampPalette(colors()[c(70,491)])
-  col2<-colorRampPalette(colors()[c(114,491)])
-  col3<-colorRampPalette(c("yellow","red"))
-  
-  # set the color scheme
-  coll_use         <-  c(colors()[320],col2(6)[c(2,3,4)],col3(6)[c(3,4,6)])
-  
-  plt     <- c("Zissou1","Darjeeling1","Darjeeling2","FantasticFox1")
-  # set up colors
-  blues   <- RColorBrewer::brewer.pal(5, "Blues")
-  BG      <- RColorBrewer::brewer.pal(9, "GnBu")  #5
-  Ornjazz <- RColorBrewer::brewer.pal(5, "Oranges")
-  YGB     <- (RColorBrewer::brewer.pal(5, "YlGnBu"))
-  bg      <- colorRampPalette(BG)
-  YlGnBu  <- colorRampPalette(YGB[-1])
-  blu     <- colorRampPalette(blues[-1])
-  night   <- colorRampPalette(colors()[c(653,47,474,72,491,477)])
-  dawn    <- colorRampPalette(c(colors()[c(477,491,72,474,47,653)],"orange","red"))
-  orng    <- colorRampPalette(Ornjazz[1:5])
-  plt     <- c("Zissou1","Darjeeling1","Darjeeling2","FantasticFox1")
-  colIN1  <- colorRampPalette(c(wes_palette(n=5, name=plt[1])[1:5]))
-  #col_in  <- colorRampPalette(colors()[c(408,44,73)])
-  col_in  <- colorRampPalette(colors()[c(459,122,73)])
-  col_in2 <- colorRampPalette(c("orange","red"))
-  wes     <- colorRampPalette(c(wes_palette(n=5, name=plt[1])[1:5]))
-  col2    <- colorRampPalette(c(wes(7)[c(3,1)],col2(3)[3]))
-  col3    <- colorRampPalette(c(wes(7)[4:7]))
-  
-  
-  
-  # Set up plotting stuff:
-  #------------------------------------     
- 
-  probbs        <-  c(.1,.25,.5,.75,.9)
-  alphaAll      <-  ceiling(rep(100/(length(probbs)/2),length(probbs)/2))
-  
-  c1            <-  col2(5)
-  c2            <-  col2(6)[seq(2,6,2)]
-  c3            <-  col3(6)[seq(2,6,2)]
-  collIn        <-  rep(NA,13)
-  collIn[1:2]   <-  col2(2)[2]
-  #collIn[c(A1B_n,bio_n)]  <-  c1
-  #collIn[rcp45_n]         <-  c2
-  #collIn[rcp85NoBio_n]    <-  c3
-  ltyall                  <-  rep(1,13)  
-  ltyall[1:2]             <-  1
- # ltyall[c(A1B_n,bio_n)]  <-  1
-#  ltyall[rcp45_n]         <-  c(1,1,2)
-  #ltyall[rcp85NoBio_n]    <-  c(1,1,2)
-  lwdall                  <-  rep(1,13)  
-  lwdall[1:2]             <-  2
- # lwdall[c(A1B_n,bio_n)]  <-  1
- # lwdall[rcp45_n]         <-  c(1,1,1)
- # lwdall[rcp85NoBio_n]    <-  c(1,1,1)
-  
-  
-  # General workflow:
-  
-  
+    # Plotting stuff:
+    #-------------------------------------------
+    # The width of figures, when printed, 
+    # will usually be 5.5 cm (2.25 inches or 1 column) 
+    # or 12.0 cm (4.75 inches or 2 columns). 
 
+    # set up color palettes
+    col1     <- colorRampPalette(colors()[c(280,320)])
+    col2     <- colorRampPalette(colors()[c(70,491)])
+    col2     <- colorRampPalette(colors()[c(114,491)])
+    col3     <- colorRampPalette(c("yellow","red"))
+    #col2    <- colorRampPalette(c(wes(7)[c(3,1)],col2(3)[3]))
+    #col3    <- colorRampPalette(c(wes(7)[4:7]))
+    col4     <- colorRampPalette(c(colIN1(6),"maroon"))
+
+    # set the color scheme
+    coll_use         <-  c(colors()[320],col2(6)[c(2,3,4)],col3(6)[c(3,4,6)])
+    
+    plt     <- c("Zissou1","Darjeeling1","Darjeeling2","FantasticFox1")
+    blues   <- RColorBrewer::brewer.pal(5, "Blues")
+    BG      <- RColorBrewer::brewer.pal(9, "GnBu")  #5
+    Ornjazz <- RColorBrewer::brewer.pal(5, "Oranges")
+    YGB     <- (RColorBrewer::brewer.pal(5, "YlGnBu"))
+    bg      <- colorRampPalette(BG)
+    YlGnBu  <- colorRampPalette(YGB[-1])
+    blu     <- colorRampPalette(blues[-1])
+    night   <- colorRampPalette(colors()[c(653,47,474,72,491,477)])
+    dawn    <- colorRampPalette(c(colors()[c(477,491,72,474,47,653)],"orange","red"))
+    orng    <- colorRampPalette(Ornjazz[1:5])
+    plt     <- c("Zissou1","Darjeeling1","Darjeeling2","FantasticFox1")
+    colIN1  <- colorRampPalette(c(wes_palette(n=5, name=plt[1])[1:5]))
+    col_in  <- colorRampPalette(colors()[c(459,122,73)])
+    col_in2 <- colorRampPalette(c("orange","red"))
+    wes     <- colorRampPalette(c(wes_palette(n=5, name=plt[1])[1:5]))
+
+    # Set up plotting stuff:
+    #------------------------------------     
+   
+    probbs        <-  c(.1,.25,.5,.75,.9)
+    alphaAll      <-  ceiling(rep(100/(length(probbs)/2),length(probbs)/2))
+    c1            <-  col2(5)
+    c2            <-  col2(6)[seq(2,6,2)]
+    c3            <-  col3(6)[seq(2,6,2)]
+    collIn        <-  rep(NA,13)
+    collIn[1:2]   <-  col2(2)[2]
+    ltyall                  <-  rep(1,13)  
+    ltyall[1:2]             <-  1
+    lwdall                  <-  rep(1,13)  
+    lwdall[1:2]             <-  2
+ 
 

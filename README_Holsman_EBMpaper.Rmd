@@ -1,0 +1,176 @@
+---
+title: "EBM Nature Communications main script"
+author: "Kirstin Holsman"
+date: "2/17/2020"
+output:
+  html_document:
+    df_print: kable
+    fig_caption: yes
+    theme: flatly
+  header-includes:
+  - \usepackage{inputenc}
+  - \usepackage{unicode-math}
+  - \pagenumbering{gobble}ls()
+  pdf_document:
+    fig_caption: yes
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
+  word_document:
+    fig_caption: yes
+    fig_width: 4
+    keep_md: yes
+---
+
+
+### **Data and code are under review and subject to change. Do not use without permission from lead author: kirstin.holsman@noaa.gov**
+
+---
+
+#### Kirstin Holsman
+#### kirstin.holsman@noaa.gov
+#### Alaska Fisheries Science Center, National Marine Fisheries Service, NOAA, 7600 Sand Point Way N.E., Bld. 4, Seattle, Washington 98115
+
+---
+```{r}
+ #source("R/make.R")       # loads packages, data, setup, etc.
+ thisYr <- format(Sys.time(), "%Y")
+ today  <- format(Sys.time(), "%b %d, %Y")
+ 
+```
+
+Code used to generate intermediate and final data for Holsman et al. in review Nature Communications paper
+
+## Step 1: download data from figshare:
+
+To run the analyses or create the paper figures you will need to first download the large zipped data folder here: https://figshare.com/s/6dea7722df39e07d79f0 (Data DOI:10.6084/m9.figshare.11864505) and copy - paste the contents (folders "in" and "out"") it in the directory: 
+[your local directory path]/EBM_Holsman_NatComm/data 
+
+If you plan to use the data within the folder for purposes beyond rerunning the paper analyses and figures please contact kirstin.holsman@noaa.gov and provide the cite the following Data DOI:10.6084/m9.figshare.11864505 along with Holsman et al. 2020.
+
+```{r, eval=parse}
+
+
+    url        <- "https://figshare.com/s/6dea7722df39e07d79f0"
+    dest_path  <- "/Users/kholsman/GitHub_new/EBM_Holsman_NatComm/EBM_ceattlenew.Rdata"
+    # Apply download.file function in R
+    download.file(url=url, destfile=dest_path,method="libcurl")
+    
+
+```
+
+
+
+  # Specify URL where file is stored
+#    url <- "https://www.stats.govt.nz/assets/Uploads/Annual-enterprise-survey/Annual-enterprise-survey-2017-financial-year-provisional/Download-data/annual-enterprise-survey-2017-financial-year-provisional-csv.csv"
+
+
+
+### Option 1: Re-generate final data for plots
+If running plotting code below (recommended) you will need to download the final data "EBM_ceattlenew.Rdata" from figshare and place it in the main directory: "EBM_Holsman_NatComm/EBM_ceattlenew.Rdata".
+
+* access EBM_ceattlenew.Rdata here: https://figshare.com/s/6dea7722df39e07d79f0 and place it in the directory: EBM_Holsman_NatComm/EBM_ceattlenew.Rdata. 
+(Data DOI:10.6084/m9.figshare.11864505)
+
+### Option 2: Re-running the intermediate data (not recommended)
+If re-running the intermediate data analysis (not recommended) the following files will need to be downloaded unzipped and placed in the asssesment_files folder:
+
+* access aclim_00_JunV2_2019_2.zip here: https://figshare.com/s/3a1aaa86837b79d6aa07 and place it in the EBM_Holsman_NatComm/data/runs/aclim_00_JunV2_2019_2.zip and unzip.
+(Data DOI:10.6084/m9.figshare.11864586)
+
+* access aclim_00_JunV2_2019_0.zip here: https://figshare.com/s/d9c35dbe0880f4169041 and place it in the EBM_Holsman_NatComm/data/runs/aclim_00_JunV2_2019_0.zip and unzip
+(Data DOI:10.6084/m9.figshare.11864577)
+
+
+## Intermediate data:
+Intermediate data can be found in the main EBM_Holsman_NatComm in the form of .Rdata files but can be recreated (although this is not recommended; see below) from the ADMB model using the EBM_Holsman_NatComm/assessment_scripts/README_EBM_Holsman_Analysis.pdf.
+
+## Figures and tables:
+Final figures and tables (including illustrator files that were used to add fish icons) can be found in the **Figures** folder.
+
+
+This is the main script for running analysis and plotting results and requires R version 3.5.3 (available at https://cran.r-project.org/bin/macosx/el-capitan/base/). To update the analysis using .Rdata outputs run the R() code below as is currently configured. If you want to update the intermediate data, set "readdat" to TRUE in line 80 below. The CEATTLE stock assessment is also included but requires AD Model builder (http://www.admb-project.org). To run the assessment scripts (not recommended or tested outside of macOSX) see "README_EBM_Holsman_Analysis.pdf".
+
+### EMB_paper.R script:
+
+```{r EBM_paper, eval=FALSE, echo=TRUE}
+
+## ------------------------------------------------
+## plotting code for EBM paper 
+## Kirstin Holsman 
+## Feb 2020
+## Kirstin.holsman@noaa.gov
+## ------------------------------------------------
+
+
+# 1. Set up
+# 2. load data
+# 3. make figures
+
+
+    rm(list=ls())
+    graphics.off()
+    interactive()
+      
+    #-------------------------------------
+    #   1. SET THINGS UP
+    #------------------------------------- 
+    # set your local path:
+    main  <-  path.expand("~/GitHub_new/EBM_Holsman_NatComm/")
+    setwd(main)
+    
+    # load data, packages, setup, etc.
+    source("R/make.R")
+    
+    # --------------------------------------------------------------
+    # optional: Make the paper figures:
+    # --------------------------------------------------------------
+    source("R/sub_scripts/make_plotsV2.R")  # this will generate the paper figures without overwriting them
+    # You can also call individual plots like this:
+    
+    fig2()
+    fig3()
+    fig4()
+    fig5()
+    fig6()
+    figS1()
+    figS2()
+    figS3()
+    figS4()
+    figS5()
+    figS6()
+    
+    update.figs  <- TRUE  
+    stop("warning! this will overwrite existing figures in the Figures folder")
+    source("R/sub_scripts/make_plotsV2.R")
+    
+    update.figs  <- FALSE   # return this to it's default setting
+    
+    
+    # --------------------------------------------------------------
+    # optional: Rerun paper analyses including risk and threshold/tipping points
+    # --------------------------------------------------------------
+    # to re-run the paper anlyses set update.outputs = TRUE 
+    # (this is set to FALSE by defualt) in the R/setup.R script
+    
+    update.outputs  <- TRUE  
+    stop("warning! this will overwrite Rdata files in the data folder")
+    source("R/sub_scripts/SUB_EBM_paper.R")
+    
+    update.outputs  <- FALSE  # once complete set to FALSE and reload new datafiles:
+    source("R/make.R")
+    
+   
+    # see the workflow
+    #vis_drake_graph(plan)
+
+
+```
+
+
+
+```{r, echo=FALSE}
+ #source("R/make.R")       # loads packages, data, setup, etc.
+ rmd2md(rmd_fl = "README_Holsman_EBMpaper",md_fl = "README")
+```
+

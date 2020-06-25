@@ -8,10 +8,7 @@
 ## 
 ## ------------------------------------------------
 
-source("R/make.R")       # loads packages, data, setup, etc.
-
-
-load("data/raw/covariates.Rdata")
+#source("R/make.R")       # loads packages, data, setup, etc.
 
 #-------------------------------------
 # 3. Final figures:
@@ -19,176 +16,283 @@ load("data/raw/covariates.Rdata")
 #fig 2: temperature
 graphics.off()
 
-simnames <- Scenarios
-Years  <- sort(unique(dat_2_5_12$future_year)+start_yr-1)
-nYrsTot <- length(Years )
-GGplot_aclimTS(dat=reshape2::dcast(covariates%>%filter(Var=="BottomTemp"),t~Scenario)
-               ,h=2*1.3,w=4.75*1.3,
-               ylabb=expression(paste("Bottom temperature",'('^{o},"C)")),
-               ltyy=c("solid",rep("solid",6)),
-               subtitle_face="plain",
-               plotSet=list(c(1,rcp45_n),c(1,rcp85NoBio_n)),
-               coll=coll_use,tline=2,talpha=.5,
-               xlabb="",lgnpos= "right",plot_marginIN=c(-10,-1,-10,1))
+simnames  <- Scenarios
+Years     <- sort(unique(dat_2_5_12$future_year)+start_yr-1)
+nYrsTot   <- length(Years )
+riskTypes <- unique(risk12$type)
 
-if(update.figs) ggsave(file=paste0("Figures/Fig2.tiff"), device = "tiff",
-                       scale = 1, width = NA, height = NA, units = "in",
-                       dpi = dpiIN)  
+fig2 <-function(){  GGplot_aclimTS(dat=reshape2::dcast(covariates%>%filter(Var=="BottomTemp"),t~Scenario)
+                                     ,h=2*1.3,w=4.75*1.3,threshold = 2.2,
+                                     ylabb=expression(paste("Bottom temperature",'('^{o},"C)")),
+                                     ltyy=c("solid",rep("solid",6)),
+                                     subtitle_face="plain",
+                                     plotSet=list(c(1,rcp45_n),c(1,rcp85NoBio_n)),
+                                     coll=coll_use,tline=2,talpha=.5,
+                                     xlabb="",lgnpos= "right",plot_marginIN=c(-10,-1,-10,1))}
+
+
+
 
 #fig 3: delta B
-# 50% quantiles
-graphics.off()
-GGplot_aclimCEATTLE_delta(h=4.75*1.3,w=4.75*1.3,
-                          nmLIST  = list("SSB0"="dat_2_5_12","SSB0"="dat_2_5_12"),
-                          datLIST = list(dat1=dat_2_5_12_mc,dat2=dat_2_5_12_mc),
-                          valLIST = list(valIn1="SSB0_total_biom", valIn2="SSB0_total_biom"),
-                          prob= c(.01,.50,.9),plot_marginIN=c(-15,5,-10,5),alpha=c(10,5),
-                          lgnpos= "bottom",coll=coll_use)
 
-if(update.figs) ggsave(file=paste0("Figures/Fig3.tiff"), device = "tiff", 
-                       scale = 1, width = NA, height = NA, units = "in",
-                       dpi = dpiIN)
+fig3 <- function(){
+  GGplot_aclimCEATTLE_delta(h=4.75*1.3,w=4.75*1.3,
+                            esm_namesIN=simnames,
+                            ageLIST = list(6,6),
+                            ylabIN  = c(20,3,1.8),
+                            nmLIST  = list("no cap"="dat_2_5_12","no cap2"="dat_2_5_12"),
+                            nmLIST_mc = list(dat1=dat_2_5_12_mc,dat2=dat_2_5_12_mc),
+                            hLIST   = list("H12_219_CENaivecf","H12_219_CENaivecf"),
+                            valLIST = list(valIn1="SSB0_total_biom", valIn2="SSB0_total_biom"),
+                            hind    = 1,
+                            plotSet = list("RCP 4.5" = c(rcp45_n),"RCP 8.5" = c(rcp85NoBio_n)),
+                            prob    = c(.1,.50,.9),
+                            showlinetype = FALSE,
+                            plot_marginIN=c(-15,5,-10,5),
+                            coll    = list(colors()[320],coll_use[2:4],coll_use[5:7]),
+                            plot_levels  = simnames[c(1,rcp45_n,rcp85NoBio_n)],
+                            alpha   = c(0,15,40),
+                            ylabb   = "Unfished spawning biomass (million tons)",
+                            lgnpos= "bottom")
+  }
+
 
 #fig 4: delta C
-# 50% quantiles
 
-
-graphics.off()
-GGplot_aclimCEATTLE_delta(deltaIN=TRUE,h=4.75*1.3,w=4.75*1.3,ydiv=1,
-                          ylimm_up=c(100,100,100),ylimm_dwn=c(-200,-200,-200),
-                          plot_marginIN=c(-15,5,-10,5),alpha=c(0,0),lwdd=c(.7,.3),plotpersist = FALSE,
-                          coll = coll_use,
-                          ylabb   = expression(paste(Delta," Catch (%)")),
+fig4 <- function(){GGplot_aclimCEATTLE_delta(h=4.75*1.3,w=4.75*1.3,
+                          ydiv   = 1,
+                          deltaIN = TRUE,
                           xlimmIN = c(2010,2100),
-                          nmLIST  = list("2 MT cap"="dat_2MT_219_CENaivecf1_2_5_13","no cap"="dat_219_CENaivecf_2_5_12"),
+                          esm_namesIN=simnames,
+                          ageLIST = list(6,6),
+                          ylabIN  = c(1,1,1),
+                          nmLIST  = list("2 MT cap"="dat_2_5_13","no cap"="dat_2_5_12"),
+                          nmLIST_mc = list(dat1=dat_2_5_13_mc,dat2=dat_2_5_12_mc),
+                          hLIST   = list("H13_2MT_219_CENaivecf1","H12_219_CENaivecf"),
                           valLIST = list(valIn1="Catch_total_biom", valIn2="Catch_total_biom"),
-                          datLIST = list(dat1=B_219_CENaivecf_2_5_12_mc,dat2=B_219_CENaivecf_2_5_12_mc),
-                          lgnpos= "bottom",scalesIN="fixed")
+                          hind    = 1,
+                          plotSet = list("RCP 4.5" = c(rcp45_n),"RCP 8.5" = c(rcp85NoBio_n)),
+                          prob    = c(.1,.50,.9),
+                          lwdd    = c(.7,.3),
+                          showlinetype = TRUE,
+                          plot_marginIN=c(-15,5,-10,5),
+                          coll    = list(colors()[320],coll_use[2:4],coll_use[5:7]),
+                          plot_levels  = simnames[c(1,rcp45_n,rcp85NoBio_n)],
+                          alpha   = c(100,0,0), 
+                          ylabb   = expression(paste(Delta," Catch (%)")),
+                          lgnpos= "bottom")}
 
 
-if(update.figs) ggsave(file=paste0("Figures/Fig4.tiff"), device = "tiff", 
-                       scale = 1, width = NA, height = NA, units = "in",
-                       dpi = dpiIN)
 
 #fig 5: risk
-graphics.off()
-GGplot_aclimCEATTLE_risk(h=2*1.3,w=4*1.3,coll= c(col2(6)),sp=1,colvar="type",rowvar="sp",alpha=c(.4,1),
-                         plot_marginIN=c(-15,0,-10,5),mode="MSM",lwdd=c(.7,.4,.4),rcpIN=c("RCP 8.5"="rcp85"),
-                         nrowlg  = c(1,1),pchh=c(16,15),
-                         lgnpos= "bottom",RISKTYPES = riskTypes[c(1,2,3)],ltyy=c("solid","solid","solid"))
 
-grid.force()
-# change shape of arrows
-grid.gedit("segments", gp=gpar(linejoin ='mitre'))
-# change the shape in legend also
-grid.gedit("layout", gp=gpar(linejoin ='mitre'))
+fig5 <- function(col4 = colorRampPalette(c(colIN1(6),"maroon"))){
 
-if(update.figs) ggsave(file=paste0("Figures/Fig5.tiff"), device = "tiff", 
-                       scale = 1, width = NA, height = NA, units = "in",
-                       dpi = dpiIN)
+    GGplot_aclimCEATTLE_risk_droppt2(lgnpos= "bottom",angleIN=0,spacer=1.1,spacer_groups=1.6,spacer_lines=.4,itr=100,
+                                     colvar  ="type",
+                                     between_group = "timeframe",
+                                     rev_group=FALSE,rev_lines=FALSE,
+                                     barsplit ="hcr",
+                                     spIN=1,ylimm=c(-5,105),
+                                   arrow_lvl=3,nrowlg  = c(1,1),
+                                   h=4*1.3,w=5*1.3,
+                                   arrow_start1 = 30,arrow_start2 = 90,arrow_adj1 =.4,
+                                   arrow_adj2 =.6,yspace=c(8,-6))
+      # 
+      # grid.force()
+      # # change shape of arrows
+      # grid.gedit("segments", gp=gpar(linejoin ='mitre'))
+      # # change the shape in legend also
+      # grid.gedit("layout", gp=gpar(linejoin ='mitre'))
+  }
+
 
 
 #fig 6: Threshold
+fig6 <- function(H=4.75*1.3,W=4.5*1.3){
+  dev.new(height=H,width=W)
+  PLOT_THRESHOLD2(
+    multIN=10,
+    firstdiff=T,
+    ntemps=3,
+    ylimmIN =c(-100,150),
+    binwidthIN =  c(0.2, 10),
+    xlimmIN =c(1,7),
+    trndln  = "white",
+    trndln2 = Ornjazz[3],
+    tipping = Ornjazz[5],
+    sizeIN=c(0.1,.3,1.3,2))
+}
 
-dev.new(height=4.75*1.3,width=4.5*1.3)
-PLOT_THRESHOLD2(
-  multIN=10,
-  firstdiff=T,
-  ntemps=3,
-  ylimmIN =c(-1,1.5),
-  xlimmIN =c(1,7),
-  trndln  = "white",
-  trndln2 = Ornjazz[3],
-  tipping = Ornjazz[5],
-  sizeIN=c(0.1,.3,.75,2))
 
-if(update.figs) ggsave(file=paste0("Figures/Fig6.tiff"), device = "tiff", 
-                       scale = 1, width = NA, height = NA, units = "in",
-                       dpi = dpiIN)
+
 
 # Fig S1: HCR
+figS1 <- function(H=4, W= 8){
+  dev.new(height=H,width=W)
+  GG_HCRplot(h=4,w=8, 
+             datIN0 = dat_0_5_3,
+             datIN1 = dat_0_5_3,
+             futScen="GFDL_rcp45",fontSize=3,yfont=c(2070,2073), Hin = "H3",Rin=as.character(rset))
+  
+}
 
-
-graphics.off()
-GG_HCRplot(h=3.5,w=8,futScen="GFDL_rcp45",fontSize=3,yfont=c(2070,2073))
-
-
-if(update.figs) ggsave(file=paste0("Figures/FigS1.tiff"), device = "tiff", 
-                       scale = 1, width = NA, height = NA, units = "in",
-                       dpi = dpiIN)
 
 # Fig S2: SSB with and without cap
-
-
-GGplot_aclimCEATTLE_delta(deltaIN=F,h=4.75*1.3,w=4.75*1.3,ydiv=1e6,
-                          plot_marginIN=c(-15,5,-10,5),alpha=c(0,0),lwdd=c(.7,.3),
-                          ylabb   = "Spawning biomass (million tons)",
-                          nmLIST  = list("2 MT cap"="dat_2MT_219_CENaivecf1_2_5_13","no cap"="dat_219_CENaivecf_2_5_12"),
-                          valLIST = list(valIn1="SSB_total_biom", valIn2="SSB_total_biom"),
-                          datLIST = list(dat1=B_219_CENaivecf_2_5_12_mc,dat2=B_219_CENaivecf_2_5_12_mc),
-                          lgnpos= "bottom",scalesIN="free_y")
-if(update.figs) ggsave(file=paste0("Figures/FigS2.tiff"), device = "tiff", 
-                       scale = 1, width = NA, height = NA, units = "in",
-                       dpi = dpiIN)
+figS2 <- function(){
+  GGplot_aclimCEATTLE_delta(h=4.75*1.3,w=4.75*1.3,
+                            esm_namesIN=simnames,
+                            ageLIST = list(6,6),
+                            ylabIN  = c(20,3,1.8),
+                            nmLIST  = list("no cap"="dat_2_5_13","no cap2"="dat_2_5_12"),
+                            nmLIST_mc = list(dat1=dat_2_5_13_mc,dat2=dat_2_5_12_mc),
+                            hLIST   = list("H13_2MT_219_CENaivecf1","H12_219_CENaivecf"),
+                            valLIST = list(valIn1="SSB_total_biom", valIn2="SSB_total_biom"),
+                            hind    = 1,
+                            plotSet = list("RCP 4.5" = c(rcp45_n),"RCP 8.5" = c(rcp85NoBio_n)),
+                            prob    = c(.1,.50,.9),
+                            showlinetype = FALSE,
+                            plot_marginIN=c(-15,5,-10,5),
+                            coll    = list(coll_use[1],coll_use[2:4],coll_use[5:7]),
+                            plot_levels  = simnames[c(1,rcp45_n,rcp85NoBio_n)],
+                            alpha   = c(0,0,100),
+                            ylabb   = "Spawning biomass (million tons)",
+                            lgnpos= "bottom")}
 
 # Fig S3: effective F
 
-
-graphics.off()
-dev.new(height=3.5,weight=5)
-plot_Feffective()
-
-if(update.figs) ggsave(file=paste0("Figures/FigS3.tiff"), device = "tiff", 
-                       scale = 1, width = NA, height = NA, units = "in",
-                       dpi = dpiIN)
+figS3 <- function(H=3.5,W=5){
+  dev.new(height=H,width=5)
+  plot_Feffective()
+  }
 
 
 
 # Fig S4: risk plot
-
-graphics.off()
-GGplot_aclimCEATTLE_risk(h=4.75*1.3,w=3.2*1.3,coll= c(col2(6)),colvar="type",rowvar="sp",alpha=c(.4,1),
-                         plot_marginIN=c(-15,5,-10,5),mode="MSM",lwdd=c(.7,.4,.4),rcpIN=c("RCP 8.5"="rcp85"),pchh=c(16,15),
+figS4 <- function(){
+    GGplot_aclimCEATTLE_risk(h=4.75*1.3,w=3.2*1.3,coll= c(col2(6)),colvar="type",rowvar="sp",alpha=c(.4,1),sizeIN = 6,
+                         plot_marginIN=c(-15,5,-10,5),mode="MSM",lwdd=c(.7,.4,.4),rcpIN=c("RCP 8.5"="rcp85"),pchh=c(15,16),
                          lgnpos= "bottom",RISKTYPES = riskTypes[c(1,3)],ltyy=c("solid","solid"))
+  # grid.force()
+  # # change shape of arrows
+  # grid.gedit("segments", gp=gpar(linejoin ='mitre'))
+  # # change the shape in legend also
+  # grid.gedit("layout", gp=gpar(linejoin ='mitre'))
+  
+}
 
-grid.force()
-# change shape of arrows
-grid.gedit("segments", gp=gpar(linejoin ='mitre'))
-# change the shape in legend also
-grid.gedit("layout", gp=gpar(linejoin ='mitre'))
-
-if(update.figs) ggsave(file=paste0("Figures/FigS4.tiff"), device = "tiff", 
-                       scale = 1, width = NA, height = NA, units = "in",
-                       dpi = dpiIN)
 
 
 # Fig S5: threshold 1
-graphics.off()
-dev.new(height=3*1.3,width=4.75*1.3)
+figS5 <- function(H=3*1.3, W= 4.75*1.3){
+  dev.new(height=H,width=W)
+  PLOT_THRESHOLD(
+    firstdiff=F,
+    dataIN    = list(
+      "no cap"   = list(C_thresh_12_1,C_thresh_12_2,C_thresh_12_3)),
+    ntemps=3,
+    multIN=10,
+    ylimmIN =list(c(-200,200),c(-30,30)),
+    xlimmIN =c(1,7),
+    trndln  = "white",
+    binW = c(.2,10),
+    trndln2 = Ornjazz[3],
+    tipping = Ornjazz[5],
+    sizeIN=c(0.1,.3,1.5,2))
+  }
 
-PLOT_THRESHOLD(
-  dataIN_1=tmpall12_1,
-  dataIN_2=tmpall12_2,
-  dataIN_3=tmpall12_3,
-  firstdiff=F,
-  ntemps=3,
-  multIN=10,
-  #ylimmIN =c(-1.5,1.5),
-  #xlimmIN =c(.5,7),
-  ylimmIN =c(-1,1.5),
-  xlimmIN =c(1,7),
-  trndln  = "white",
-  trndln2 = Ornjazz[3],
-  tipping = Ornjazz[5],
-  sizeIN=c(0.1,.3,.75,2))
-
-
-if(update.figs) ggsave(file=paste0("Figures/FigS5.tiff"), device = "tiff", 
-                       scale = 1, width = NA, height = NA, units = "in",
-                       dpi = dpiIN)
 
 # Fig S6: hindcast years
-plot_figS6()
-if(update.figs) quartz.save(file=paste0("Figures/Figs6_delta.pdf"), type = "pdf", 
-                            width = 4.5*1.3, height = 3.25*1.3,dpi = dpiIN)  
+figS6 <- function( H = 3.25*1.3, W= 4.5*1.3){
+    dev.new( height =H, width= W)
+    plot_figS6()
+}
 
+# for reviewer:
+figS7 <-function(){  GGplot_aclimTS(dat=reshape2::dcast(covariates%>%filter(Var=="fallZavg"),t~Scenario)
+                                    ,h=2*1.3,w=4.75*1.3,threshold = 0,
+                                    ylabb=expression(paste("Fall Zooplankton (denisty)")),
+                                    ltyy=c("solid",rep("solid",6)),
+                                    subtitle_face="plain",
+                                    plotSet=list(c(1,rcp45_n),c(1,rcp85NoBio_n)),
+                                    coll=coll_use,tline=2,talpha=.5,
+                                    xlabb="",lgnpos= "right",plot_marginIN=c(-10,-1,-10,1))}
+
+
+
+if(!update.figs){
+  cat("\n printing figures via make_plots.R (not overwriting figs in Figures folder)....")
+  fig2()
+  fig3()
+  fig4()
+  fig5()
+  fig6()
+  figS1()
+  figS2()
+  figS3()
+  figS4()
+  figS5()
+  figS6()
+}else{
+  cat("\n updating figures via make_plots.R....")
+  
+  fig2()
+  ggsave(file=paste0("Figures/Fig2.tiff"), device = "tiff",
+                         scale = scaleIN, width = NA, height = NA, units = "in",
+                         dpi = dpiIN)  
+  fig3()
+  ggsave(file=paste0("Figures/Fig3.tiff"), device = "tiff", 
+                         scale = scaleIN, width = NA, height = NA, units = "in",
+                         dpi = dpiIN)
+
+  fig4()
+  ggsave(file=paste0("Figures/Fig4.tiff"), device = "tiff", 
+                         scale = scaleIN, width = NA, height = NA, units = "in",
+                         dpi = dpiIN)
+  
+  fig5()
+  ggsave(file=paste0("Figures/Fig5.tiff"), device = "tiff", 
+                         scale = scaleIN, width = NA, height = NA, units = "in",
+                         dpi = dpiIN)
+  fig6()
+  
+  ggsave(file=paste0("Figures/Fig6.tiff"), device = "tiff", 
+                         scale = scaleIN, width = NA, height = NA, units = "in",
+                         dpi = dpiIN)
+  
+  figS2()
+  ggsave(file=paste0("Figures/FigS2.tiff"), device = "tiff", 
+                         scale = scaleIN, width = NA, height = NA, units = "in",
+                         dpi = dpiIN)
+  figS3()
+  ggsave(file=paste0("Figures/FigS3.tiff"), device = "tiff", 
+                         scale = scaleIN, width = NA, height = NA, units = "in",
+                         dpi = dpiIN)
+  
+  figS4()
+  ggsave(file=paste0("Figures/FigS4.tiff"), device = "tiff", 
+                         scale = scaleIN, width = NA, height = NA, units = "in",
+                         dpi = dpiIN);  dev.off()
+  figS5()
+  ggsave(file=paste0("Figures/FigS5.tiff"), device = "tiff", 
+                         scale = scaleIN, width = NA, height = NA, units = "in",
+                         dpi = dpiIN)
+  dev.off()
+  
+  figS6()
+  quartz.save(file=paste0("Figures/FigS6.jpg"), type = "jpeg", dpi = dpiIN)
+  dev.off()
+  
+  figS7()
+  ggsave(file=paste0("Figures/FigS7.tiff"), device = "tiff",
+         scale = scaleIN, width = NA, height = NA, units = "in",
+         dpi = dpiIN) 
+  
+  tiff(filename = paste0("Figures/FigS1.tiff"), 
+         units = "in",height=3.75,width=8,res=dpiIN)
+  figS1()
+  dev.off()
+  
+
+
+}

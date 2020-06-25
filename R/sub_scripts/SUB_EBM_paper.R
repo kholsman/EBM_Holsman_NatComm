@@ -12,6 +12,7 @@
 ## ------------------------------------------------
 
   source("R/make.R")       # loads packages, data, setup, etc.
+  cat("\n running SUB_EMB_paper.R....")
   tmp_ls <- ls()
   # ------------------------------------------------
   # Multispecies assessment simulations (run in ADMB)
@@ -21,8 +22,12 @@
   # on growth, M2, and recruitment)
   # ------------------------------------------------
     
+      # Catch = F40 (hcr =1.8) scenarios
+        # dat_2_5_3 <- sim_msm%>%filter(recMode==as.character(rset),hMode=="3", is.na(MC_n)==T)
+        # dat_0_5_3 <- sim_ssm%>%filter(recMode==as.character(rset),hMode=="3", is.na(MC_n)==T)
       # Catch = ABC scenarios
         dat_2_5_12 <- sim_msm%>%filter(recMode==as.character(rset),hMode=="12", is.na(MC_n)==T)
+      
       # Catch = attach(ABC) , i.e. simulated ABC  --> TAC --> Catch
         dat_2_5_13 <- sim_msm%>%filter(recMode==as.character(rset),hMode=="13", is.na(MC_n)==T)
     
@@ -32,7 +37,13 @@
         dat_2_5_13_mc <- sim_msm%>%filter(recMode==as.character(rset),hMode=="13", MC_n>0)
         
         preview(datIN=as_tibble(dat_2_5_12_mc)%>%filter(age==6,Scenario%in%c(1,9)),var="ABC_total_biom")
+     
    if(update.outputs){
+     # save(list=c("dat_2_5_3"
+     # ),file=file.path(out_dir,"2_5_3_nohcr_simulations.Rdata")) 
+     # save(list=c("dat_0_5_3"
+     # ),file=file.path(out_dir,"0_5_3_nohcr_simulations.Rdata")) 
+     # 
     save(list=c("dat_2_5_12",
                  "dat_2_5_12_mc"
                  ),file=file.path(out_dir,"multispp_nocap_simulations.Rdata"))   

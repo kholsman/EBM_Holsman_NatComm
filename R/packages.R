@@ -8,6 +8,7 @@
 
 lib_list <- c(
   # these for reshaping and manipulating data:
+    "rfigshare",
     "dplyr", 
     "data.table",
     "svMisc",
@@ -17,6 +18,7 @@ lib_list <- c(
     "readxl",   # "drake",
     
   # These for making plots:
+    "RColorBrewer",
     "ggplot2", 
     "mgcv",
     "reshape",

@@ -3,7 +3,8 @@
 #'________________________________________________    
 #'
 PLOT_THRESHOLD<-function(
-  sppIN="plk",
+  sppIN=1:3,
+  firstdiff = F,
   sppINFOIN=sppINFO,
   multIN=10,
   collin=colorRampPalette(rev(RColorBrewer::brewer.pal(9, "YlGnBu"))),
@@ -20,143 +21,188 @@ PLOT_THRESHOLD<-function(
   ylimmIN=c(-2,2),
   xlimmIN=c(-2,8),
   nspp=3,
+  adj = c(10,5),
   binW = c(0.2, 0.1),
   alphacore=1,altTheme=T,
-  dataIN_1=tmpall13_1,
-  dataIN_2=tmpall13_2,
-  dataIN_3=tmpall13_3
-){
+  dataIN    = list(
+    "no cap"   = list(C_thresh_12_1,C_thresh_12_2,C_thresh_12_3),
+    "2 MT cap" = list(C_thresh_13_1,C_thresh_13_2,C_thresh_13_3))){
   
-  makeNA<-function(x){
-    if(length(x)==0){
-      return(NA)
-    }else{
-      return(x)
-    }
-  }
-  diftxt<-"s'(x)"
-  if(!firstdiff)  diftxt<-"s''(x)"
-  p_thresh<-rep(FALSE,nspp)
-  # create plotting matrix for facet_wrap
-  for(s in 1:3){
-    eval(parse(text=paste0("tmpD13<-dataIN_",s)))
-    
-    if(!is.na(unlist(tmpD13$thrsh_max1)[1]))
-      p_thresh[s]<-TRUE   
-    
-    if(firstdiff)  diffn<-tmpD13$fdif1
-    if(!firstdiff) diffn<-tmpD13$fdif2  # use second differential
-    
-    if(s==1){
-      plotALL         <-  data.frame(deltaC=tmpD13$deltaC,TempC=tmpD13$TempC,species=sppINFO[[s]]$plotSPP)
-      hat_se          <-  (tmpD13$hat$up-tmpD13$hat$mn)
-      tmpD13$hat$up   <-  tmpD13$hat$mn+multIN*(hat_se)
-      tmpD13$hat$dwn  <-  tmpD13$hat$mn-multIN*(hat_se)
-      hatALL          <-  data.frame(tmpD13$hat,species=sppINFO[[s]]$plotSPP)
-      fdif1ALL        <- data.frame(diffn,species=sppINFO[[s]]$plotSPP)
-      arrws           <- data.frame(phase=NA, thrsh=NA, ix=NA,    absval=NA,dwn=NA,
-                                    TempC=NA,hatC=NA,sigdf1=NA,sigdf2=NA,
-                                    species=sppINFO[[s]]$plotSPP)  # tresholds
-      if(p_thresh[s])
-        arrws       <- data.frame(
-          phase=NA, 
-          thrsh=tmpD13$hat$tmp[tmpD13$thrsh_max1], 
-          ix=tmpD13$thrsh_max1,
-          absval=NA,
-          dwn=tmpD13$hat$up[tmpD13$thrsh_max1],
-          TempC=tmpD13$hat$tmp[tmpD13$thrsh_max1],
-          hatC=tmpD13$hat$mn[tmpD13$thrsh_max1],
-          sigdf1 =tmpD13$signif1[tmpD13$thrsh_max1],
-          sigdf2 =tmpD13$signif2[tmpD13$thrsh_max1],
-          species=sppINFO[[s]]$plotSPP)  # tresholds
-      
-      tmpth                   <-  tmpD13$hat$mn*NA
-      tmpth[tmpD13$signif1]   <-  as.numeric(tmpD13$hat$mn[tmpD13$signif1])
-      tmpth2                  <-  tmpD13$hat$mn*NA
-      tmpth2[tmpD13$signif2]  <-  as.numeric(tmpD13$hat$mn[tmpD13$signif2])
-      threshALL   <- data.frame(
-        TempC=tmpD13$hat$tmp,
-        sigdf1=tmpth,
-        sigdf2=tmpth2,
-        thrsh=makeNA(tmpD13$thrsh_max1),
-        species=sppINFO[[s]]$plotSPP)
-    }else{
-      plotALL          <-  rbind(plotALL,data.frame(deltaC=tmpD13$deltaC,TempC=tmpD13$TempC,species=sppINFO[[s]]$plotSPP))
-      hat_se           <-  (tmpD13$hat$up-tmpD13$hat$mn)
-      tmpD13$hat$up    <-  tmpD13$hat$mn+multIN*(hat_se)
-      tmpD13$hat$dwn   <-  tmpD13$hat$mn-multIN*(hat_se)
-      hatALL           <-  rbind(hatALL,data.frame(tmpD13$hat,species=sppINFO[[s]]$plotSPP))
-      fdif1ALL         <- rbind(fdif1ALL,data.frame(diffn,species=sppINFO[[s]]$plotSPP))
-      tmparrws         <- data.frame(phase=NA, thrsh=NA, ix=NA,    absval=NA,dwn=NA,
-                                     TempC=NA, hatC=NA,sigdf1 =NA,sigdf2 =NA,
-                                     species=sppINFO[[s]]$plotSPP)  # tresholds
-      if(p_thresh[s]) 
-        tmparrws       <- data.frame(
-          phase=NA, 
-          thrsh=tmpD13$hat$tmp[tmpD13$thrsh_max1], 
-          ix=tmpD13$thrsh_max1,
-          absval=NA,
-          dwn=tmpD13$hat$up[tmpD13$thrsh_max1],
-          TempC=tmpD13$hat$tmp[tmpD13$thrsh_max1],
-          hatC=tmpD13$hat$mn[tmpD13$thrsh_max1],
-          sigdf1 =tmpD13$signif1[tmpD13$thrsh_max1],
-          sigdf2 =tmpD13$signif2[tmpD13$thrsh_max1],
-          species=sppINFO[[s]]$plotSPP)
-      arrws                  <-  rbind(arrws,tmparrws)
-      tmpth                  <-  tmpD13$hat$mn*NA
-      tmpth[tmpD13$signif1]  <-  as.numeric(tmpD13$hat$mn[tmpD13$signif1])
-      tmpth2                 <-  tmpD13$hat$mn*NA
-      tmpth2[tmpD13$signif2] <-  as.numeric(tmpD13$hat$mn[tmpD13$signif2])
-      for(ii in 1:length(makeNA(tmpD13$thrsh_max1)))
-        threshALL   <- rbind(threshALL,data.frame(
-          TempC=tmpD13$hat$tmp,
-          sigdf1=tmpth,
-          sigdf2=tmpth2,
-          thrsh=makeNA(tmpD13$thrsh_max1)[ii],
-          species=sppINFO[[s]]$plotSPP))
-    }
-  }
-  
-  arrws$TempC        <- tmpD13$hat$tmp[arrws$ix]
-  colnames(fdif1ALL)[1:4] <- colnames(hatALL)[1:4]<-c("TempC","up","deltaC","dwn")
-  
-  hatALL$type        <- as.factor("s(x)")
-  fdif1ALL$type      <- as.factor(diftxt)
-  hatALL$species     <- as.factor(hatALL$species);fdif1ALL$species<-as.factor(fdif1ALL$species)
-  fdif1ALL$group     <- (paste0(fdif1ALL$type,"_",fdif1ALL$species))
-  hatALL$group       <- (paste0(hatALL$type,"_",hatALL$species))
-  ALLDAT             <- rbind(hatALL,fdif1ALL)
-  nc                 <- length(plotALL$TempC)
-  alpha1             <- .2
-  nc                 <- length(plotALL$TempC)
-  alpha1             <- .4
-  
+  # plotting stuff:
   require(RColorBrewer)
   colorscale = scale_fill_gradientn(
     colors = collin(9),
     values = c(0, exp(seq(-5, 0, length.out = 100))))
-  # 
-  plotALL$type       <- "s(x)"
-  plotALL2           <- plotALL
-  plotALL2$type      <- diftxt
-  plotALL2$deltaC    <- plotALL2$deltaC*0*NA
-  plotALL2$TempC     <- plotALL2$TempC*0*NA
-  plotALL            <- rbind(plotALL,plotALL2)
-  plotALL$deltaCAKA  <- plotALL$deltaC
-  plotALL$deltaC[plotALL$deltaC>ylimmIN[2]+.5]<-NA
-  plotALL$deltaC[plotALL$deltaC<ylimmIN[1]-.5]<-NA
   
-  threshALL$type     <- "s(x)"
+  alpha1             <- .4
+  
+  
+  # setup
+  ndat <- length(dataIN)
+  nspp <- length(sppIN)
+  snames <- rep("",nspp)
+  for(s in sppIN){snames[s] <- sppINFO[[s]]$plotSPP}
+  diftxt     <- "s'(x)"
+  if(!firstdiff)    diftxt   <- "s''(x)"
+  
+  # pre-allocate:
+  p_thresh   <- matrix(FALSE,ndat,nspp)
+  
+  # sub functions
+  species_labeller <- function(variable,value){
+    species_names        <- as.list(as.character(ulist$species))
+    names(species_names) <- as.character(ulist$group)
+    return(species_names[value])
+  }
+  
+  getlim <- function(dat, lim){
+    rr1 <- which(dat$type == types[t]&dat$deltaC_raw<lim[1])
+    rr2 <- which(dat$type == types[t]&dat$deltaC_raw>lim[2])
+    return(list(rr1,rr2))
+  }
+  
+  
+  makeNA     <- function(x){ if(length(x)==0){ return(NA)}else{return(x)} }
+  
+ # create plotting matrix for facet_wrap
+  
+  for(d in 1:ndat){
+    for(s in sppIN){
+      plotD  <- dataIN[[d]][[s]]
+      
+      if(!is.na(unlist(plotD$thrsh_max1)[1]))  p_thresh[d,s]  <-  TRUE   
+      if(firstdiff)  diffn <- plotD$fdif1  # use second deriv
+      if(!firstdiff) diffn <- plotD$fdif2  # use second deriv
+      
+      if(s==sppIN[1]&d==1){
+        plotALL       <- data.frame(
+                           deltaC  = plotD$datIN$delta_var_prcnt,
+                           TempC   = plotD$datIN$TempC,
+                           species = sppINFO[[s]]$plotSPP,
+                           cap     = names(dataIN)[d])
+        
+        hat_se         <- plotD$hat$up-plotD$hat$mn
+        plotD$hat$up   <- plotD$hat$mn+multIN*(hat_se)
+        plotD$hat$dwn  <- plotD$hat$mn-multIN*(hat_se)
+        
+        hatALL      <- data.frame(plotD$hat,species=sppINFO[[s]]$plotSPP,cap=names(dataIN)[d])
+        fdif1ALL    <- data.frame(diffn,    species=sppINFO[[s]]$plotSPP,cap=names(dataIN)[d])
+        
+        arrws       <- data.frame(
+                          cap = names(dataIN)[d],
+                          phase=NA, thrsh=NA, ix=NA,absval=NA,dwn=NA,
+                          TempC=NA,hatC=NA,sigdf1=NA,sigdf2=NA,
+                          species=sppINFO[[s]]$plotSPP)  # tresholds
+        
+        if(p_thresh[d,s]) 
+          arrws       <- data.frame(
+            cap     = names(dataIN)[d],
+            phase   = NA,
+            thrsh   = plotD$hat$tmp[plotD$thrsh_max1], 
+            ix      = plotD$thrsh_max1,
+            absval  = NA,
+            dwn     = plotD$hat$up[plotD$thrsh_max1],
+            TempC   = plotD$hat$tmp[plotD$thrsh_max1],
+            hatC    = plotD$hat$mn[plotD$thrsh_max1],
+            sigdf1  = plotD$signif1[plotD$thrsh_max1],
+            sigdf2  = plotD$signif2[plotD$thrsh_max1],
+            species = sppINFO[[s]]$plotSPP)  # tresholds
+        
+        tmpth                 <- plotD$hat$mn*NA
+        tmpth[plotD$signif1]  <- as.numeric(plotD$hat$mn[plotD$signif1])
+        
+        tmpth2                <- plotD$hat$mn*NA
+        tmpth2[plotD$signif2] <- as.numeric(plotD$hat$mn[plotD$signif2])
+        
+        threshALL   <- data.frame(
+          TempC   = plotD$hat$tmp,
+          cap     = names(dataIN)[d],
+          sigdf1  = tmpth,
+          sigdf2  = tmpth2, 
+          thrsh   = makeNA(plotD$thrsh_max1),
+          species = sppINFO[[s]]$plotSPP)
+        
+      }else{
+        plotALL    <- rbind(plotALL,
+                            data.frame(
+                              deltaC  = plotD$datIN$delta_var_prcnt,
+                              TempC   = plotD$datIN$TempC,
+                              species = sppINFO[[s]]$plotSPP,
+                              cap     = names(dataIN)[d]))
+        
+        hat_se         <- (plotD$hat$up-plotD$hat$mn)
+        plotD$hat$up   <- plotD$hat$mn+multIN*(hat_se)
+        plotD$hat$dwn  <- plotD$hat$mn-multIN*(hat_se)
+        
+        hatALL     <- rbind(hatALL,data.frame(plotD$hat,species=sppINFO[[s]]$plotSPP,cap=names(dataIN)[d]))
+        fdif1ALL   <- rbind(fdif1ALL,data.frame(diffn,species=sppINFO[[s]]$plotSPP,cap=names(dataIN)[d]))
+        tmparrws   <- data.frame(cap=names(dataIN)[d],phase=NA, thrsh=NA, ix=NA,    absval=NA,dwn=NA,
+                                 TempC=NA, hatC=NA,sigdf1 =NA,sigdf2 =NA,
+                                 species=sppINFO[[s]]$plotSPP)  # tresholds
+        
+        if(p_thresh[d,s]) 
+          tmparrws <- data.frame(
+            cap    =  names(dataIN)[d],
+            phase  = NA,
+            thrsh  = plotD$hat$tmp[plotD$thrsh_max1], 
+            ix     = plotD$thrsh_max1,
+            absval = NA,
+            dwn    = plotD$hat$up[plotD$thrsh_max1],
+            TempC  = plotD$hat$tmp[plotD$thrsh_max1],
+            hatC   = plotD$hat$mn[plotD$thrsh_max1],
+            sigdf1 = plotD$signif1[plotD$thrsh_max1],
+            sigdf2 = plotD$signif2[plotD$thrsh_max1],
+            species= sppINFO[[s]]$plotSPP)
+        arrws                 <- rbind(arrws,tmparrws)
+        tmpth                 <- plotD$hat$mn*NA
+        tmpth[plotD$signif1]  <- as.numeric(plotD$hat$mn[plotD$signif1])
+        
+        tmpth2                <- plotD$hat$mn*NA
+        tmpth2[plotD$signif2] <- as.numeric(plotD$hat$mn[plotD$signif2])
+        for(ii in 1:length(makeNA(plotD$thrsh_max1)))
+          threshALL   <- rbind(threshALL,
+                               data.frame(
+                                 TempC   = plotD$hat$tmp,
+                                 cap     = names(dataIN)[d],
+                                 sigdf1  = tmpth,
+                                 sigdf2  = tmpth2,
+                                 thrsh   = makeNA(plotD$thrsh_max1)[ii],
+                                 species = sppINFO[[s]]$plotSPP))
+      }
+    }
+  }
+  
+  arrws$TempC        <- plotD$hat$tmp[arrws$ix]
+  colnames(fdif1ALL)[1:4] <- 
+    colnames(hatALL)[1:4] <-  c("TempC","up","deltaC","dwn")
+  hatALL$type        <- factor("s(x)",levels=c("s(x)",diftxt))
+  
+  fdif1ALL$type      <- factor(diftxt,levels=c("s(x)",diftxt))
+  hatALL$species     <- factor(hatALL$species, levels=snames)
+  fdif1ALL$species   <- factor(fdif1ALL$species, levels=snames)
+  fdif1ALL$group     <- (paste0(fdif1ALL$type,"_",fdif1ALL$species))
+  hatALL$group       <- (paste0(hatALL$type,"_",hatALL$species))
+  #ALLDAT             <- rbind(hatALL,fdif1ALL)
+  #ALLDAT             <- hatALL
+  ALLDAT             <- rbind(hatALL,fdif1ALL)
+  nc                 <- length(plotALL$TempC)
+  
+  plotALL$type       <- factor("s(x)",levels=c("s(x)",diftxt))
+  plotALL$deltaCAKA  <- plotALL$deltaC
+  
+  # plotALL$deltaC[plotALL$deltaC>ylimmIN[2]+.5]  <- NA
+  # plotALL$deltaC[plotALL$deltaC<ylimmIN[1]-.5]  <- NA
+  # 
+  threshALL$type     <- factor("s(x)",levels=c("s(x)",diftxt))
   threshALL2         <- threshALL
-  threshALL2$type    <- diftxt
+  threshALL2$type    <- factor(diftxt,levels=c("s(x)",diftxt))
   threshALL2$sigdf1  <- threshALL2$sigdf1*0*NA
   #threshALL2$sigdf2  <- threshALL2$sigdf1*0*NA
   threshALL2$TempC   <- threshALL2$TempC*0*NA
   threshALL          <- rbind(threshALL,threshALL2)
-  threshALL$type     <- factor(threshALL$type, levels=c("s(x)",diftxt))
   
-  arrws$type         <- "s(x)"
-  arrws$end          <- ylimmIN[1]-.5
+  arrws$type         <- factor("s(x)",levels=c("s(x)",diftxt))
+  arrws$end          <- unlist(ylimmIN)[1]-.5
   arrws2             <- arrws
   arrws2$absval      <- arrws2$absval*0*NA
   arrws2$TempC       <- arrws2$TempC*0*NA
@@ -165,23 +211,18 @@ PLOT_THRESHOLD<-function(
   arrws2$type        <- diftxt
   
   arrws              <- rbind(arrws,arrws2)
-  arrws$type         <- factor(arrws$type, levels=c("s(x)",diftxt))
+  arrws$type         <- factor(arrws$type,levels=c("s(x)",diftxt))
   
-  ulist                 <- data.frame(group=unique(ALLDAT$group),species=NA,type=NA)
+  ulist              <- data.frame(group = unique(ALLDAT$group),species = NA,type = NA)
   for (uu in 1:length(ulist$group)){
     ulist$species[uu]   <- as.character(ALLDAT$species[ALLDAT$group==ulist$group[uu]][1])
     ulist$type[uu]      <- as.character(ALLDAT$type[ALLDAT$group==ulist$group[uu]][1])
   }
-  blank_data            <- data.frame(species=rep(ulist[,2],2),
-                                      type=rep(ulist[,3],2),x=0,
-                                      y = c(rep(ylimmIN[1],3),rep(-.5,3),rep(ylimmIN[2],3),rep(.5,3)))
-  
-  species_labeller<- function(variable,value){
-    species_names        <- as.list(as.character(ulist$species))
-    names(species_names) <- as.character(ulist$group)
-    return(species_names[value])
-  }
-  
+  blank_data            <- data.frame(
+    species = rep(ulist[,2],2),
+    type    = rep(ulist[,3],2),
+    x       = 0,
+    y       = c(rep(ylimmIN[[1]][1],3),rep(-.5,3),rep(ylimmIN[[1]][2],3),rep(.5,3)))
   
   i            <- 1
   plotarrows   <- data.frame(
@@ -235,30 +276,87 @@ PLOT_THRESHOLD<-function(
         tmpm[(dim(sub)[1]+1):dim(tmpm)[1],-ncol2]<-tmpm2
         tmpm$type[(maxnarrw*2+1):(maxnarrw*4)]<-factor(diftxt,levels=c("s(x)",diftxt))
         
-        i<-maxnarrw
+        i<-maxnarrw  
       }
     }
     if(s==1) plotarrows2<-tmpm
     if(s>1) plotarrows2<-rbind(plotarrows2,tmpm)
     
   }
-  plotALL$type<-factor(plotALL$type,levels=c("s(x)",diftxt))
+ 
+  plotALL$type <- factor(plotALL$type,levels=c("s(x)",diftxt))
+  topdat       <- ALLDAT[ALLDAT$type=="s(x)",]
+  bottomdat    <- ALLDAT[ALLDAT$type==diftxt,]
   
-  topdat    <-ALLDAT[ALLDAT$type=="s(x)",]
-  bottomdat <-ALLDAT[ALLDAT$type==diftxt,]
+  if(unlist(ylimmIN)[1]!=FALSE){
+    if(length(unlist(ylimmIN))!=4) 
+      stop("please ylimmIN as a 2 item list. e.g.,  ylimmIN =list(c(-100,100),c(-30,30))")
+    types <-  factor(c("s(x)",diftxt),levels=c("s(x)",diftxt))
+    
+    t <- 1
+    plotALL$deltaC_raw <- plotALL$deltaC
+    tmprr <- getlim(dat =plotALL,lim=ylimmIN[[t]])
+    if(lengths(tmprr)[1]>1)  plotALL[tmprr[[1]],]$deltaC <-  NA
+    if(lengths(tmprr)[2]>1)  plotALL[tmprr[[2]],]$deltaC <-  NA
+    
+    topdat$deltaC_raw <- topdat$deltaC
+    tmprr <- getlim(dat =topdat,lim=ylimmIN[[t]])
+    if(lengths(tmprr)[1]>1)  topdat[tmprr[[1]],]$deltaC <-  NA
+    if(lengths(tmprr)[2]>1)  topdat[tmprr[[2]],]$deltaC <-  NA
+    
+    topdat$dwn_raw <- topdat$dwn
+    tmprr <-list( 
+      which(topdat$type == types[t]&topdat$dwn_raw<ylimmIN[[t]][1]),
+      which(topdat$type == types[t]&topdat$dwn_raw>ylimmIN[[t]][2]))
+    if(lengths(tmprr)[1]>1)  topdat[tmprr[[1]],]$dwn <-  NA
+    if(lengths(tmprr)[2]>1)  topdat[tmprr[[2]],]$dwn <-  NA
+    
+    topdat$up_raw <- topdat$up
+    tmprr <-list( 
+      which(topdat$type == types[t]&topdat$up_raw<ylimmIN[[t]][1]),
+      which(topdat$type == types[t]&topdat$up_raw>ylimmIN[[t]][2]))
+    if(lengths(tmprr)[1]>1)  topdat[tmprr[[1]],]$up <-  NA
+    if(lengths(tmprr)[2]>1)  topdat[tmprr[[2]],]$up <-  NA
+    
+    
+    t<-2
+    bottomdat$deltaC_raw <- bottomdat$deltaC
+    tmprr <- getlim(dat =bottomdat,lim=ylimmIN[[t]])
+    if(lengths(tmprr)[1]>1)  bottomdat[tmprr[[1]],]$deltaC <-  NA
+    if(lengths(tmprr)[2]>1)  bottomdat[tmprr[[2]],]$deltaC <-  NA
+    
+    threshALL$sigdf1_raw <- threshALL$sigdf1
+    threshALL$sigdf2_raw <- threshALL$sigdf2
+    for(t in 1:length(ylimmIN)){
+      tmprr <-list( 
+        which(threshALL$type == types[t]&threshALL$sigdf1_raw<ylimmIN[[t]][1]),
+        which(threshALL$type == types[t]&threshALL$sigdf1_raw>ylimmIN[[t]][2]))
+      if(lengths(tmprr)[1]>1)  threshALL[tmprr[[1]],]$sigdf1 <-  NA
+      if(lengths(tmprr)[2]>1)  threshALL[tmprr[[2]],]$sigdf1 <-  NA
+      
+      tmprr <-list( 
+        which(threshALL$type == types[t]&threshALL$sigdf2_raw<ylimmIN[[t]][1]),
+        which(threshALL$type == types[t]&threshALL$sigdf2_raw>ylimmIN[[t]][2]))
+      if(lengths(tmprr)[1]>1)  threshALL[tmprr[[1]],]$sigdf2 <-  NA
+      if(lengths(tmprr)[2]>1)  threshALL[tmprr[[2]],]$sigdf2 <-  NA
+      
+      
+    }
+  }
+  
+  #p<- p + ylim(ylimmIN[1],ylimmIN[2]) 
+  
   
   p <-     ggplot(data=plotALL, aes(x = TempC, y = deltaC),colour=TempC)
-  p <- p + geom_hline(yintercept=0,colour="gray",size=1)                 
-  #geom_point(data=plotALL,aes(x = TempC, y = deltaC,color = TempC, fill = TempC,size= 1), alpha = alphacore) +
-  p <- p + geom_hex(binwidth = binW) + colorscale
-  #p <- p + scale_alpha_manual(c(0.8, 0.8, 0.8,0, 0, 0)) sizeIN<-c(0.5,.75,1.2,2)
+  p <- p + geom_hline(yintercept=0,colour="gray",size=.5)                 
+  p <- p + geom_hex(binwidth = binW,show.legend = F) + colorscale
   p <- p + geom_ribbon(data=topdat,aes(x = TempC, ymin=dwn, ymax=up,group=species),fill=trndfill,col=trndln, linetype=1,size=sizeIN[1], alpha=alpha1)  
   p <- p + geom_line(data=topdat,aes(x = TempC, y = deltaC,group=species),alpha=1,colour = trndln,inherit.aes=FALSE,size=sizeIN[2]) 
   p <- p + geom_line(data=threshALL[ALLDAT$type=="s(x)",],aes(x = TempC, y = sigdf1,group=species),alpha=1,colour = trndln,inherit.aes=FALSE,size=sizeIN[3]) 
   p <- p + geom_line(data=threshALL[ALLDAT$type=="s(x)",],aes(x = TempC, y = sigdf2,group=species),alpha=1,colour = trndln2,inherit.aes=FALSE,size=sizeIN[4]) # Ornjazz[3]
   if(any(p_thresh)) p <- p + geom_point(data=arrws[arrws$type=="s(x)",],aes(x = thrsh, y = hatC,group=species),alpha=1,shape=shp,colour = tipping,inherit.aes=FALSE,size=ptsize) # Ornjazz[3]
-  #for(i in 1:maxnarrw) p <- p + geom_path(data=plotarrows2[plotarrows2$plotset2==i,],colour = Ornjazz[3],aes(x=TempC,y=y),arrow = arrow(length=unit(0.30,"cm"),ends="first", type = "closed"),size=1)
-  p <- p + facet_grid(type ~ species,scales = "free_y") + geom_blank(data = blank_data, aes(x = x, y = y))
+  p <- p + facet_grid(type ~ species,scales = "free_y") + 
+    geom_blank(data = blank_data, aes(x = x, y = y))
   p <- p + expand_limits(y = 0) + scale_y_continuous(expand = c(0, 0))   
   p <- p + geom_ribbon(data=bottomdat,aes(x = TempC, ymin=dwn, ymax=up,group=species),fill=night(10)[6],col=NA, linetype=1,size=.5, alpha=alpha1,inherit.aes=FALSE)  
   p <- p + geom_line(data=bottomdat,aes(x = TempC, y = deltaC,group=species),alpha=1,colour = night(10)[6],inherit.aes=FALSE,size=.75) 
@@ -267,7 +365,7 @@ PLOT_THRESHOLD<-function(
   p <- p + scale_colour_gradientn(name = "TempC",colours = collin(ntemps)) 
   #p <- p + coord_cartesian(ylim=c(1,1))
   #geom_smooth(alpha=alpha2,se=T, method = "loess",fill=trndfill,color=trndln )  +
-  if(ylimmIN[1]!=FALSE) p<- p + ylim(ylimmIN[1],ylimmIN[2]) 
+ # if(ylimmIN[1]!=FALSE) p<- p + ylim(ylimmIN[1],ylimmIN[2]) 
   if(xlimmIN[1]!=FALSE) p<- p + xlim(xlimmIN[1],xlimmIN[2]) 
   p<- p + theme_light() +
     labs(x=NULL, y=NULL,

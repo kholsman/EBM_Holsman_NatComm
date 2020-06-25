@@ -181,16 +181,17 @@ threshold<-function(
   #   thrsh2_dwn<-intersect(signif2,pks2_dwn)
   df2_qnt$tmp[thrsh2]
   
-  return(list(datIN = datIN,
-              hat=hat_qnt,fdif1=df1_qnt,
-              fdif2=df2_qnt,
-              signif1=signif1,
-              signif2=signif2,
-              ix_pks=pks2,
-              thrsh_max1=thrsh2,
-              thrsh_x=df2_qnt$tmp[thrsh2],
-              thrsh_y=df2_qnt$mn[thrsh2],
+  return( list(datIN     = datIN,
+              hat        = hat_qnt,
+              fdif1      = df1_qnt,
+              fdif2      = df2_qnt,
+              signif1    = signif1,
+              signif2    = signif2,
+              ix_pks     = pks2,
+              thrsh_max1 = thrsh2,
+              thrsh_x    = df2_qnt$tmp[thrsh2],
+              thrsh_y    = df2_qnt$mn[thrsh2],
               #thrsh_x=tmpall13_1$hat$tmp[thrsh2],
               #thrsh_y=tmpall13_1$hat$mn[thrsh2],
-              tmp_gam=tmp_gam))
+              tmp_gam    = tmp_gam) )
 }

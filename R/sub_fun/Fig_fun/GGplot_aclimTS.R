@@ -91,7 +91,7 @@ GGplot_aclimTS<-function(
   p <- p + facet_grid(~rcp) 
   if(add0line)   p <- p + geom_hline(data=dt, aes(yintercept = zeroline),col="lightgray")
   p <- p + geom_vline(data=dt, aes(xintercept=projLine),col="gray",size=1,linetype="dashed") 
-  if(!is.null(threshold)) p <- p + geom_hline (vdata=dt, aes(yintercept=threshold),col="gray",size=tline, alpha =talpha) 
+  if(!is.null(threshold)) p <- p + geom_hline (data=dt, aes(yintercept=threshold),col="gray",size=tline, alpha =talpha) 
   p <- p + geom_line(aes(x = Year, y = value,group=variable,colour=variable,linetype=variable),alpha=.6,inherit.aes=TRUE,size=.4)
   # add moving average:
   p <- p + geom_line(data=m_dt,aes(x = Year, y = value,group=variable,colour=variable,linetype=variable),alpha=1,inherit.aes=FALSE,size=.75)
