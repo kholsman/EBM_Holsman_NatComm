@@ -1,0 +1,324 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage[unicode=true]{hyperref}
+\hypersetup{
+            pdftitle={EBM Nature Communications main script},
+            pdfauthor={Kirstin Holsman},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{{#1}}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{{#1}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{{#1}}}
+\newcommand{\ImportTok}[1]{{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{{#1}}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{{#1}}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{{#1}}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{{#1}}}}
+\newcommand{\BuiltInTok}[1]{{#1}}
+\newcommand{\ExtensionTok}[1]{{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{{#1}}}
+\newcommand{\RegionMarkerTok}[1]{{#1}}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{{#1}}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{{#1}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{{#1}}}}
+\newcommand{\NormalTok}[1]{{#1}}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+\title{EBM Nature Communications main script}
+\author{Kirstin Holsman}
+\date{2/17/2020}
+
+\begin{document}
+\maketitle
+
+\emph{Data and code are under review and subject to change. Do not use
+without permission from lead author:
+\href{mailto:kirstin.holsman@noaa.gov}{\nolinkurl{kirstin.holsman@noaa.gov}}}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\begin{itemize}
+\tightlist
+\item
+  Kirstin Holsman\\
+  Alaska Fisheries Science Center\\
+  NOAA Fisheries, Seattle WA\\
+  \textbf{\href{mailto:kirstin.holsman@noaa.gov}{\nolinkurl{kirstin.holsman@noaa.gov}}}\\
+  \emph{Last updated: 2020} ---
+\end{itemize}
+
+\section{Overview}\label{overview}
+
+This is an overview of the data, code, and workflow used to generate
+intermediate and final data for the Holsman et al. in review Nature
+Communications paper.
+
+\subsection{Primary Data sources and
+access:}\label{primary-data-sources-and-access}
+
+Various simulation outputs were made available for use in this analysis
+through the interdisciplinary
+\href{\%22https://www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project\%22}{Alaska
+Climate Integrated Modeling (ACLIM) project}. An overview of the project
+and simulation experiments can be found in Hollowed et al. 2020.
+
+\subsubsection{ROMSNPZ}\label{romsnpz}
+
+Downscaled hindcasts and CMIP5 projections of oceanogrpahic and
+lowertrophic conditions were developed as part of the ACLIM project. An
+overview of these projections and the Bering10K ROMSNPZ project can be
+found in Hermann et al. 2019, Kearney et al. 2020, and Hollowed et al.
+2020.
+
+\subsubsection{CEATTLE Model}\label{ceattle-model}
+
+CEATTLE is a multispecies stock assessment model that has been updated
+annually and included as an appendix to the walleye pollock stock
+assessment since 2016 as part of the Bering Sea fishery stock assessment
+process. As part of ACLIM CEATTLE was coupled to the ROMSNPZ model and
+the ATTACH model (below) to generate projections of species biomass and
+catch under future climate conditions in the Bering Sea. Methods for
+this coupling and projection simulation can be found in Holsman et al.
+submitted and Hollowed et al. 2020.
+
+\subsubsection{ATTACH Model}\label{attach-model}
+
+The ATTACH model
+
+\subsection{Intermediate data:}\label{intermediate-data}
+
+Intermediate data can be found in the main EBM\_Holsman\_NatComm in the
+form of .Rdata files but can be recreated (although this is not
+recommended; see below) from the ADMB model using the
+EBM\_Holsman\_NatComm/assessment\_scripts/README\_EBM\_Holsman\_Analysis.pdf.
+
+\subsection{Figures and tables:}\label{figures-and-tables}
+
+Final figures and tables (including illustrator files that were used to
+add fish icons) can be found in the \textbf{Figures} folder.
+
+\subsection{Running the analyses}\label{running-the-analyses}
+
+Below are instructions for downloading input data, code and scripts to
+recreate the figures, tables, results, and run the risk and threshold
+analyses for the paper.
+
+\subsubsection{Download input data from
+figshare:}\label{download-input-data-from-figshare}
+
+To run the analyses or create the paper figures you will need to first
+download the large zipped data folder here:
+\url{https://figshare.com/s/6dea7722df39e07d79f0} (Data
+\url{DOI:10.6084/m9.figshare.11864505}) and copy - paste the contents
+(folders ``in'' and ``out''``) it in the directory: {[}your local
+directory path{]}/EBM\_Holsman\_NatComm/data
+
+If you plan to use the data within the folder for purposes beyond
+rerunning the paper analyses and figures please contact
+\href{mailto:kirstin.holsman@noaa.gov}{\nolinkurl{kirstin.holsman@noaa.gov}}
+and provide the cite the following Data
+\url{DOI:10.6084/m9.figshare.11864505} along with Holsman et al. 2020.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \NormalTok{url        <-}\StringTok{ "https://figshare.com/s/6dea7722df39e07d79f0"}
+    \NormalTok{dest_path  <-}\StringTok{ "/Users/kholsman/GitHub_new/EBM_Holsman_NatComm/EBM_ceattlenew.Rdata"}
+    \CommentTok{# Apply download.file function in R}
+    \KeywordTok{download.file}\NormalTok{(}\DataTypeTok{url=}\NormalTok{url, }\DataTypeTok{destfile=}\NormalTok{dest_path,}\DataTypeTok{method=}\StringTok{"libcurl"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{Re-generate plots}\label{re-generate-plots}
+
+If running plotting code below (recommended) you will need to download
+the final data ``EBM\_ceattlenew.Rdata'' from figshare and place it in
+the main directory: ``EBM\_Holsman\_NatComm/EBM\_ceattlenew.Rdata''.
+
+\begin{itemize}
+\tightlist
+\item
+  access EBM\_ceattlenew.Rdata here:
+  \url{https://figshare.com/s/6dea7722df39e07d79f0} and place it in the
+  directory: EBM\_Holsman\_NatComm/EBM\_ceattlenew.Rdata. (Data
+  \url{DOI:10.6084/m9.figshare.11864505})
+\end{itemize}
+
+\subsubsection{Re-running the intermediate
+data}\label{re-running-the-intermediate-data}
+
+If re-running the intermediate data analysis (not recommended) the
+following files will need to be downloaded unzipped and placed in the
+asssesment\_files folder:
+
+\begin{itemize}
+\item
+  access aclim\_00\_JunV2\_2019\_2.zip here:
+  \url{https://figshare.com/s/3a1aaa86837b79d6aa07} and place it in the
+  EBM\_Holsman\_NatComm/data/runs/aclim\_00\_JunV2\_2019\_2.zip and
+  unzip. (Data \url{DOI:10.6084/m9.figshare.11864586})
+\item
+  access aclim\_00\_JunV2\_2019\_0.zip here:
+  \url{https://figshare.com/s/d9c35dbe0880f4169041} and place it in the
+  EBM\_Holsman\_NatComm/data/runs/aclim\_00\_JunV2\_2019\_0.zip and
+  unzip (Data \url{DOI:10.6084/m9.figshare.11864577})
+\end{itemize}
+
+This is the main script for running analysis and plotting results and
+requires R version 3.5.3 (available at
+\url{https://cran.r-project.org/bin/macosx/el-capitan/base/}). To update
+the analysis using .Rdata outputs run the R() code below as is currently
+configured. If you want to update the intermediate data, set ``readdat''
+to TRUE in line 80 below. The CEATTLE stock assessment is also included
+but requires AD Model builder (\url{http://www.admb-project.org}). To
+run the assessment scripts (not recommended or tested outside of macOSX)
+see ``README\_EBM\_Holsman\_Analysis.pdf''.
+
+\subsubsection{EMB\_paper.R script:}\label{emb_paper.r-script}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## ------------------------------------------------}
+\NormalTok{## plotting code for EBM paper }
+\NormalTok{## Kirstin Holsman }
+\NormalTok{## Feb 2020}
+\NormalTok{## Kirstin.holsman@noaa.gov}
+\NormalTok{## ------------------------------------------------}
+
+
+\CommentTok{# 1. Set up}
+\CommentTok{# 2. load data}
+\CommentTok{# 3. make figures}
+
+    \KeywordTok{rm}\NormalTok{(}\DataTypeTok{list=}\KeywordTok{ls}\NormalTok{())}
+    \KeywordTok{graphics.off}\NormalTok{()}
+    \KeywordTok{interactive}\NormalTok{()}
+      
+    \CommentTok{#-------------------------------------}
+    \CommentTok{#   1. SET THINGS UP}
+    \CommentTok{#------------------------------------- }
+    \CommentTok{# set your local path:}
+    \NormalTok{main  <-}\StringTok{  }\KeywordTok{path.expand}\NormalTok{(}\StringTok{"~/GitHub_new/EBM_Holsman_NatComm/"}\NormalTok{)}
+    \KeywordTok{setwd}\NormalTok{(main)}
+    
+    \CommentTok{# load data, packages, setup, etc.}
+    \KeywordTok{source}\NormalTok{(}\StringTok{"R/make.R"}\NormalTok{)}
+    
+    \CommentTok{# --------------------------------------------------------------}
+    \CommentTok{# optional: Make the paper figures:}
+    \CommentTok{# --------------------------------------------------------------}
+    \KeywordTok{source}\NormalTok{(}\StringTok{"R/sub_scripts/make_plotsV2.R"}\NormalTok{)  }\CommentTok{# this will generate the paper figures without overwriting them}
+    \CommentTok{# You can also call individual plots like this:}
+    
+    \KeywordTok{fig2}\NormalTok{()}
+    \KeywordTok{fig3}\NormalTok{()}
+    \KeywordTok{fig4}\NormalTok{()}
+    \KeywordTok{fig5}\NormalTok{()}
+    \KeywordTok{fig6}\NormalTok{()}
+    \KeywordTok{figS1}\NormalTok{()}
+    \KeywordTok{figS2}\NormalTok{()}
+    \KeywordTok{figS3}\NormalTok{()}
+    \KeywordTok{figS4}\NormalTok{()}
+    \KeywordTok{figS5}\NormalTok{()}
+    \KeywordTok{figS6}\NormalTok{()}
+    
+    \NormalTok{update.figs  <-}\StringTok{ }\OtherTok{TRUE}  
+    \KeywordTok{stop}\NormalTok{(}\StringTok{"warning! this will overwrite existing figures in the Figures folder"}\NormalTok{)}
+    \KeywordTok{source}\NormalTok{(}\StringTok{"R/sub_scripts/make_plotsV2.R"}\NormalTok{)}
+    
+    \NormalTok{update.figs  <-}\StringTok{ }\OtherTok{FALSE}   \CommentTok{# return this to it's default setting}
+    
+    
+    \CommentTok{# --------------------------------------------------------------}
+    \CommentTok{# optional: Rerun paper analyses including risk and threshold/tipping points}
+    \CommentTok{# --------------------------------------------------------------}
+    \CommentTok{# to re-run the paper anlyses set update.outputs = TRUE }
+    \CommentTok{# (this is set to FALSE by defualt) in the R/setup.R script}
+    
+    \NormalTok{update.outputs  <-}\StringTok{ }\OtherTok{TRUE}  
+    \KeywordTok{stop}\NormalTok{(}\StringTok{"warning! this will overwrite Rdata files in the data folder"}\NormalTok{)}
+    \KeywordTok{source}\NormalTok{(}\StringTok{"R/sub_scripts/SUB_EBM_paper.R"}\NormalTok{)}
+    
+    \NormalTok{update.outputs  <-}\StringTok{ }\OtherTok{FALSE}  \CommentTok{# once complete set to FALSE and reload new datafiles:}
+    \KeywordTok{source}\NormalTok{(}\StringTok{"R/make.R"}\NormalTok{)}
+    
+   
+    \CommentTok{# see the workflow}
+    \CommentTok{#vis_drake_graph(plan)}
+\end{Highlighting}
+\end{Shaded}
+
+\end{document}

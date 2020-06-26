@@ -14,39 +14,41 @@
   #_______________________________________
   
   # multispp results:
-  load(file.path(in_dir,"sim_msm.Rdata"))
+  #load(file.path(in_dir,"sim_msm.Rdata"))
   load(file.path(in_dir,"target_B_2.Rdata"))
-  load(file.path(in_dir,"mclist2.Rdata"))
-  load(file.path(in_dir,"simlist2.Rdata"))
-  load(file.path(in_dir,"empty2.Rdata"))
+  #load(file.path(in_dir,"mclist2.Rdata"))
+  #load(file.path(in_dir,"simlist2.Rdata"))
+  #load(file.path(in_dir,"empty2.Rdata"))
   run_def <- readxl::read_xlsx(file.path(in_dir,"Run_Defintions.xlsx"),sheet="Sheet1")
-
-  cat("simulation data loaded ('data/in')...")
   #_______________________________________
   # Load simulations, risk calcs, and threshold results (or run these if not in folder):
   #_______________________________________
 
-  
-    for(fn in outfn){
-      if(!any(dir(out_dir)%in%fn))
-        stop(paste0(fn," file not found in: \t \t",out_dir,
-                    "\n\nplease go to: https://figshare.com/s/6dea7722df39e07d79f0","",
-                    "\n\nand download file into: \t \t",out_dir,"/",fn))
-      load(file.path(out_dir,fn))
-    }
-  cat("analysis data loaded ('data/out')...")
-  #_______________________________________
-  # Load ROMSNPZ covariates:
-  #_______________________________________
-    load(file.path(in_dir,"covariates.Rdata"))
-    for(fn in "covariates.Rdata"){
+  cat("\nLoading Intermediate data ('data/in')...\n")
+    for(fn in infn){
       if(!any(dir(in_dir)%in%fn))
         stop(paste0(fn," file not found in: \t \t",in_dir,
                     "\n\nplease go to: https://figshare.com/s/6dea7722df39e07d79f0","",
                     "\n\nand download file into: \t \t",in_dir,"/",fn))
       load(file.path(in_dir,fn))
+      cat(paste("\nloaded",fn))
     }
-    
+  cat("\nIntermediate data loaded ('data/in')...\n")
+  cat("\n\nLoading final data ('data/in')...\n")
+  for(fn in outfn){
+    if(!any(dir(out_dir)%in%fn))
+      stop(paste0(fn," file not found in: \t \t",out_dir,
+                  "\n\nplease go to: https://figshare.com/s/6dea7722df39e07d79f0","",
+                  "\n\nand download file into: \t \t",out_dir,"/",fn))
+    load(file.path(out_dir,fn))
+    cat(paste("\nloaded:",fn))
+  }
+  cat("\nfinal data loaded ('data/out')...\n\n")
+   
+  #_______________________________________
+  # Load ROMSNPZ covariates:
+  #_______________________________________
+
     Scenarios     <-  unique(covariates$Scenario)
     A1B_n         <-  grep("A1B",Scenarios)
     bio_n         <-  grep("bio",Scenarios)
@@ -57,8 +59,9 @@
     esnm          <-  list(c(rcp45_n,rcp85NoBio_n))
     esmlist       <-  list(rcp45_n,rcp85NoBio_n)
     
-    sim_msm    <- sim_msm%>%filter(Scenario%in%Scenario_set)
-    cat("covariate data loaded ('data/in')...")
+    simnames  <- Scenarios
+
+    #sim_msm    <- sim_msm%>%filter(Scenario%in%Scenario_set)
 # subset of downscaled projections used for the paper = Scenario_set
 # bio runs are a sensitivity set of runs to evaluate nutrient forcing
 # of boundary conditions, not used here bc they are highly similar to 

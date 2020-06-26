@@ -1,5 +1,5 @@
 ---
-title: "EBM Nature Communications main script"
+title: "EBM Nature Communications scripts & data"
 author: "Kirstin Holsman"
 date: "2/17/2020"
 output:
@@ -7,6 +7,7 @@ output:
     df_print: kable
     fig_caption: yes
     theme: flatly
+    toc: yes
   header-includes:
   - \usepackage{inputenc}
   - \usepackage{unicode-math}
@@ -23,154 +24,174 @@ output:
 ---
 
 
-### **Data and code are under review and subject to change. Do not use without permission from lead author: kirstin.holsman@noaa.gov**
-
----
-
-#### Kirstin Holsman
-#### kirstin.holsman@noaa.gov
-#### Alaska Fisheries Science Center, National Marine Fisheries Service, NOAA, 7600 Sand Point Way N.E., Bld. 4, Seattle, Washington 98115
-
----
-```{r}
+*Data and code are under review and subject to change. Do not use without permission from lead author: kirstin.holsman@noaa.gov*
+ 
+```{r, echo = F}
  #source("R/make.R")       # loads packages, data, setup, etc.
  thisYr <- format(Sys.time(), "%Y")
  today  <- format(Sys.time(), "%b %d, %Y")
  
 ```
 
-Code used to generate intermediate and final data for Holsman et al. in review Nature Communications paper
+---
 
-## Step 1: download data from figshare:
+*  Kirstin Holsman  
+   Alaska Fisheries Science Center  
+   NOAA Fisheries, Seattle WA  
+   **<kirstin.holsman@noaa.gov>**  
+   *Last updated: `r thisYr`*
+---
+
+# 1. Overview
+
+This is an overview of the data, code, and workflow used to generate intermediate and final data for the Holsman et al. in review Nature Communications paper.
+
+## 1.1. Data and Figures
+
+Intermediate data from the ACLIM models and simulations can be found in the **data/in** sub-folder in the form of `.Rdata` files. Final data from the analyses of the paper can be found in the **data/out** sub-folder (also `.Rdata` files).
+
+Final figures and tables (including illustrator files that were used to add fish icons) can be found in the **Figures** sub-folder. These figures can be called direct or re-generated (see section below ).
+
+# 2. Downloading code and data:
+
+## 2.1. Download the code from the github repository:
+
+```{r, eval = FALSE}
+    download_path <- path.expand("~/GitHub_new")
+    download_path <- path.expand("~/desktop")
+```
+
+
+## 3.1. Download input data from figshare:
 
 To run the analyses or create the paper figures you will need to first download the large zipped data folder here: https://figshare.com/s/6dea7722df39e07d79f0 (Data DOI:10.6084/m9.figshare.11864505) and copy - paste the contents (folders "in" and "out"") it in the directory: 
 [your local directory path]/EBM_Holsman_NatComm/data 
 
 If you plan to use the data within the folder for purposes beyond rerunning the paper analyses and figures please contact kirstin.holsman@noaa.gov and provide the cite the following Data DOI:10.6084/m9.figshare.11864505 along with Holsman et al. 2020.
 
-```{r, eval=parse}
+```{r, eval=FALSE}
 
-
-    url        <- "https://figshare.com/s/6dea7722df39e07d79f0"
-    dest_path  <- "/Users/kholsman/GitHub_new/EBM_Holsman_NatComm/EBM_ceattlenew.Rdata"
+    url        <-  "https://figshare.com/s/6dea7722df39e07d79f0"
+    url        <-  "https://ndownloader.figshare.com/files/21783927?private_link=6dea7722df39e07d79f0"
+    dest_path  <-  "/Users/kholsman/GitHub_new/EBM_Holsman_NatComm/EBM_ceattlenew.Rdata"
     # Apply download.file function in R
     download.file(url=url, destfile=dest_path,method="libcurl")
-    
-
+  #   url<-"https://figshare.com/articles/Community_del15N_data_sets/2085547"
+  #   https://ndownloader.figshare.com/files/4976605
+  #    dest_path  <- "/Users/kholsman/GitHub_new/EBM_Holsman_NatComm/2085547.csv"
+  # 
+  # 
+  # download.file(url="https://ndownloader.figshare.com/files/2085547", destfile=dest_path,method="libcurl")
+  # 
 ```
 
+# 3. Regenerating analyses and figures:
 
+Below are instructions for downloading input data, code and scripts to recreate the figures, tables, results, and run the risk and threshold analyses for the paper. The scripts below require R version 3.5.3 (available at https://cran.r-project.org/bin/macosx/el-capitan/base/). 
 
-  # Specify URL where file is stored
-#    url <- "https://www.stats.govt.nz/assets/Uploads/Annual-enterprise-survey/Annual-enterprise-survey-2017-financial-year-provisional/Download-data/annual-enterprise-survey-2017-financial-year-provisional-csv.csv"
+## 3.1. Re-generate plots
 
+### Set things up:
 
-
-### Option 1: Re-generate final data for plots
-If running plotting code below (recommended) you will need to download the final data "EBM_ceattlenew.Rdata" from figshare and place it in the main directory: "EBM_Holsman_NatComm/EBM_ceattlenew.Rdata".
-
-* access EBM_ceattlenew.Rdata here: https://figshare.com/s/6dea7722df39e07d79f0 and place it in the directory: EBM_Holsman_NatComm/EBM_ceattlenew.Rdata. 
-(Data DOI:10.6084/m9.figshare.11864505)
-
-### Option 2: Re-running the intermediate data (not recommended)
-If re-running the intermediate data analysis (not recommended) the following files will need to be downloaded unzipped and placed in the asssesment_files folder:
-
-* access aclim_00_JunV2_2019_2.zip here: https://figshare.com/s/3a1aaa86837b79d6aa07 and place it in the EBM_Holsman_NatComm/data/runs/aclim_00_JunV2_2019_2.zip and unzip.
-(Data DOI:10.6084/m9.figshare.11864586)
-
-* access aclim_00_JunV2_2019_0.zip here: https://figshare.com/s/d9c35dbe0880f4169041 and place it in the EBM_Holsman_NatComm/data/runs/aclim_00_JunV2_2019_0.zip and unzip
-(Data DOI:10.6084/m9.figshare.11864577)
-
-
-## Intermediate data:
-Intermediate data can be found in the main EBM_Holsman_NatComm in the form of .Rdata files but can be recreated (although this is not recommended; see below) from the ADMB model using the EBM_Holsman_NatComm/assessment_scripts/README_EBM_Holsman_Analysis.pdf.
-
-## Figures and tables:
-Final figures and tables (including illustrator files that were used to add fish icons) can be found in the **Figures** folder.
-
-
-This is the main script for running analysis and plotting results and requires R version 3.5.3 (available at https://cran.r-project.org/bin/macosx/el-capitan/base/). To update the analysis using .Rdata outputs run the R() code below as is currently configured. If you want to update the intermediate data, set "readdat" to TRUE in line 80 below. The CEATTLE stock assessment is also included but requires AD Model builder (http://www.admb-project.org). To run the assessment scripts (not recommended or tested outside of macOSX) see "README_EBM_Holsman_Analysis.pdf".
-
-### EMB_paper.R script:
-
-```{r EBM_paper, eval=FALSE, echo=TRUE}
-
-## ------------------------------------------------
-## plotting code for EBM paper 
-## Kirstin Holsman 
-## Feb 2020
-## Kirstin.holsman@noaa.gov
-## ------------------------------------------------
-
-
-# 1. Set up
-# 2. load data
-# 3. make figures
-
-
-    rm(list=ls())
-    graphics.off()
-    interactive()
-      
-    #-------------------------------------
-    #   1. SET THINGS UP
-    #------------------------------------- 
+```{r EBM_paper, echo=TRUE}
+    
     # set your local path:
-    main  <-  path.expand("~/GitHub_new/EBM_Holsman_NatComm/")
+    main  <-  file.path(download_path,"EBM_Holsman_NatComm/")
+    # e.g., main  <-  "/Users/kholsman/GitHub_new/EBM_Holsman_NatComm/"
     setwd(main)
     
     # load data, packages, setup, etc.
     source("R/make.R")
-    
-    # --------------------------------------------------------------
-    # optional: Make the paper figures:
-    # --------------------------------------------------------------
-    source("R/sub_scripts/make_plotsV2.R")  # this will generate the paper figures without overwriting them
-    # You can also call individual plots like this:
-    
+
+```
+
+### (optional) Regenerate plots:
+
+To generate the figures in the paper without overwriting them run the 'make_plots.R' code.
+
+```{r, eval= FALSE}
+
+  cat(paste("\n\n update.figs  = ",update.figs,"\n"))
+  cat(paste("\n\n update.outputs  = ",update.outputs,"\n"))
+  
+  # This script generates the figure functions for the paper:
+  source("R/sub_scripts/load_paper_figs.R")
+
+  # You can generate individual plots like this (some take a few mins and throw warnings):
+    graphics.off()
     fig2()
-    fig3()
-    fig4()
+    fig3() #  slow....
+    fig4() #  slow....
     fig5()
     fig6()
     figS1()
-    figS2()
-    figS3()
+    figS2() #  slow....
+    figS3() #  slow....
     figS4()
     figS5()
     figS6()
-    
+```   
+
+Or you can plot the set without overiding the save figures by running the following lines:
+
+```{r, eval=FALSE}
+ update.figs = FALSE # prevents overwriting the existing figures.
+ source("R/sub_scripts/make_plots.R")
+```
+
+Alternatively, by setting `update.figs` to `TRUE` the script will overwrite the existing figures.  
+   
+```{r, eval = FALSE}   
     update.figs  <- TRUE  
     stop("warning! this will overwrite existing figures in the Figures folder")
-    source("R/sub_scripts/make_plotsV2.R")
-    
+    source("R/sub_scripts/make_plots.R")
     update.figs  <- FALSE   # return this to it's default setting
-    
-    
-    # --------------------------------------------------------------
-    # optional: Rerun paper analyses including risk and threshold/tipping points
-    # --------------------------------------------------------------
-    # to re-run the paper anlyses set update.outputs = TRUE 
-    # (this is set to FALSE by defualt) in the R/setup.R script
-    
-    update.outputs  <- TRUE  
-    stop("warning! this will overwrite Rdata files in the data folder")
+```
+
+### Re-running the intermediate data
+
+To re-run the paper analyses, including risk and threshold/tipping points, set `update.outputs = TRUE` in the editor or in `R/setup.R` (this is set to `FALSE` by default).
+
+```{r, eval=FALSE}
+  
+    update.outputs  <- TRUE  ; stop("warning! this will overwrite Rdata files in the data folder")
     source("R/sub_scripts/SUB_EBM_paper.R")
     
     update.outputs  <- FALSE  # once complete set to FALSE and reload new datafiles:
     source("R/make.R")
-    
-   
-    # see the workflow
-    #vis_drake_graph(plan)
-
-
 ```
 
 
 
 ```{r, echo=FALSE}
  #source("R/make.R")       # loads packages, data, setup, etc.
- rmd2md(rmd_fl = "README_Holsman_EBMpaper",md_fl = "README")
+ #rmd2md(rmd_fl = "README_Holsman_EBMpaper",md_fl = "README")
 ```
 
+
+# Primary and Intermediate Data sources and access:
+
+Various simulation outputs were made available for use in this analysis through the interdisciplinary [Alaska Climate Integrated Modeling (ACLIM) project]("https://www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project"). An overview of the project and simulation experiments can be found in [Hollowed et al. 2020]("https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full").
+
+### Bering10K ROMSNPZ
+
+ACLIM indices used in this analysis can be viewed interactively online at: https://kholsman.shinyapps.io/aclim. The indices were produced for the ACLIM project and derived from the outputs of the Bering10K ROMSNPZ model. Downscaled hindcasts and CMIP5 projections of oceanogrpahic and lowertrophic conditions from the Bering10K model were developed as part of the ACLIM project. An overview of these projections and the Bering10K ROMSNPZ model can be found in [Hermann et al. 2019]("https://academic.oup.com/icesjms/article/76/5/1280/5477847"), [Kearney et al. 2020]("https://gmd.copernicus.org/articles/13/597/2020/"), and [Hollowed et al. 2020]("https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full"). An overview of the Bering10K ROMSNPZ model can be found [here]("https://beringnpz.github.io/roms-bering-sea/intro/").
+
+Kearney K, Hermann A, Cheng W, Ortiz I, Aydin K (2020) A coupled pelagic-benthic-sympagic biogeochemical model for the Bering Sea: documentation and validation of the BESTNPZ model (v2019.08.23) within a high-resolution regional ocean model. Geosci Model Dev 13:597-650. DOI:10.5194/gmd-13-597-2020.
+
+
+### CEATTLE 
+
+CEATTLE is a climate-enhanced multispecies stock assessment model for walleye pollock, Pacific cod, and arrowtooth flounder ([Holsman et al. 2016]("https://www.sciencedirect.com/science/article/pii/S0967064515002751"), [2019]("https://archive.afsc.noaa.gov/refm/docs/2019/EBSmultispp.pdf")) that has been updated annually and included as an appendix to the BSAI walleye pollock stock assessment ([Ianelli et al. 2019]("https://archive.afsc.noaa.gov/refm/docs/2019/GOApollock.pdf")) since 2016 as part of the Bering Sea fishery stock assessment process. As part of ACLIM CEATTLE was coupled to the ROMSNPZ model and the ATTACH model (below) to generate projections of species biomass and catch under future climate conditions in the Bering Sea. Methods for this coupling and projection simulation can be found in Holsman et al. submitted and Hollowed et al. 2020. The simulation outputs, scripts, and input data files used to generate these simulations can be found on the ACLIM-CEATTLE gitrepo and figshare sites. Details about the CEATTLE model can be found in the [2018 Multispecies assessment]("https://archive.fisheries.noaa.gov/afsc/REFM/Docs/2018/BSAI/2018EBSmultispp-508.pdf") and [2019 Assessments]("https://archive.afsc.noaa.gov/refm/docs/2019/EBSmultispp.pdf").
+
+### ATTACH 
+
+The catchfunction package (which we refer to as the ABC To TAC and Commercial Harvest, aka ATTACH, model: R package rename forthcoming) was created for the Alaska Climate Integrated Modeling Project (ACLIM) by Amanda Faig (University of Washington; School of Aquatic Fisheries and Sciences) and Alan Haynie (NOAA; NMFS). This function, in a nutshell, takes Bering Sea (BS) acceptable biological catch (ABC) as input and uses a series of regression estimates to predict total allowable catch (TAC) and from that the commercial harvest in the Bering Sea, based on ABC, TAC, and catch data from 1992 to 2017. Documentation and code for ATTACH can be found on the [attach github]("https://github.com/amandafaig/catchfunction").
+
+
+If running  code below (recommended) you will need to download the final data "EBM_ceattlenew.Rdata" from figshare and place it in the main directory: "EBM_Holsman_NatComm/EBM_ceattlenew.Rdata".
+
+* access EBM_ceattlenew.Rdata here: https://figshare.com/s/6dea7722df39e07d79f0 and place it in the directory: EBM_Holsman_NatComm/EBM_ceattlenew.Rdata. 
+(Data DOI:10.6084/m9.figshare.11864505)
+
+If re-running the intermediate data analysis (not recommended) the following files will need to be downloaded unzipped and placed in the asssesment_files folder:

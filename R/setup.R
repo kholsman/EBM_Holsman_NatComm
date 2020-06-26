@@ -14,17 +14,18 @@
     
     # switches and options:
     #-------------------------------------------
-    update.figs     <-  TRUE  # set to true to re-save figs
-    update.outputs  <-  TRUE   # overwrite the existing Rdatafiles in data/out
+    update.figs     <-  FALSE  # set to true to re-save figs
+    update.outputs  <-  FALSE   # overwrite the existing Rdatafiles in data/out
     status          <-  TRUE   # print progress
     scaleIN         <-  1      # controls the ratio (relative scaling of window)
     dpiIN           <-  150    # dpi for figures (set to lower res for smaller file size- these will be about 3.5 MB)
     
-    outfn           <- c("Biomass_thresholds.Rdata",
-                         "Catch_thresholds.Rdata",
+    infn            <- c("covariates.Rdata",
                          "0_5_3_nohcr_simulations.Rdata",
                          "multispp_cap_simulations.Rdata",
-                         "multispp_nocap_simulations.Rdata",
+                         "multispp_nocap_simulations.Rdata")
+    outfn            <- c("Biomass_thresholds.Rdata",
+                         "Catch_thresholds.Rdata",
                          "risk.Rdata")
               
     
@@ -93,17 +94,6 @@
     # or 12.0 cm (4.75 inches or 2 columns). 
 
     # set up color palettes
-    col1     <- colorRampPalette(colors()[c(280,320)])
-    col2     <- colorRampPalette(colors()[c(70,491)])
-    col2     <- colorRampPalette(colors()[c(114,491)])
-    col3     <- colorRampPalette(c("yellow","red"))
-    #col2    <- colorRampPalette(c(wes(7)[c(3,1)],col2(3)[3]))
-    #col3    <- colorRampPalette(c(wes(7)[4:7]))
-    col4     <- colorRampPalette(c(colIN1(6),"maroon"))
-
-    # set the color scheme
-    coll_use         <-  c(colors()[320],col2(6)[c(2,3,4)],col3(6)[c(3,4,6)])
-    
     plt     <- c("Zissou1","Darjeeling1","Darjeeling2","FantasticFox1")
     blues   <- RColorBrewer::brewer.pal(5, "Blues")
     BG      <- RColorBrewer::brewer.pal(9, "GnBu")  #5
@@ -115,12 +105,22 @@
     night   <- colorRampPalette(colors()[c(653,47,474,72,491,477)])
     dawn    <- colorRampPalette(c(colors()[c(477,491,72,474,47,653)],"orange","red"))
     orng    <- colorRampPalette(Ornjazz[1:5])
-    plt     <- c("Zissou1","Darjeeling1","Darjeeling2","FantasticFox1")
-    colIN1  <- colorRampPalette(c(wes_palette(n=5, name=plt[1])[1:5]))
+    colIN1   <- colorRampPalette(c(wes_palette(n=5, name=plt[1])[1:5]))
+    col4     <- colorRampPalette(c(colIN1(6),"maroon"))
+    
     col_in  <- colorRampPalette(colors()[c(459,122,73)])
+    col_in  <- colorRampPalette(colors()[c(408,44,73)])
     col_in2 <- colorRampPalette(c("orange","red"))
     wes     <- colorRampPalette(c(wes_palette(n=5, name=plt[1])[1:5]))
-
+    col1     <- colorRampPalette(colors()[c(280,320)])
+    #col2     <- colorRampPalette(colors()[c(70,491)])
+    col2     <- colorRampPalette(colors()[c(114,491)])
+    col2    <- colorRampPalette(c(wes(7)[c(3,1)],col2(3)[3]))
+    col3    <- colorRampPalette(c(wes(7)[4:7]))
+    
+    # set the color scheme
+    coll_use         <-  c(colors()[320],col2(6)[c(2,3,4)],col3(6)[c(3,4,6)])
+    
     # Set up plotting stuff:
     #------------------------------------     
    
