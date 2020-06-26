@@ -52,7 +52,7 @@ Intermediate data from the ACLIM models and simulations can be found in the **da
 
 Final figures and tables (including illustrator files that were used to add fish icons) can be found in the **Figures** sub-folder. These figures can be called direct or re-generated (see section below ).
 
-# 2. Downloading code and data:
+# 2. Getting started:
 
 ## 2.1. Download the code from the github repository:
 
@@ -69,7 +69,7 @@ Final figures and tables (including illustrator files that were used to add fish
     
     # unzip the .zip file
     setwd(download_path)
-    unzip (dest_file, exdir = "./")
+    unzip (dest_file, exdir = "./",overwrite = T)
     setwd(main)
 ```
 
@@ -107,7 +107,7 @@ Below are instructions for runninh the R scripts to recreate the figures, tables
 
 The first step is to run the make.R script to load the data, packages, and setup (where various options are specified). Note that the scripts depend on a number of packages that will be installed the first time through running make.R if they are not already included. _A list of those packages can be found in 'EBM_Holsman_NatComm/R/packages.R'._
 
-```{r EBM_paper, echo=TRUE}
+```{r EBM_paper, echo=TRUE, eval=FALSE}
     
     # set your local path:
     # main        <-  file.path(download_path,"EBM_Holsman_NatComm/")
@@ -125,13 +125,13 @@ To generate the figures in the paper without overwriting them run the 'make_plot
 
 ```{r, eval= FALSE}
 
-  cat(paste("\n\n update.figs  = ",update.figs,"\n"))
-  cat(paste("\n\n update.outputs  = ",update.outputs,"\n"))
+    cat(paste("\n\n update.figs  = ",update.figs,"\n"))
+    cat(paste("\n\n update.outputs  = ",update.outputs,"\n"))
   
-  # This script generates the figure functions for the paper:
-  source("R/sub_scripts/load_paper_figs.R")
+    # This script generates the figure functions for the paper:
+    source("R/sub_scripts/load_paper_figs.R")
 
-  # You can generate individual plots like this (some take a few mins and throw warnings):
+    # You can generate individual plots like this (some take a few mins and throw warnings):
     graphics.off()
     fig2()
     fig3() #  slow....
@@ -146,14 +146,7 @@ To generate the figures in the paper without overwriting them run the 'make_plot
     figS6()
 ```   
 
-Or you can plot the set without overiding the save figures by running the following lines:
-
-```{r, eval=FALSE}
- update.figs = FALSE # prevents overwriting the existing figures.
- source("R/sub_scripts/make_plots.R")
-```
-
-Alternatively, by setting `update.figs` to `TRUE` the script will overwrite the existing figures:  
+Alternatively, by setting `update.figs` to `TRUE` the script will overwrite the existing figures in the `Figures` folder:  
    
 ```{r, eval = FALSE}   
     update.figs  <- TRUE  
@@ -167,10 +160,12 @@ Alternatively, by setting `update.figs` to `TRUE` the script will overwrite the 
 To re-run the paper analyses, including risk calculations and threshold/tipping points, set `update.outputs = TRUE`(this is set to `FALSE` by default) and run the `SUB_EBM_paper.R` script:
 
 ```{r, eval=FALSE}
-    update.outputs  <- TRUE  ; stop("warning! this will overwrite Rdata files in the data folder")
+    update.outputs  <- TRUE  
+    stop("warning! Setting update.outputs to TRUE will overwrite Rdata files in the data folder")
     source("R/sub_scripts/SUB_EBM_paper.R")
-    
-    update.outputs  <- FALSE  # once complete set to FALSE and reload new datafiles:
+
+    # once complete set to FALSE and reload new datafiles:
+    update.outputs  <- FALSE  
     source("R/make.R")
 ```
 
@@ -197,12 +192,11 @@ Kearney K, Hermann A, Cheng W, Ortiz I, Aydin K (2020) A coupled pelagic-benthic
 
 CEATTLE is a climate-enhanced multispecies stock assessment model for walleye pollock, Pacific cod, and arrowtooth flounder ([Holsman et al. 2016]("https://www.sciencedirect.com/science/article/pii/S0967064515002751"), [2019]("https://archive.afsc.noaa.gov/refm/docs/2019/EBSmultispp.pdf")) that has been updated annually and included as an appendix to the BSAI walleye pollock stock assessment ([Ianelli et al. 2019]("https://archive.afsc.noaa.gov/refm/docs/2019/GOApollock.pdf")) since 2016 as part of the Bering Sea fishery stock assessment process. As part of ACLIM CEATTLE was coupled to the ROMSNPZ model and the ATTACH model (below) to generate projections of species biomass and catch under future climate conditions in the Bering Sea. Methods for this coupling and projection simulation can be found in Holsman et al. submitted and Hollowed et al. 2020. The simulation outputs, scripts, and input data files used to generate these simulations can be found on the ACLIM-CEATTLE gitrepo and figshare sites. Details about the CEATTLE model can be found in the [2018 Multispecies assessment]("https://archive.fisheries.noaa.gov/afsc/REFM/Docs/2018/BSAI/2018EBSmultispp-508.pdf") and [2019 Assessments]("https://archive.afsc.noaa.gov/refm/docs/2019/EBSmultispp.pdf").
 
-
-  # Multispecies assessment simulations (run in ADMB)
-  #
-  # using climate naive reference points for BO
-  # but climate specific B40 and projections (climate effects
-  # on growth, M2, and recruitment)
+Three harvest simulations are included in the available simulations:
+1. Catch = ABC where multispecies assessment simulations (run in ADMB) using climate naive reference points for BO  but climate specific B40 and projections (climate effects on growth, M2, and recruitment).
+2. Catch = ABC + sloping harvest control rule below B40, and whith F = 0 when B < B20.
+3. As in 2 but where catch~f(ABC,TAC) via the ATTACH package (below).
+  
 ### ATTACH 
 
 The catchfunction package (which we refer to as the ABC To TAC and Commercial Harvest, aka ATTACH, model: R package rename forthcoming) was created for the Alaska Climate Integrated Modeling Project (ACLIM) by Amanda Faig (University of Washington; School of Aquatic Fisheries and Sciences) and Alan Haynie (NOAA; NMFS). This function, in a nutshell, takes Bering Sea (BS) acceptable biological catch (ABC) as input and uses a series of regression estimates to predict total allowable catch (TAC) and from that the commercial harvest in the Bering Sea, based on ABC, TAC, and catch data from 1992 to 2017. Documentation and code for ATTACH can be found on the [attach github]("https://github.com/amandafaig/catchfunction").
