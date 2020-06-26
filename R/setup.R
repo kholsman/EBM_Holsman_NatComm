@@ -14,7 +14,8 @@
     
     # switches and options:
     #-------------------------------------------
-    update.figs     <-  FALSE  # set to true to re-save figs
+    update.figs     <-  FALSE   # set to true to re-save figs
+    update.inputs   <-  FALSE   
     update.outputs  <-  FALSE   # overwrite the existing Rdatafiles in data/out
     status          <-  TRUE   # print progress
     scaleIN         <-  1      # controls the ratio (relative scaling of window)
