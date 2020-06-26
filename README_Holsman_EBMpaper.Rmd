@@ -57,8 +57,21 @@ Final figures and tables (including illustrator files that were used to add fish
 ## 2.1. Download the code from the github repository:
 
 ```{r, eval = FALSE}
-    download_path <- path.expand("~/GitHub_new")
+    # download the code:
+    main_nm       <- "EBM_Holsman_NatComm-master"
     download_path <- path.expand("~/desktop")
+    main <- file.path(download_path,main_nm)
+   
+    
+    # download the code:
+    dest_file     <- file.path(download_path,paste0(main_nm,".zip"))
+    url           <-"https://github.com/kholsman/EBM_Holsman_NatComm/archive/master.zip"
+    download.file(url=url, destfile=dest_file)
+    
+    # unzip the .zip file
+    setwd(download_path)
+    unzip (dest_file, exdir = "./")
+    setwd(main)
 ```
 
 
@@ -96,7 +109,9 @@ Below are instructions for downloading input data, code and scripts to recreate 
 ```{r EBM_paper, echo=TRUE}
     
     # set your local path:
-    main  <-  file.path(download_path,"EBM_Holsman_NatComm/")
+    
+    main  <-  dest_file
+    # main  <-  file.path(download_path,"EBM_Holsman_NatComm/")
     # e.g., main  <-  "/Users/kholsman/GitHub_new/EBM_Holsman_NatComm/"
     setwd(main)
     
