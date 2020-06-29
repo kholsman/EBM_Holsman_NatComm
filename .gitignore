@@ -25,3 +25,4 @@ data.zip
 EBM_Holsman_NatComm.Rproj
 .Rproj.user
 NotShared
+!data/out/Data_defs.xlsx
