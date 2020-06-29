@@ -8,7 +8,7 @@ NOAA Fisheries, Seattle WA
 
 ------------------------------------------------------------------------
 
-1. Overview
+## 1. Overview
 -----------
 
 This is an overview of the data, code, and workflow used to generate intermediate and final data for the Holsman et al. in review Nature Communications paper. Below are instructions for downloading the code and intermediate and final data and for re-generating the figures and analyses presented in the paper. Note, in all cases species 1 = walleye pollock, species 2 = Pacific cod, and species 3 = arrowtooth flounder.
@@ -19,7 +19,7 @@ Intermediate data from the ACLIM models and simulations can be found in the **da
 
 Final figures and tables (including illustrator files that were used to add fish icons) can be found in the **Figures** sub-folder. These figures can be called direct or re-generated (see section below ).
 
-2. Getting started:
+## 2. Getting started:
 -------------------
 
 ### 2.1. Download the code from the github repository:
@@ -62,7 +62,7 @@ If you plan to use the data within the folder for purposes beyond rerunning the 
 
 10.6084/m9.figshare.12568625 along with Holsman et al. 2020.
 
-3. Regenerating analyses and figures:
+## 3. Regenerating analyses and figures:
 -------------------------------------
 
 Below are instructions for running the R scripts to recreate the figures, tables, results, and run the risk and threshold analyses for the paper. The scripts below require R version 3.5.3 (available at <https://cran.r-project.org/bin/macosx/el-capitan/base/>).
@@ -127,7 +127,7 @@ To re-run the paper analyses, including risk calculations and threshold/tipping 
     source("R/make.R")
 ```
 
-4. Primary and Intermediate Data sources and models:
+## 4. Primary and Intermediate Data sources and models:
 ====================================================
 
 Various simulation outputs were made available for use in this analysis through the interdisciplinary [Alaska Climate Integrated Modeling (ACLIM) project](%22https://www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project%22). An overview of the project and simulation experiments can be found in [Hollowed et al. 2020](%22https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full%22).
