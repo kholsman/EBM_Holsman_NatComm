@@ -1,7 +1,6 @@
 ---
 title: "EBM Nature Communications scripts & data"
 author: "Kirstin Holsman"
-date: "2/17/2020"
 output:
   html_document:
     df_print: kable
@@ -24,7 +23,7 @@ output:
 ---
 
 
-*Data and code are under review and subject to change. Do not use without permission from lead author: kirstin.holsman@noaa.gov*
+*Data and code are under review and subject to change. Please do not use without permission from lead author: kirstin.holsman@noaa.gov*
  
 ```{r, echo = F}
  #source("R/make.R")       # loads packages, data, setup, etc.
@@ -33,13 +32,12 @@ output:
  
 ```
 
----
-
-*  Kirstin Holsman  
-   Alaska Fisheries Science Center  
-   NOAA Fisheries, Seattle WA  
-   **<kirstin.holsman@noaa.gov>**  
-   *Last updated: `r thisYr`*
+Kirstin Holsman  
+Alaska Fisheries Science Center  
+NOAA Fisheries, Seattle WA  
+**<kirstin.holsman@noaa.gov>**  
+*Last updated: `r today`*  
+   
 ---
 
 # 1. Overview
@@ -74,7 +72,7 @@ Final figures and tables (including illustrator files that were used to add fish
 ```
 
 
-## 3.1. Download input data from figshare:
+## 3.1. Download data from figshare:
 
 To run the analyses or create the paper figures you will now need to download the large zipped data folder here: https://figshare.com/s/81007e2dd5edee0a5a7a (Data 10.6084/m9.figshare.12568625) and copy - paste the contents (folders "in" and "out"") it in the directory: 
 '[your local directory path]/EBM_Holsman_NatComm/data' or simply run the following script to download and place the data in the correct sub-folders:
@@ -99,7 +97,7 @@ If you plan to use the data within the folder for purposes beyond rerunning the 
 
 # 3. Regenerating analyses and figures:
 
-Below are instructions for runninh the R scripts to recreate the figures, tables, results, and run the risk and threshold analyses for the paper. The scripts below require R version 3.5.3 (available at https://cran.r-project.org/bin/macosx/el-capitan/base/). 
+Below are instructions for running the R scripts to recreate the figures, tables, results, and run the risk and threshold analyses for the paper. The scripts below require R version 3.5.3 (available at https://cran.r-project.org/bin/macosx/el-capitan/base/). 
 
 ## 3.1. Re-generate plots
 
@@ -168,9 +166,10 @@ To re-run the paper analyses, including risk calculations and threshold/tipping 
 
 
 
-```{r, echo=FALSE}
- #source("R/make.R")       # loads packages, data, setup, etc.
- #rmd2md(rmd_fl = "README_Holsman_EBMpaper",md_fl = "README")
+```{r, echo=FALSE, eval =FALSE}
+# copy and paste this into R window (won't work within markdown)
+ source("R/rmd2md.R")
+ rmd2md(rmd_fl = "README_Holsman_EBMpaper",md_fl = "README")
 ```
 
 
@@ -180,10 +179,9 @@ Various simulation outputs were made available for use in this analysis through 
 
 ### Bering10K ROMSNPZ
 
-ACLIM indices used in this analysis can be viewed interactively online at: https://kholsman.shinyapps.io/aclim. The indices were produced for the ACLIM project and derived from the outputs of the Bering10K ROMSNPZ model. Downscaled hindcasts and CMIP5 projections of oceanogrpahic and lowertrophic conditions from the Bering10K model were developed as part of the ACLIM project. An overview of these projections and the Bering10K ROMSNPZ model can be found in [Hermann et al. 2019]("https://academic.oup.com/icesjms/article/76/5/1280/5477847"), [Kearney et al. 2020]("https://gmd.copernicus.org/articles/13/597/2020/"), and [Hollowed et al. 2020]("https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full"). An overview of the Bering10K ROMSNPZ model can be found [here]("https://beringnpz.github.io/roms-bering-sea/intro/").
+ACLIM indices used in this analysis can be viewed interactively online at: https://kholsman.shinyapps.io/aclim. The indices were produced for the ACLIM project and derived from the outputs of the Bering10K ROMSNPZ model. Downscaled hindcasts and CMIP5 projections of oceanographic and lower trophic conditions from the Bering10K model were developed as part of the ACLIM project. An overview of these projections and the Bering10K ROMSNPZ model can be found in [Hermann et al. 2019]("https://academic.oup.com/icesjms/article/76/5/1280/5477847"), [Kearney et al. 2020]("https://gmd.copernicus.org/articles/13/597/2020/"), and [Hollowed et al. 2020]("https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full"). An overview of the Bering10K ROMSNPZ model can be found [here]("https://beringnpz.github.io/roms-bering-sea/intro/").
 
 Kearney K, Hermann A, Cheng W, Ortiz I, Aydin K (2020) A coupled pelagic-benthic-sympagic biogeochemical model for the Bering Sea: documentation and validation of the BESTNPZ model (v2019.08.23) within a high-resolution regional ocean model. Geosci Model Dev 13:597-650. DOI:10.5194/gmd-13-597-2020.
-
 
 ### CEATTLE 
 
@@ -191,7 +189,7 @@ CEATTLE is a climate-enhanced multispecies stock assessment model for walleye po
 
 Three harvest simulations are included in the available simulations:
 1. Catch = ABC where multispecies assessment simulations (run in ADMB) using climate naive reference points for BO  but climate specific B40 and projections (climate effects on growth, M2, and recruitment).
-2. Catch = ABC + sloping harvest control rule below B40, and whith F = 0 when B < B20.
+2. Catch = ABC + sloping harvest control rule below B40, and with F = 0 when B < B20.
 3. As in 2 but where catch~f(ABC,TAC) via the ATTACH package (below).
   
 ### ATTACH 
@@ -199,9 +197,3 @@ Three harvest simulations are included in the available simulations:
 The catchfunction package (which we refer to as the ABC To TAC and Commercial Harvest, aka ATTACH, model: R package rename forthcoming) was created for the Alaska Climate Integrated Modeling Project (ACLIM) by Amanda Faig (University of Washington; School of Aquatic Fisheries and Sciences) and Alan Haynie (NOAA; NMFS). This function, in a nutshell, takes Bering Sea (BS) acceptable biological catch (ABC) as input and uses a series of regression estimates to predict total allowable catch (TAC) and from that the commercial harvest in the Bering Sea, based on ABC, TAC, and catch data from 1992 to 2017. Documentation and code for ATTACH can be found on the [attach github]("https://github.com/amandafaig/catchfunction").
 
 
-If running  code below (recommended) you will need to download the final data "EBM_ceattlenew.Rdata" from figshare and place it in the main directory: "EBM_Holsman_NatComm/EBM_ceattlenew.Rdata".
-
-* access EBM_ceattlenew.Rdata here: https://figshare.com/s/6dea7722df39e07d79f0 and place it in the directory: EBM_Holsman_NatComm/EBM_ceattlenew.Rdata. 
-(Data DOI:10.6084/m9.figshare.11864505)
-
-If re-running the intermediate data analysis (not recommended) the following files will need to be downloaded unzipped and placed in the asssesment_files folder:

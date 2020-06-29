@@ -179,7 +179,6 @@ summary {
 
 <h1 class="title toc-ignore">EBM Nature Communications scripts &amp; data</h1>
 <h4 class="author">Kirstin Holsman</h4>
-<h4 class="date">2/17/2020</h4>
 
 </div>
 
@@ -190,7 +189,7 @@ summary {
 </ul></li>
 <li><a href="#getting-started">2. Getting started:</a><ul>
 <li><a href="#download-the-code-from-the-github-repository">2.1. Download the code from the github repository:</a></li>
-<li><a href="#download-input-data-from-figshare">3.1. Download input data from figshare:</a></li>
+<li><a href="#download-data-from-figshare">3.1. Download data from figshare:</a></li>
 </ul></li>
 <li><a href="#regenerating-analyses-and-figures">3. Regenerating analyses and figures:</a><ul>
 <li><a href="#re-generate-plots">3.1. Re-generate plots</a><ul>
@@ -207,18 +206,16 @@ summary {
 </ul>
 </div>
 
-<p><em>Data and code are under review and subject to change. Do not use without permission from lead author: <a href="mailto:kirstin.holsman@noaa.gov">kirstin.holsman@noaa.gov</a></em></p>
-<hr />
-<ul>
-<li>Kirstin Holsman<br />
+<p><em>Data and code are under review and subject to change. Please do not use without permission from lead author: <a href="mailto:kirstin.holsman@noaa.gov">kirstin.holsman@noaa.gov</a></em></p>
+<p>Kirstin Holsman<br />
 Alaska Fisheries Science Center<br />
 NOAA Fisheries, Seattle WA<br />
 <strong><a href="mailto:kirstin.holsman@noaa.gov">kirstin.holsman@noaa.gov</a></strong><br />
-<em>Last updated: 2020</em> —</li>
-</ul>
+<em>Last updated: Jun 29, 2020</em></p>
+<hr />
 <div id="overview" class="section level1">
 <h1>1. Overview</h1>
-<p>This is an overview of the data, code, and workflow used to generate intermediate and final data for the Holsman et al. in review Nature Communications paper. Below are instructions for downloading the code and intermediate and final data and for re-generating the figures and analyses presented in the paper.</p>
+<p>This is an overview of the data, code, and workflow used to generate intermediate and final data for the Holsman et al. in review Nature Communications paper. Below are instructions for downloading the code and intermediate and final data and for re-generating the figures and analyses presented in the paper. Note, in all cases species 1 = walleye pollock, species 2 = Pacific cod, and species 3 = arrowtooth flounder.</p>
 <div id="data-and-figures" class="section level2">
 <h2>1.1. Data and Figures</h2>
 <p>Intermediate data from the ACLIM models and simulations can be found in the <strong>data/in</strong> sub-folder in the form of <code>.Rdata</code> files. Final data from the analyses of the paper can be found in the <strong>data/out</strong> sub-folder (also <code>.Rdata</code> files).</p>
@@ -244,8 +241,8 @@ NOAA Fisheries, Seattle WA<br />
     unzip (dest_file, exdir = &quot;./&quot;,overwrite = T)
     setwd(main)</code></pre>
 </div>
-<div id="download-input-data-from-figshare" class="section level2">
-<h2>3.1. Download input data from figshare:</h2>
+<div id="download-data-from-figshare" class="section level2">
+<h2>3.1. Download data from figshare:</h2>
 <p>To run the analyses or create the paper figures you will now need to download the large zipped data folder here: <a href="https://figshare.com/s/81007e2dd5edee0a5a7a" class="uri">https://figshare.com/s/81007e2dd5edee0a5a7a</a> (Data 10.6084/m9.figshare.12568625) and copy - paste the contents (folders “in” and “out”“) it in the directory: ‘[your local directory path]/EBM_Holsman_NatComm/data’ or simply run the following script to download and place the data in the correct sub-folders:</p>
 <pre class="r"><code>    cat(&quot;The download takes a few mins (large data files)...\n&quot;)
 
@@ -263,7 +260,7 @@ NOAA Fisheries, Seattle WA<br />
 </div>
 <div id="regenerating-analyses-and-figures" class="section level1">
 <h1>3. Regenerating analyses and figures:</h1>
-<p>Below are instructions for runninh the R scripts to recreate the figures, tables, results, and run the risk and threshold analyses for the paper. The scripts below require R version 3.5.3 (available at <a href="https://cran.r-project.org/bin/macosx/el-capitan/base/" class="uri">https://cran.r-project.org/bin/macosx/el-capitan/base/</a>).</p>
+<p>Below are instructions for running the R scripts to recreate the figures, tables, results, and run the risk and threshold analyses for the paper. The scripts below require R version 3.5.3 (available at <a href="https://cran.r-project.org/bin/macosx/el-capitan/base/" class="uri">https://cran.r-project.org/bin/macosx/el-capitan/base/</a>).</p>
 <div id="re-generate-plots" class="section level2">
 <h2>3.1. Re-generate plots</h2>
 <div id="set-things-up" class="section level3">
@@ -282,9 +279,6 @@ NOAA Fisheries, Seattle WA<br />
 <p>To generate the figures in the paper without overwriting them run the ‘make_plots.R’ code.</p>
 <pre class="r"><code>    cat(paste(&quot;\n\n update.figs  = &quot;,update.figs,&quot;\n&quot;))
     cat(paste(&quot;\n\n update.outputs  = &quot;,update.outputs,&quot;\n&quot;))
-  
-    # This script generates the figure functions for the paper:
-    source(&quot;R/sub_scripts/load_paper_figs.R&quot;)
 
     # You can generate individual plots like this (some take a few mins and throw warnings):
     graphics.off()
@@ -315,6 +309,7 @@ NOAA Fisheries, Seattle WA<br />
     # once complete set to FALSE and reload new datafiles:
     update.outputs  &lt;- FALSE  
     source(&quot;R/make.R&quot;)</code></pre>
+<pre><code>## [1] &quot;/Users/kholsman/GitHub_new/EBM_Holsman_NatComm&quot;</code></pre>
 </div>
 </div>
 </div>
@@ -323,22 +318,17 @@ NOAA Fisheries, Seattle WA<br />
 <p>Various simulation outputs were made available for use in this analysis through the interdisciplinary <a href="%22https://www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project%22">Alaska Climate Integrated Modeling (ACLIM) project</a>. An overview of the project and simulation experiments can be found in <a href="%22https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full%22">Hollowed et al. 2020</a>.</p>
 <div id="bering10k-romsnpz" class="section level3">
 <h3>Bering10K ROMSNPZ</h3>
-<p>ACLIM indices used in this analysis can be viewed interactively online at: <a href="https://kholsman.shinyapps.io/aclim" class="uri">https://kholsman.shinyapps.io/aclim</a>. The indices were produced for the ACLIM project and derived from the outputs of the Bering10K ROMSNPZ model. Downscaled hindcasts and CMIP5 projections of oceanogrpahic and lowertrophic conditions from the Bering10K model were developed as part of the ACLIM project. An overview of these projections and the Bering10K ROMSNPZ model can be found in <a href="%22https://academic.oup.com/icesjms/article/76/5/1280/5477847%22">Hermann et al. 2019</a>, <a href="%22https://gmd.copernicus.org/articles/13/597/2020/%22">Kearney et al. 2020</a>, and <a href="%22https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full%22">Hollowed et al. 2020</a>. An overview of the Bering10K ROMSNPZ model can be found <a href="%22https://beringnpz.github.io/roms-bering-sea/intro/%22">here</a>.</p>
+<p>ACLIM indices used in this analysis can be viewed interactively online at: <a href="https://kholsman.shinyapps.io/aclim" class="uri">https://kholsman.shinyapps.io/aclim</a>. The indices were produced for the ACLIM project and derived from the outputs of the Bering10K ROMSNPZ model. Downscaled hindcasts and CMIP5 projections of oceanographic and lower trophic conditions from the Bering10K model were developed as part of the ACLIM project. An overview of these projections and the Bering10K ROMSNPZ model can be found in <a href="%22https://academic.oup.com/icesjms/article/76/5/1280/5477847%22">Hermann et al. 2019</a>, <a href="%22https://gmd.copernicus.org/articles/13/597/2020/%22">Kearney et al. 2020</a>, and <a href="%22https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full%22">Hollowed et al. 2020</a>. An overview of the Bering10K ROMSNPZ model can be found <a href="%22https://beringnpz.github.io/roms-bering-sea/intro/%22">here</a>.</p>
 <p>Kearney K, Hermann A, Cheng W, Ortiz I, Aydin K (2020) A coupled pelagic-benthic-sympagic biogeochemical model for the Bering Sea: documentation and validation of the BESTNPZ model (v2019.08.23) within a high-resolution regional ocean model. Geosci Model Dev 13:597-650. <a href="DOI:10.5194/gmd-13-597-2020" class="uri">DOI:10.5194/gmd-13-597-2020</a>.</p>
 </div>
 <div id="ceattle" class="section level3">
 <h3>CEATTLE</h3>
 <p>CEATTLE is a climate-enhanced multispecies stock assessment model for walleye pollock, Pacific cod, and arrowtooth flounder (<a href="%22https://www.sciencedirect.com/science/article/pii/S0967064515002751%22">Holsman et al. 2016</a>, <a href="%22https://archive.afsc.noaa.gov/refm/docs/2019/EBSmultispp.pdf%22">2019</a>) that has been updated annually and included as an appendix to the BSAI walleye pollock stock assessment (<a href="%22https://archive.afsc.noaa.gov/refm/docs/2019/GOApollock.pdf%22">Ianelli et al. 2019</a>) since 2016 as part of the Bering Sea fishery stock assessment process. As part of ACLIM CEATTLE was coupled to the ROMSNPZ model and the ATTACH model (below) to generate projections of species biomass and catch under future climate conditions in the Bering Sea. Methods for this coupling and projection simulation can be found in Holsman et al. submitted and Hollowed et al. 2020. The simulation outputs, scripts, and input data files used to generate these simulations can be found on the ACLIM-CEATTLE gitrepo and figshare sites. Details about the CEATTLE model can be found in the <a href="%22https://archive.fisheries.noaa.gov/afsc/REFM/Docs/2018/BSAI/2018EBSmultispp-508.pdf%22">2018 Multispecies assessment</a> and <a href="%22https://archive.afsc.noaa.gov/refm/docs/2019/EBSmultispp.pdf%22">2019 Assessments</a>.</p>
-<p>Three harvest simulations are included in the available simulations: 1. Catch = ABC where multispecies assessment simulations (run in ADMB) using climate naive reference points for BO but climate specific B40 and projections (climate effects on growth, M2, and recruitment). 2. Catch = ABC + sloping harvest control rule below B40, and whith F = 0 when B &lt; B20. 3. As in 2 but where catch~f(ABC,TAC) via the ATTACH package (below).</p>
+<p>Three harvest simulations are included in the available simulations: 1. Catch = ABC where multispecies assessment simulations (run in ADMB) using climate naive reference points for BO but climate specific B40 and projections (climate effects on growth, M2, and recruitment). 2. Catch = ABC + sloping harvest control rule below B40, and with F = 0 when B &lt; B20. 3. As in 2 but where catch~f(ABC,TAC) via the ATTACH package (below).</p>
 </div>
 <div id="attach" class="section level3">
 <h3>ATTACH</h3>
 <p>The catchfunction package (which we refer to as the ABC To TAC and Commercial Harvest, aka ATTACH, model: R package rename forthcoming) was created for the Alaska Climate Integrated Modeling Project (ACLIM) by Amanda Faig (University of Washington; School of Aquatic Fisheries and Sciences) and Alan Haynie (NOAA; NMFS). This function, in a nutshell, takes Bering Sea (BS) acceptable biological catch (ABC) as input and uses a series of regression estimates to predict total allowable catch (TAC) and from that the commercial harvest in the Bering Sea, based on ABC, TAC, and catch data from 1992 to 2017. Documentation and code for ATTACH can be found on the <a href="%22https://github.com/amandafaig/catchfunction%22">attach github</a>.</p>
-<p>If running code below (recommended) you will need to download the final data “EBM_ceattlenew.Rdata” from figshare and place it in the main directory: “EBM_Holsman_NatComm/EBM_ceattlenew.Rdata”.</p>
-<ul>
-<li>access EBM_ceattlenew.Rdata here: <a href="https://figshare.com/s/6dea7722df39e07d79f0" class="uri">https://figshare.com/s/6dea7722df39e07d79f0</a> and place it in the directory: EBM_Holsman_NatComm/EBM_ceattlenew.Rdata. (Data <a href="DOI:10.6084/m9.figshare.11864505" class="uri">DOI:10.6084/m9.figshare.11864505</a>)</li>
-</ul>
-<p>If re-running the intermediate data analysis (not recommended) the following files will need to be downloaded unzipped and placed in the asssesment_files folder:</p>
 </div>
 </div>
 
