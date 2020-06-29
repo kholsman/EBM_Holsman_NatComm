@@ -133,8 +133,8 @@ To re-run the paper analyses, including risk calculations and threshold/tipping 
     source("R/make.R")
 ```
 
-4. Primary and Intermediate Data sources and models:
-====================================================
+4. Primary and Intermediate Data sources and models
+===================================================
 
 Various simulation outputs were made available for use in this analysis through the interdisciplinary [Alaska Climate Integrated Modeling (ACLIM) project](%22https://www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project%22). An overview of the project and simulation experiments can be found in [Hollowed et al. 2020](%22https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full%22).
 
