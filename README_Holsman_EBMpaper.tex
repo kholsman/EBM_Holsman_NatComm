@@ -117,7 +117,7 @@ NOAA Fisheries, Seattle WA\\
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
-\subsection{1. Overview}\label{overview}
+\section{1. Overview}\label{overview}
 
 This is an overview of the data, code, and workflow used to generate
 intermediate and final data for the Holsman et al. in review Nature
@@ -126,7 +126,7 @@ and intermediate and final data and for re-generating the figures and
 analyses presented in the paper. Note, in all cases species 1 = walleye
 pollock, species 2 = Pacific cod, and species 3 = arrowtooth flounder.
 
-\subsubsection{1.1. Data and Figures}\label{data-and-figures}
+\subsection{1.1. Data and Figures}\label{data-and-figures}
 
 Intermediate data from the ACLIM models and simulations can be found in
 the \textbf{data/in} sub-folder in the form of \texttt{.Rdata} files.
@@ -137,9 +137,9 @@ Final figures and tables (including illustrator files that were used to
 add fish icons) can be found in the \textbf{Figures} sub-folder. These
 figures can be called direct or re-generated (see section below ).
 
-\subsection{2. Getting started:}\label{getting-started}
+\section{2. Getting started:}\label{getting-started}
 
-\subsubsection{2.1. Download the code from the github
+\subsection{2.1. Download the code from the github
 repository:}\label{download-the-code-from-the-github-repository}
 
 \begin{Shaded}
@@ -161,7 +161,7 @@ repository:}\label{download-the-code-from-the-github-repository}
 \end{Highlighting}
 \end{Shaded}
 
-\subsubsection{2.2. Download data from
+\subsection{2.2. Download data from
 figshare:}\label{download-data-from-figshare}
 
 To run the analyses or create the paper figures you will now need to
@@ -194,7 +194,7 @@ and provide the following citation for the data:
 
 10.6084/m9.figshare.12568625 along with Holsman et al. 2020.
 
-\subsection{3. Regenerating analyses and
+\section{3. Regenerating analyses and
 figures:}\label{regenerating-analyses-and-figures}
 
 Below are instructions for running the R scripts to recreate the
@@ -202,7 +202,7 @@ figures, tables, results, and run the risk and threshold analyses for
 the paper. The scripts below require R version 3.5.3 (available at
 \url{https://cran.r-project.org/bin/macosx/el-capitan/base/}).
 
-\subsubsection{3.1. Set things up:}\label{set-things-up}
+\subsection{3.1. Set things up:}\label{set-things-up}
 
 The first step is to run the make.R script to load the data, packages,
 and setup (where various options are specified). Note that the scripts
@@ -222,7 +222,7 @@ those packages can be found in `EBM\_Holsman\_NatComm/R/packages.R'.}
 \end{Highlighting}
 \end{Shaded}
 
-\subsubsection{3.2. Regenerate plots:}\label{regenerate-plots}
+\subsection{3.2. Regenerate plots:}\label{regenerate-plots}
 
 To generate the figures in the paper without overwriting them run the
 `make\_plots.R' code.
@@ -261,7 +261,7 @@ folder:
 \end{Highlighting}
 \end{Shaded}
 
-\subsubsection{3.3. Regenerate analyses and final
+\subsection{3.3. Regenerate analyses and final
 data}\label{regenerate-analyses-and-final-data}
 
 To re-run the paper analyses, including risk calculations and
@@ -292,7 +292,7 @@ and simulation experiments can be found in
 \href{\%22https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full\%22}{Hollowed
 et al. 2020}.
 
-\subsubsection{4.1. Bering10K ROMSNPZ}\label{bering10k-romsnpz}
+\subsection{4.1. Bering10K ROMSNPZ}\label{bering10k-romsnpz}
 
 ACLIM indices used in this analysis can be viewed interactively online
 at: \url{https://kholsman.shinyapps.io/aclim}. The indices were produced
@@ -315,7 +315,7 @@ documentation and validation of the BESTNPZ model (v2019.08.23) within a
 high-resolution regional ocean model. Geosci Model Dev 13:597-650.
 \url{DOI:10.5194/gmd-13-597-2020}.
 
-\subsubsection{4.2. CEATTLE}\label{ceattle}
+\subsection{4.2. CEATTLE}\label{ceattle}
 
 CEATTLE is a climate-enhanced multispecies stock assessment model for
 walleye pollock, Pacific cod, and arrowtooth flounder
@@ -347,7 +347,7 @@ ABC + sloping harvest control rule below B40, and with F = 0 when B
 \textless{} B20. 3. As in 2 but where catch\textasciitilde{}f(ABC,TAC)
 via the ATTACH package (below).
 
-\subsubsection{4.3. ATTACH}\label{attach}
+\subsection{4.3. ATTACH}\label{attach}
 
 The catchfunction package (which we refer to as the ABC To TAC and
 Commercial Harvest, aka ATTACH, model: R package rename forthcoming) was
