@@ -8,7 +8,7 @@ NOAA Fisheries, Seattle WA
 
 ------------------------------------------------------------------------
 
-1. Overview 
+1. Overview
 ===========
 
 This is an overview of the data, code, and workflow used to generate intermediate and final data for the Holsman et al. in review Nature Communications paper. Below are instructions for downloading the code and intermediate and final data and for re-generating the figures and analyses presented in the paper. Note, in all cases species 1 = walleye pollock, species 2 = Pacific cod, and species 3 = arrowtooth flounder.
@@ -132,6 +132,8 @@ To re-run the paper analyses, including risk calculations and threshold/tipping 
     update.outputs  <- FALSE  
     source("R/make.R")
 ```
+
+.
 
 4. Primary and Intermediate Data sources and models
 ===================================================

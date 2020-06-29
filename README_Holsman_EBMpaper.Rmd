@@ -2,6 +2,11 @@
 title: "EBM Nature Communications scripts & data"
 author: "Kirstin Holsman"
 output:
+  pdf_document:
+    fig_caption: yes
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
   html_document:
     df_print: kable
     fig_caption: yes
@@ -11,11 +16,6 @@ output:
   - \usepackage{inputenc}
   - \usepackage{unicode-math}
   - \pagenumbering{gobble}ls()
-  pdf_document:
-    fig_caption: yes
-    highlight: tango
-    keep_tex: yes
-    latex_engine: xelatex
   word_document:
     fig_caption: yes
     fig_width: 4
@@ -170,9 +170,9 @@ To re-run the paper analyses, including risk calculations and threshold/tipping 
  rmd2md(rmd_fl = "README_Holsman_EBMpaper",md_fl = "README")
 ```
 
+.
 
 # 4. Primary and Intermediate Data sources and models
-
 
 Various simulation outputs were made available for use in this analysis through the interdisciplinary [Alaska Climate Integrated Modeling (ACLIM) project]("https://www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project"). An overview of the project and simulation experiments can be found in [Hollowed et al. 2020]("https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full").
 
