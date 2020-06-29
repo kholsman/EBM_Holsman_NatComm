@@ -11,7 +11,7 @@
 ## 
 ## ------------------------------------------------
 
-  if(!make_flag) source("R/make.R")       # loads packages, data, setup, etc.
+  if(!"make_flag"%in%ls()) source("R/make.R")       # loads packages, data, setup, etc.
   cat("\n running SUB_EMB_paper.R....")
  
   # ------------------------------------------------

@@ -44,7 +44,7 @@ output:
 
 # 1. Overview
 
-This is an overview of the data, code, and workflow used to generate intermediate and final data for the Holsman et al. in review Nature Communications paper. Below are instructions for downloading the code and intermediate and final data and for re-generating the figures and analyses presented in the paper.
+This is an overview of the data, code, and workflow used to generate intermediate and final data for the Holsman et al. in review Nature Communications paper. Below are instructions for downloading the code and intermediate and final data and for re-generating the figures and analyses presented in the paper. Note, in all cases species 1 = walleye pollock, species 2 = Pacific cod, and species 3 = arrowtooth flounder.
 
 ## 1.1. Data and Figures
 
@@ -127,9 +127,6 @@ To generate the figures in the paper without overwriting them run the 'make_plot
 
     cat(paste("\n\n update.figs  = ",update.figs,"\n"))
     cat(paste("\n\n update.outputs  = ",update.outputs,"\n"))
-  
-    # This script generates the figure functions for the paper:
-    source("R/sub_scripts/load_paper_figs.R")
 
     # You can generate individual plots like this (some take a few mins and throw warnings):
     graphics.off()
