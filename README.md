@@ -66,7 +66,7 @@ If you plan to use the data within the folder for purposes beyond rerunning the 
 10.6084/m9.figshare.12568625 along with Holsman et al. 2020.
 
 3. Regenerating analyses and figures:
-=====================================
+-------------------------------------
 
 Below are instructions for running the R scripts to recreate the figures, tables, results, and run the risk and threshold analyses for the paper. The scripts below require R version 3.5.3 (available at <https://cran.r-project.org/bin/macosx/el-capitan/base/>).
 

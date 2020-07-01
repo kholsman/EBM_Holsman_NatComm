@@ -2,6 +2,11 @@
 title: "EBM Nature Communications scripts & data"
 author: "Kirstin Holsman"
 output:
+  pdf_document:
+    fig_caption: yes
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
   html_document:
     df_print: kable
     fig_caption: yes
@@ -11,11 +16,6 @@ output:
   - \usepackage{inputenc}
   - \usepackage{unicode-math}
   - \pagenumbering{gobble}ls()
-  pdf_document:
-    fig_caption: yes
-    highlight: tango
-    keep_tex: yes
-    latex_engine: xelatex
   word_document:
     fig_caption: yes
     fig_width: 4
@@ -96,7 +96,7 @@ If you plan to use the data within the folder for purposes beyond rerunning the 
 
 10.6084/m9.figshare.12568625 along with Holsman et al. 2020.
 
-# 3. Regenerating analyses and figures:  
+## 3. Regenerating analyses and figures:  
 
 Below are instructions for running the R scripts to recreate the figures, tables, results, and run the risk and threshold analyses for the paper. The scripts below require R version 3.5.3 (available at https://cran.r-project.org/bin/macosx/el-capitan/base/). 
 
