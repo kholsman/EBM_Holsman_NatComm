@@ -52,6 +52,7 @@
     boot_nobsIN  <-  1000  # this controls the sensitivity of the analysis
     nitrIN       <-  1000
     t_knots      <-  4   # numnber of knots for the threshold gams
+    span_set     <-  0.1  # smoothing step/span for thresholds
     methodIN     <-  2   # method for getting the threshold significance
    
    # Species stuff: (used for plotting and manipulating data)
@@ -120,7 +121,7 @@
     col3    <- colorRampPalette(c(wes(7)[4:7]))
     
     # set the color scheme
-    coll_use         <-  c(colors()[320],col2(6)[c(2,3,4)],col3(6)[c(3,4,6)])
+    coll_use         <-  c(colors()[320],col2(8)[c(2,5,7)],col3(8)[c(2,5,7)])
     
     # Set up plotting stuff:
     #------------------------------------     

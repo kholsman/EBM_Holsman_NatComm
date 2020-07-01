@@ -113,7 +113,7 @@ Kirstin Holsman\\
 Alaska Fisheries Science Center\\
 NOAA Fisheries, Seattle WA\\
 \textbf{\href{mailto:kirstin.holsman@noaa.gov}{\nolinkurl{kirstin.holsman@noaa.gov}}}\\
-\emph{Last updated: Jun 29, 2020}
+\emph{Last updated: Jul 01, 2020}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -214,7 +214,7 @@ those packages can be found in `EBM\_Holsman\_NatComm/R/packages.R'.}
 \begin{Highlighting}[]
     \CommentTok{# set your local path:}
     \CommentTok{# main        <-  file.path(download_path,"EBM_Holsman_NatComm/")}
-    \CommentTok{# e.g., main  <-  "/Users/kholsman/GitHub_new/EBM_Holsman_NatComm/"}
+    \CommentTok{# e.g., main  <-  getwd()}
     \KeywordTok{setwd}\NormalTok{(main)}
     
     \CommentTok{# load data, packages, setup, etc.}
@@ -255,7 +255,8 @@ folder:
 \begin{Shaded}
 \begin{Highlighting}[]
     \NormalTok{update.figs  <-}\StringTok{ }\OtherTok{TRUE}  
-    \KeywordTok{stop}\NormalTok{(}\StringTok{"warning! this will overwrite existing figures in the Figures folder"}\NormalTok{)}
+    \KeywordTok{warning}\NormalTok{(}\StringTok{"warning! this will overwrite existing figures in the Figures folder"}\NormalTok{)}
+    
     \KeywordTok{source}\NormalTok{(}\StringTok{"R/sub_scripts/make_plots.R"}\NormalTok{)}
     \NormalTok{update.figs  <-}\StringTok{ }\OtherTok{FALSE}   \CommentTok{# return this to it's default setting}
 \end{Highlighting}
@@ -263,6 +264,28 @@ folder:
 
 \subsection{3.3. Regenerate analyses and final
 data}\label{regenerate-analyses-and-final-data}
+
+Analysis results are located in the \texttt{data/out} folder and loaded
+during \texttt{R/make.R}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+   \KeywordTok{head}\NormalTok{(risk12)  }\CommentTok{# preview the risk table for "No cap" simulations}
+   \KeywordTok{head}\NormalTok{(risk13)  }\CommentTok{# preview the risk table for "2 MT cap" simulations}
+   \NormalTok{C_thresh_12_1$thrsh_x }\CommentTok{# Temperature tipping point for pollock under "No cap" simulations}
+   \NormalTok{C_thresh_12_2$thrsh_x }\CommentTok{# Temperature tipping point for p cod under "No cap" simulations}
+   \NormalTok{C_thresh_12_3$thrsh_x }\CommentTok{# No tipping point was found for arrowtooth under "No cap" simulations}
+   
+ \NormalTok{tmp <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\StringTok{"No Cap"} \NormalTok{=}\StringTok{ }\KeywordTok{c}\NormalTok{( }
+   \NormalTok{C_thresh_12_1$thrsh_x,}
+   \NormalTok{C_thresh_12_2$thrsh_x,}
+   \NormalTok{C_thresh_12_3$thrsh_x),}
+   \StringTok{"2 MT Cap"} \NormalTok{=}\StringTok{ }\KeywordTok{c}\NormalTok{( }
+   \NormalTok{C_thresh_13_1$thrsh_x,}
+   \NormalTok{C_thresh_13_2$thrsh_x,}
+   \NormalTok{C_thresh_13_3$thrsh_x))}
+\end{Highlighting}
+\end{Shaded}
 
 To re-run the paper analyses, including risk calculations and
 threshold/tipping points, set \texttt{update.outputs\ =\ TRUE}(this is
@@ -272,12 +295,24 @@ script:
 \begin{Shaded}
 \begin{Highlighting}[]
     \NormalTok{update.outputs  <-}\StringTok{ }\OtherTok{TRUE}  
-    \KeywordTok{stop}\NormalTok{(}\StringTok{"warning! Setting update.outputs to TRUE will overwrite Rdata files in the data folder"}\NormalTok{)}
+    \KeywordTok{warning}\NormalTok{(}\StringTok{"warning! Setting update.outputs to TRUE will overwrite Rdata files in the data folder"}\NormalTok{)}
+
     \KeywordTok{source}\NormalTok{(}\StringTok{"R/sub_scripts/SUB_EBM_paper.R"}\NormalTok{)}
 
     \CommentTok{# once complete set to FALSE and reload new datafiles:}
     \NormalTok{update.outputs  <-}\StringTok{ }\OtherTok{FALSE}  
     \KeywordTok{source}\NormalTok{(}\StringTok{"R/make.R"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+To recreate the Table S1 (uses kable to create table as html):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+    \CommentTok{# to print table set eval =T}
+    \NormalTok{tbl <-}\StringTok{ }\KeywordTok{tableS1}\NormalTok{()}
+    \NormalTok{tbl}
+    \KeywordTok{save_kable}\NormalTok{(tbl,}\DataTypeTok{file=}\KeywordTok{file.path}\NormalTok{(main,}\StringTok{"Figures/tableS1.html"}\NormalTok{))}
 \end{Highlighting}
 \end{Shaded}
 

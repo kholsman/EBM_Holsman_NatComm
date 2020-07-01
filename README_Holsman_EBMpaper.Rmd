@@ -2,11 +2,6 @@
 title: "EBM Nature Communications scripts & data"
 author: "Kirstin Holsman"
 output:
-  pdf_document:
-    fig_caption: yes
-    highlight: tango
-    keep_tex: yes
-    latex_engine: xelatex
   html_document:
     df_print: kable
     fig_caption: yes
@@ -16,6 +11,11 @@ output:
   - \usepackage{inputenc}
   - \usepackage{unicode-math}
   - \pagenumbering{gobble}ls()
+  pdf_document:
+    fig_caption: yes
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
   word_document:
     fig_caption: yes
     fig_width: 4
@@ -26,6 +26,7 @@ output:
 *Data and code are under review and subject to change. Please do not use without permission from lead author: kirstin.holsman@noaa.gov*
  
 ```{r, echo = F}
+ #knitr::opts_chunk$set(echo = TRUE)
  #source("R/make.R")       # loads packages, data, setup, etc.
  thisYr <- format(Sys.time(), "%Y")
  today  <- format(Sys.time(), "%b %d, %Y")
@@ -107,7 +108,7 @@ The first step is to run the make.R script to load the data, packages, and setup
     
     # set your local path:
     # main        <-  file.path(download_path,"EBM_Holsman_NatComm/")
-    # e.g., main  <-  "/Users/kholsman/GitHub_new/EBM_Holsman_NatComm/"
+    # e.g., main  <-  getwd()
     setwd(main)
     
     # load data, packages, setup, etc.
@@ -143,23 +144,57 @@ Alternatively, by setting `update.figs` to `TRUE` the script will overwrite the 
    
 ```{r, eval = FALSE}   
     update.figs  <- TRUE  
-    stop("warning! this will overwrite existing figures in the Figures folder")
+    warning("warning! this will overwrite existing figures in the Figures folder")
+    
     source("R/sub_scripts/make_plots.R")
     update.figs  <- FALSE   # return this to it's default setting
 ```
 
 ## 3.3. Regenerate analyses and final data  
 
+Analysis results are located in the `data/out` folder and loaded during `R/make.R`:
+
+```{r, eval=FALSE}
+   head(risk12)  # preview the risk table for "No cap" simulations
+   head(risk13)  # preview the risk table for "2 MT cap" simulations
+   C_thresh_12_1$thrsh_x # Temperature tipping point for pollock under "No cap" simulations
+   C_thresh_12_2$thrsh_x # Temperature tipping point for p cod under "No cap" simulations
+   C_thresh_12_3$thrsh_x # No tipping point was found for arrowtooth under "No cap" simulations
+   
+ tmp <- data.frame("No Cap" = c( 
+   C_thresh_12_1$thrsh_x,
+   C_thresh_12_2$thrsh_x,
+   C_thresh_12_3$thrsh_x),
+   "2 MT Cap" = c( 
+   C_thresh_13_1$thrsh_x,
+   C_thresh_13_2$thrsh_x,
+   C_thresh_13_3$thrsh_x))
+   
+```
+
+
 To re-run the paper analyses, including risk calculations and threshold/tipping points, set `update.outputs = TRUE`(this is set to `FALSE` by default) and run the `SUB_EBM_paper.R` script:
 
 ```{r, eval=FALSE}
     update.outputs  <- TRUE  
-    stop("warning! Setting update.outputs to TRUE will overwrite Rdata files in the data folder")
+    warning("warning! Setting update.outputs to TRUE will overwrite Rdata files in the data folder")
+
     source("R/sub_scripts/SUB_EBM_paper.R")
 
     # once complete set to FALSE and reload new datafiles:
     update.outputs  <- FALSE  
     source("R/make.R")
+```
+
+To recreate the Table S1 (uses kable to create table as html):
+
+```{r TableS1, eval = FALSE, echo=TRUE}
+
+    # to print table set eval =T
+    tbl <- tableS1()
+    tbl
+    save_kable(tbl,file=file.path(main,"Figures/tableS1.html"))
+
 ```
 
 

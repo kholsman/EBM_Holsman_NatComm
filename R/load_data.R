@@ -34,7 +34,8 @@
       cat(paste("\nloaded",fn))
     }
   cat("\nIntermediate data loaded ('data/in')...\n")
-  cat("\n\nLoading final data ('data/in')...\n")
+  
+  cat("\n\nLoading final data ('data/out')...\n")
   for(fn in outfn){
     if(!any(dir(out_dir)%in%fn))
       stop(paste0(fn," file not found in: \t \t",out_dir,
@@ -60,6 +61,9 @@
     esmlist       <-  list(rcp45_n,rcp85NoBio_n)
     
     simnames  <- Scenarios
+    Years     <- sort(unique(dat_2_5_12$future_year)+start_yr-1)
+    nYrsTot   <- length(Years )
+    riskTypes <- unique(risk12$type)
 
     #sim_msm    <- sim_msm%>%filter(Scenario%in%Scenario_set)
 # subset of downscaled projections used for the paper = Scenario_set
@@ -86,35 +90,6 @@
 
 cat("Load Data Complete")
 
-
-if(1==10){
-  if(readdat==FALSE){
-    if(!any(dir("data/out")%in%"EBM_ceattlenew.Rdata"))
-      stop("EBM_ceattlenew.Rdata file not found, please go to 
-           https://figshare.com/s/6dea7722df39e07d79f0 
-           and download file into EBM_Holsman_NatComm/EBM_ceattlenew.Rdata")
-    #download.file("https://figshare.com/s/6dea7722df39e07d79f0",destfile="EBM_ceattlenew.Rdata")
-    load("data/out/EBM_ceattlenew.Rdata")    
-  }else{
-    
-    # download and unzip the latest ceattle runs:
-    if(!length(dir(paste0("data/runs/",fldr,"_0")))>0){
-      #download.file("https://figshare.com/s/d9c35dbe0880f4169041",paste0("data/runs/",fldr,"_0.zip"))
-      #system (paste0("cd data/runs; unzip ",fldr,"_0.zip"))
-      stop(paste0("data/runs/",fldr,"_0 file not found, please go to https://figshare.com/s/d9c35dbe0880f4169041 and download file into data/runs/",fldr,"_0.zip and unzip)") ) 
-      
-    }
-    if(!length(dir(paste0("data/runs/",fldr,"_2")))>0){
-      #download.file("https://figshare.com/s/3a1aaa86837b79d6aa07",paste0("data/runs/",fldr,"_2.zip"))
-      #system (paste0("cd data/runs; unzip ",fldr,"_2.zip"))
-      stop(paste0("data/runs/",fldr,"_2 file not found, please go to https://figshare.com/s/3a1aaa86837b79d6aa07 and download file into data/runs/",fldr,"_2.zip and unzip)") ) 
-      
-    }
-    
-    source("SUB_EBM_paper.R")
-    save.image(file = "data/out/EBM_ceattlenew.Rdata")
-  } 
-}
 
 
 

@@ -4,7 +4,7 @@ plot_figS6<-function(
   spIN    =   1,
   Hin     =   "H12_219_CENaivecf",
   plotSet = list("RCP 4.5" = c(rcp45_n),"RCP 8.5" = c(rcp85NoBio_n)),
-  thrsh   = 2.2,
+  thrsh   = 2.1,
   thrsh_pIN = 0.25,
   coll    = coll_use[-1],
   var     = "bottomT_C"){

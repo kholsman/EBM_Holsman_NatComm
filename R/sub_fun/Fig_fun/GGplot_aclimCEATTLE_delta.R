@@ -18,7 +18,7 @@ GGplot_aclimCEATTLE_delta<-function(
   h           = 3,
   w           = 4.75,
   plotpersist = TRUE,
-  showlinetype= FALSE,
+  showlinetype= TRUE,
   plot_levels  = simnames,
   ylimm_up    = c(20,2,1.5)*1e6,
   ylimm_dwn   = c(0,0,0),

@@ -28,6 +28,7 @@ threshold<-function(
   #subyr     = fut_yrs,
   simul_set = c(6,9,11),
   #adj1      = adj,
+  spanIN    = span_set,
   rndN      = 6,
   rndN2     = 6,
   method    = 1,
@@ -35,7 +36,7 @@ threshold<-function(
   boot_n    = 1000,
   boot_nobs = 24600,
   probIN    = c(.025,.5,.975),
-  sdmult    = 1.95,
+  sdmult    = 1,
   knotsIN   = 4){
   
   require(rootSolve)
@@ -77,9 +78,9 @@ threshold<-function(
     # For pressure–state relationships identified as
     # nonlinear, we defined the location of the threshold as the inflection point, that is, 
     # the value of the pres- sure where the second derivative changed sign (Fewster et al. 2000, 
-    #   Bestelmeyer et al. 2011, Sam- houri et al. 2012, Large et al. 2013). For these 
-    # anal- yses, we calculated the 95% CI of the smoothing function itself, along with 
-    # its second derivative, via bootstrapping of the residuals in order to allow for autocorrelation. This
+    # Bestelmeyer et al. 2011, Sam- houri et al. 2012, Large et al. 2013). For these 
+    # analyses, we calculated the 95% CI of the smoothing function itself, along with 
+    # its second derivative, via bootstrapping of the residuals in order to allow for autocorrelation. 
     
     
   for(int in 1:boot_n){
@@ -125,9 +126,9 @@ threshold<-function(
                         mn=hat$fit,
                         dwn=hat$fit-sdmult*hat$se)
   
-  hat_qnt$smoothed_mn  <- predict(loess(mn ~ tmp, data=hat_qnt, span=0.25)) 
-  hat_qnt$smoothed_dwn <- predict(loess(dwn ~ tmp, data=hat_qnt, span=0.25)) 
-  hat_qnt$smoothed_up  <- predict(loess(up ~ tmp, data=hat_qnt, span=0.25)) 
+  hat_qnt$smoothed_mn  <- predict(loess(mn ~ tmp, data=hat_qnt, span=spanIN)) 
+  hat_qnt$smoothed_dwn <- predict(loess(dwn ~ tmp, data=hat_qnt, span=spanIN)) 
+  hat_qnt$smoothed_up  <- predict(loess(up ~ tmp, data=hat_qnt, span=spanIN)) 
   
   # first derivative quantiles
   df1_qnt<-data.frame(tmp = x,
@@ -158,9 +159,9 @@ threshold<-function(
 
   # determine peaks and valleys:
   # 25% smoothing span
-  df1_qnt$smoothed_mn  <- predict(loess(mn  ~ tmp, data=df1_qnt, span=0.25)) 
-  df1_qnt$smoothed_dwn <- predict(loess(dwn ~ tmp, data=df1_qnt, span=0.25)) 
-  df1_qnt$smoothed_up  <- predict(loess(up  ~ tmp, data=df1_qnt, span=0.25)) 
+  df1_qnt$smoothed_mn  <- predict(loess(mn  ~ tmp, data=df1_qnt, span=spanIN)) 
+  df1_qnt$smoothed_dwn <- predict(loess(dwn ~ tmp, data=df1_qnt, span=spanIN)) 
+  df1_qnt$smoothed_up  <- predict(loess(up  ~ tmp, data=df1_qnt, span=spanIN)) 
   
   pks1    <- sort(c(findPeaks(df1_qnt$smoothed_mn),findPeaks(-df1_qnt$smoothed_mn)))
   signif1 <- which(!between(0, df1_qnt$dwn, df1_qnt$up, incbounds=TRUE))
@@ -168,20 +169,21 @@ threshold<-function(
   df1_qnt$tmp[thrsh1]
   
   # 25% smoothing span
-  df2_qnt$smoothed_mn  <- predict(loess(mn ~ tmp, data=df2_qnt, span=0.25)) 
-  df2_qnt$smoothed_dwn <- predict(loess(dwn ~ tmp, data=df2_qnt, span=0.25)) 
-  df2_qnt$smoothed_up  <- predict(loess(up ~ tmp, data=df2_qnt, span=0.25)) 
+  df2_qnt$smoothed_mn  <- predict(loess(mn ~ tmp, data=df2_qnt, span=spanIN)) 
+  df2_qnt$smoothed_dwn <- predict(loess(dwn ~ tmp, data=df2_qnt, span=spanIN)) 
+  df2_qnt$smoothed_up  <- predict(loess(up ~ tmp, data=df2_qnt, span=spanIN)) 
   pks2     <- sort(c(findPeaks(df2_qnt$smoothed_mn),findPeaks(-df2_qnt$smoothed_mn)))
   pks2_up  <- sort(c(findPeaks(df2_qnt$smoothed_up),findPeaks(-df2_qnt$smoothed_up)))
   pks2_dwn <- sort(c(findPeaks(df2_qnt$smoothed_dwn),findPeaks(-df2_qnt$smoothed_dwn)))
   
   signif2  <- which(!between(0, df2_qnt$dwn, df2_qnt$up, incbounds=TRUE))
-  thrsh2   <- intersect(signif2,pks2)
-  #  thrsh2_up<-intersect(signif2,pks2_up)
-  #   thrsh2_dwn<-intersect(signif2,pks2_dwn)
-  df2_qnt$tmp[thrsh2]
+  thrsh2_all   <- intersect(signif2,pks2)
+  thrsh2 <-  which(1==10)
+  if(length(thrsh2_all)>0)
+    thrsh2<-mean(thrsh2_all[which(abs(df2_qnt$smoothed_mn[thrsh2_all])==max(abs(df2_qnt$smoothed_mn[thrsh2_all])))],na.rm=T)
   
   return( list(datIN     = datIN,
+              boot_nobs  = boot_nobs,
               hat        = hat_qnt,
               fdif1      = df1_qnt,
               fdif2      = df2_qnt,
@@ -189,9 +191,10 @@ threshold<-function(
               signif2    = signif2,
               ix_pks     = pks2,
               thrsh_max1 = thrsh2,
+              thrsh_all  = thrsh2_all,
               thrsh_x    = df2_qnt$tmp[thrsh2],
               thrsh_y    = df2_qnt$mn[thrsh2],
-              #thrsh_x=tmpall13_1$hat$tmp[thrsh2],
-              #thrsh_y=tmpall13_1$hat$mn[thrsh2],
+              df1_qnt    = df1_qnt,
+              df2_qnt    = df2_qnt,
               tmp_gam    = tmp_gam) )
 }

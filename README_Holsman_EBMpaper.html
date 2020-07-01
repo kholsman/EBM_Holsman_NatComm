@@ -209,7 +209,7 @@ summary {
 Alaska Fisheries Science Center<br />
 NOAA Fisheries, Seattle WA<br />
 <strong><a href="mailto:kirstin.holsman@noaa.gov">kirstin.holsman@noaa.gov</a></strong><br />
-<em>Last updated: Jun 29, 2020</em></p>
+<em>Last updated: Jul 01, 2020</em></p>
 <hr />
 <div id="overview" class="section level1">
 <h1>1. Overview</h1>
@@ -264,7 +264,7 @@ NOAA Fisheries, Seattle WA<br />
 <p>The first step is to run the make.R script to load the data, packages, and setup (where various options are specified). Note that the scripts depend on a number of packages that will be installed the first time through running make.R if they are not already included. <em>A list of those packages can be found in ‘EBM_Holsman_NatComm/R/packages.R’.</em></p>
 <pre class="r"><code>    # set your local path:
     # main        &lt;-  file.path(download_path,&quot;EBM_Holsman_NatComm/&quot;)
-    # e.g., main  &lt;-  &quot;/Users/kholsman/GitHub_new/EBM_Holsman_NatComm/&quot;
+    # e.g., main  &lt;-  getwd()
     setwd(main)
     
     # load data, packages, setup, etc.
@@ -291,20 +291,42 @@ NOAA Fisheries, Seattle WA<br />
     figS6()</code></pre>
 <p>Alternatively, by setting <code>update.figs</code> to <code>TRUE</code> the script will overwrite the existing figures in the <code>Figures</code> folder:</p>
 <pre class="r"><code>    update.figs  &lt;- TRUE  
-    stop(&quot;warning! this will overwrite existing figures in the Figures folder&quot;)
+    warning(&quot;warning! this will overwrite existing figures in the Figures folder&quot;)
+    
     source(&quot;R/sub_scripts/make_plots.R&quot;)
     update.figs  &lt;- FALSE   # return this to it's default setting</code></pre>
 </div>
 <div id="regenerate-analyses-and-final-data" class="section level2">
 <h2>3.3. Regenerate analyses and final data</h2>
+<p>Analysis results are located in the <code>data/out</code> folder and loaded during <code>R/make.R</code>:</p>
+<pre class="r"><code>   head(risk12)  # preview the risk table for &quot;No cap&quot; simulations
+   head(risk13)  # preview the risk table for &quot;2 MT cap&quot; simulations
+   C_thresh_12_1$thrsh_x # Temperature tipping point for pollock under &quot;No cap&quot; simulations
+   C_thresh_12_2$thrsh_x # Temperature tipping point for p cod under &quot;No cap&quot; simulations
+   C_thresh_12_3$thrsh_x # No tipping point was found for arrowtooth under &quot;No cap&quot; simulations
+   
+ tmp &lt;- data.frame(&quot;No Cap&quot; = c( 
+   C_thresh_12_1$thrsh_x,
+   C_thresh_12_2$thrsh_x,
+   C_thresh_12_3$thrsh_x),
+   &quot;2 MT Cap&quot; = c( 
+   C_thresh_13_1$thrsh_x,
+   C_thresh_13_2$thrsh_x,
+   C_thresh_13_3$thrsh_x))</code></pre>
 <p>To re-run the paper analyses, including risk calculations and threshold/tipping points, set <code>update.outputs = TRUE</code>(this is set to <code>FALSE</code> by default) and run the <code>SUB_EBM_paper.R</code> script:</p>
 <pre class="r"><code>    update.outputs  &lt;- TRUE  
-    stop(&quot;warning! Setting update.outputs to TRUE will overwrite Rdata files in the data folder&quot;)
+    warning(&quot;warning! Setting update.outputs to TRUE will overwrite Rdata files in the data folder&quot;)
+
     source(&quot;R/sub_scripts/SUB_EBM_paper.R&quot;)
 
     # once complete set to FALSE and reload new datafiles:
     update.outputs  &lt;- FALSE  
     source(&quot;R/make.R&quot;)</code></pre>
+<p>To recreate the Table S1 (uses kable to create table as html):</p>
+<pre class="r"><code>    # to print table set eval =T
+    tbl &lt;- tableS1()
+    tbl
+    save_kable(tbl,file=file.path(main,&quot;Figures/tableS1.html&quot;))</code></pre>
 <p>.</p>
 </div>
 </div>

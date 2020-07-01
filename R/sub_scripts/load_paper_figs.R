@@ -1,11 +1,9 @@
 #load_paper_figs.R
 
-Years     <- sort(unique(dat_2_5_12$future_year)+start_yr-1)
-nYrsTot   <- length(Years )
-riskTypes <- unique(risk12$type)
+
 
 fig2 <-function(){  GGplot_aclimTS(dat=reshape2::dcast(covariates%>%filter(Var=="BottomTemp"),t~Scenario)
-                                   ,h=2*1.3,w=4.75*1.3,threshold = 2.2,
+                                   ,h=2*1.3,w=4.75*1.3,threshold = 2.1,
                                    ylabb=expression(paste("Bottom temperature",'('^{o},"C)")),
                                    ltyy=c("solid",rep("solid",6)),
                                    subtitle_face="plain",
@@ -134,7 +132,7 @@ figS2 <- function(){
                             hind    = 1,
                             plotSet = list("RCP 4.5" = c(rcp45_n),"RCP 8.5" = c(rcp85NoBio_n)),
                             prob    = c(.1,.50,.9),
-                            showlinetype = FALSE,
+                            showlinetype = TRUE,
                             plot_marginIN=c(-15,5,-10,5),
                             coll    = list(coll_use[1],coll_use[2:4],coll_use[5:7]),
                             plot_levels  = simnames[c(1,rcp45_n,rcp85NoBio_n)],
@@ -144,8 +142,8 @@ figS2 <- function(){
 
 # Fig S3: effective F
 
-figS3 <- function(H=3.5,W=5){
-  dev.new(height=H,width=5)
+figS3 <- function(H=3.5,W=7){
+  dev.new(height=H,width=W)
   plot_Feffective()
 }
 
@@ -188,13 +186,13 @@ figS5 <- function(H=3*1.3, W= 4.75*1.3){
 # Fig S6: hindcast years
 figS6 <- function( H = 3.25*1.3, W= 4.5*1.3){
   dev.new( height =H, width= W)
-  plot_figS6()
+  plot_figS6(thrsh   = 2.1)
 }
 
 # for reviewer:
 figS7 <-function(){  GGplot_aclimTS(dat=reshape2::dcast(covariates%>%filter(Var=="fallZavg"),t~Scenario)
                                     ,h=2*1.3,w=4.75*1.3,threshold = 0,
-                                    ylabb=expression(paste("Fall Zooplankton (denisty)")),
+                                    ylabb=expression(paste("Scasled Fall Zooplankton (Z-scored)")),
                                     ltyy=c("solid",rep("solid",6)),
                                     subtitle_face="plain",
                                     plotSet=list(c(1,rcp45_n),c(1,rcp85NoBio_n)),

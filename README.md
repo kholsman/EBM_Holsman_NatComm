@@ -4,7 +4,7 @@ Kirstin Holsman
 Alaska Fisheries Science Center
 NOAA Fisheries, Seattle WA
 **<kirstin.holsman@noaa.gov>**
-*Last updated: Jun 29, 2020*
+*Last updated: Jul 01, 2020*
 
 ------------------------------------------------------------------------
 
@@ -78,7 +78,7 @@ The first step is to run the make.R script to load the data, packages, and setup
 ``` r
     # set your local path:
     # main        <-  file.path(download_path,"EBM_Holsman_NatComm/")
-    # e.g., main  <-  "/Users/kholsman/GitHub_new/EBM_Holsman_NatComm/"
+    # e.g., main  <-  getwd()
     setwd(main)
     
     # load data, packages, setup, etc.
@@ -113,7 +113,8 @@ Alternatively, by setting `update.figs` to `TRUE` the script will overwrite the 
 
 ``` r
     update.figs  <- TRUE  
-    stop("warning! this will overwrite existing figures in the Figures folder")
+    warning("warning! this will overwrite existing figures in the Figures folder")
+    
     source("R/sub_scripts/make_plots.R")
     update.figs  <- FALSE   # return this to it's default setting
 ```
@@ -121,16 +122,45 @@ Alternatively, by setting `update.figs` to `TRUE` the script will overwrite the 
 3.3. Regenerate analyses and final data
 ---------------------------------------
 
+Analysis results are located in the `data/out` folder and loaded during `R/make.R`:
+
+``` r
+   head(risk12)  # preview the risk table for "No cap" simulations
+   head(risk13)  # preview the risk table for "2 MT cap" simulations
+   C_thresh_12_1$thrsh_x # Temperature tipping point for pollock under "No cap" simulations
+   C_thresh_12_2$thrsh_x # Temperature tipping point for p cod under "No cap" simulations
+   C_thresh_12_3$thrsh_x # No tipping point was found for arrowtooth under "No cap" simulations
+   
+ tmp <- data.frame("No Cap" = c( 
+   C_thresh_12_1$thrsh_x,
+   C_thresh_12_2$thrsh_x,
+   C_thresh_12_3$thrsh_x),
+   "2 MT Cap" = c( 
+   C_thresh_13_1$thrsh_x,
+   C_thresh_13_2$thrsh_x,
+   C_thresh_13_3$thrsh_x))
+```
+
 To re-run the paper analyses, including risk calculations and threshold/tipping points, set `update.outputs = TRUE`(this is set to `FALSE` by default) and run the `SUB_EBM_paper.R` script:
 
 ``` r
     update.outputs  <- TRUE  
-    stop("warning! Setting update.outputs to TRUE will overwrite Rdata files in the data folder")
+    warning("warning! Setting update.outputs to TRUE will overwrite Rdata files in the data folder")
+
     source("R/sub_scripts/SUB_EBM_paper.R")
 
     # once complete set to FALSE and reload new datafiles:
     update.outputs  <- FALSE  
     source("R/make.R")
+```
+
+To recreate the Table S1 (uses kable to create table as html):
+
+``` r
+    # to print table set eval =T
+    tbl <- tableS1()
+    tbl
+    save_kable(tbl,file=file.path(main,"Figures/tableS1.html"))
 ```
 
 .
