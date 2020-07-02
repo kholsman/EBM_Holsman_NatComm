@@ -1,6 +1,6 @@
 *Data and code are under review and subject to change. Please do not use without permission from lead author: <kirstin.holsman@noaa.gov>*
 
-Kirstin Holsman
+Repo maintained by: Kirstin Holsman
 Alaska Fisheries Science Center
 NOAA Fisheries, Seattle WA
 **<kirstin.holsman@noaa.gov>**
