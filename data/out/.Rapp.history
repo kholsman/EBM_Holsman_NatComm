@@ -55,3 +55,15 @@ rm(list=ls())
 load("/Users/kholsman/GitHub_new/EBM_Holsman_NatComm/data/in/target_B_0.Rdata")
 ls()
 head(target_B_0)
+load("/Users/kholsman/GitHub_new/EBM_Holsman_NatComm/data/out/Catch_thresholds.Rdata")
+ls()
+C_thresh_12_1
+head(C_thresh_12_1)
+names(C_thresh_12_1)
+load("/Users/kholsman/Documents/D_AFSC_Files/Manuscripts/00_A_In_prep/00_EBM_ACLIM_CEATTLE/01_NatureClimateChange/Figs/summary_stats.Rdata")
+ls()
+summary_stats
+load("/Users/kholsman/Documents/D_AFSC_Files/Manuscripts/00_A_In_prep/00_EBM_ACLIM_CEATTLE/EBM_paper/EBM_ceattlenew.Rdata")
+ls()
+((2887*12)*1.22)*1.26)+5266*3 +1700
+(((2887*12)*1.22)*1.26)+5266*3 +1700
