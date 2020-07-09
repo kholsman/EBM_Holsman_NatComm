@@ -1,10 +1,12 @@
 *Data and code are under review and subject to change. Please do not use without permission from lead author: <kirstin.holsman@noaa.gov>*
 
+*7/9/2020 update: A co-author pointed out that two files were on figshare (the upload didn't overwrite and older version). This has now been corrected. *
+
 Repo maintained by: Kirstin Holsman
 Alaska Fisheries Science Center
 NOAA Fisheries, Seattle WA
 **<kirstin.holsman@noaa.gov>**
-*Last updated: Jul 01, 2020*
+*Last updated: Jul 09, 2020*
 
 ------------------------------------------------------------------------
 

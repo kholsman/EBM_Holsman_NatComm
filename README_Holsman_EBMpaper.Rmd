@@ -3,6 +3,11 @@ title: Code & analyses for 'Ecosystem based fisheries management forestalls clim
   collapse'
 author: "Holsman et al. Nature Communications"
 output:
+  pdf_document:
+    fig_caption: yes
+    highlight: tango
+    keep_tex: yes
+    latex_engine: xelatex
   html_document:
     df_print: kable
     fig_caption: yes
@@ -12,11 +17,6 @@ output:
   - \usepackage{inputenc}
   - \usepackage{unicode-math}
   - \pagenumbering{gobble}ls()
-  pdf_document:
-    fig_caption: yes
-    highlight: tango
-    keep_tex: yes
-    latex_engine: xelatex
   word_document:
     fig_caption: yes
     fig_width: 4
@@ -26,6 +26,10 @@ output:
 
 
 *Data and code are under review and subject to change. Please do not use without permission from lead author: kirstin.holsman@noaa.gov*
+
+*7/9/2020 update:
+A co-author pointed out that two files were on figshare (the upload didn't overwrite and older version). This has now been corrected. *
+
  
 ```{r, echo = F}
  #knitr::opts_chunk$set(echo = TRUE)
