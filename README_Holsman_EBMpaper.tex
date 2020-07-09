@@ -181,7 +181,9 @@ to download and place the data in the correct sub-folders:
 \begin{Highlighting}[]
     \KeywordTok{cat}\NormalTok{(}\StringTok{"The download takes a few mins (large data files)...}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
 
-    \NormalTok{url <-}\StringTok{  "https://ndownloader.figshare.com/files/23442137?private_link=81007e2dd5edee0a5a7a"}
+    \CommentTok{#url <-  "https://ndownloader.figshare.com/files/23442137?private_link=81007e2dd5edee0a5a7a"}
+    \NormalTok{url <-}\StringTok{   "https://ndownloader.figshare.com/files/23756117?private_link=81007e2dd5edee0a5a7a"}
+  
     \NormalTok{dest_path  <-}\StringTok{  }\KeywordTok{file.path}\NormalTok{(main,}\StringTok{"data.zip"}\NormalTok{)}
     \KeywordTok{download.file}\NormalTok{(}\DataTypeTok{url=}\NormalTok{url, }\DataTypeTok{destfile=}\NormalTok{dest_path,}\DataTypeTok{method=}\StringTok{"libcurl"}\NormalTok{)}
     

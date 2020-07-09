@@ -245,7 +245,9 @@ NOAA Fisheries, Seattle WA<br />
 <p>To run the analyses or create the paper figures you will now need to download the large zipped data folder here: <a href="https://figshare.com/s/81007e2dd5edee0a5a7a" class="uri">https://figshare.com/s/81007e2dd5edee0a5a7a</a> (Data 10.6084/m9.figshare.12568625) and copy - paste the contents (folders “in” and “out”“) it in the directory: ‘[your local directory path]/EBM_Holsman_NatComm/data’ or simply run the following script to download and place the data in the correct sub-folders:</p>
 <pre class="r"><code>    cat(&quot;The download takes a few mins (large data files)...\n&quot;)
 
-    url &lt;-  &quot;https://ndownloader.figshare.com/files/23442137?private_link=81007e2dd5edee0a5a7a&quot;
+    #url &lt;-  &quot;https://ndownloader.figshare.com/files/23442137?private_link=81007e2dd5edee0a5a7a&quot;
+    url &lt;-   &quot;https://ndownloader.figshare.com/files/23756117?private_link=81007e2dd5edee0a5a7a&quot;
+  
     dest_path  &lt;-  file.path(main,&quot;data.zip&quot;)
     download.file(url=url, destfile=dest_path,method=&quot;libcurl&quot;)
     
