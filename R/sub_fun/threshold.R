@@ -77,8 +77,8 @@ threshold<-function(
     
     # For pressure–state relationships identified as
     # nonlinear, we defined the location of the threshold as the inflection point, that is, 
-    # the value of the pres- sure where the second derivative changed sign (Fewster et al. 2000, 
-    # Bestelmeyer et al. 2011, Sam- houri et al. 2012, Large et al. 2013). For these 
+    # the value of the pressure where the second derivative changed sign (Fewster et al. 2000, 
+    # Bestelmeyer et al. 2011, Samhouri et al. 2012, Large et al. 2013). For these 
     # analyses, we calculated the 95% CI of the smoothing function itself, along with 
     # its second derivative, via bootstrapping of the residuals in order to allow for autocorrelation. 
     

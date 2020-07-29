@@ -120,25 +120,50 @@ figS1 <- function(H=4, W= 8){
 
 
 # Fig S2: SSB with and without cap
-figS2 <- function(){
-  GGplot_aclimCEATTLE_delta(h=4.75*1.3,w=4.75*1.3,
-                            esm_namesIN=simnames,
-                            ageLIST = list(6,6),
-                            ylabIN  = c(20,3,1.8),
-                            nmLIST  = list("no cap"="dat_2_5_13","no cap2"="dat_2_5_12"),
-                            nmLIST_mc = list(dat1=dat_2_5_13_mc,dat2=dat_2_5_12_mc),
-                            hLIST   = list("H13_2MT_219_CENaivecf1","H12_219_CENaivecf"),
-                            valLIST = list(valIn1="SSB_total_biom", valIn2="SSB_total_biom"),
-                            hind    = 1,
-                            plotSet = list("RCP 4.5" = c(rcp45_n),"RCP 8.5" = c(rcp85NoBio_n)),
-                            prob    = c(.1,.50,.9),
-                            showlinetype = TRUE,
-                            plot_marginIN=c(-15,5,-10,5),
-                            coll    = list(coll_use[1],coll_use[2:4],coll_use[5:7]),
-                            plot_levels  = simnames[c(1,rcp45_n,rcp85NoBio_n)],
-                            alpha   = c(0,0,100),
-                            ylabb   = "Spawning biomass (million tons)",
-                            lgnpos= "bottom")}
+# figS2 <- function(){
+#   GGplot_aclimCEATTLE_delta(h=4.75*1.3,w=4.75*1.3,
+#                             esm_namesIN=simnames,
+#                             ageLIST = list(6,6),
+#                             ylabIN  = c(20,3,1.8),
+#                             nmLIST  = list("no cap"="dat_2_5_13","no cap2"="dat_2_5_12"),
+#                             nmLIST_mc = list(dat1=dat_2_5_13_mc,dat2=dat_2_5_12_mc),
+#                             hLIST   = list("H13_2MT_219_CENaivecf1","H12_219_CENaivecf"),
+#                             valLIST = list(valIn1="SSB_total_biom", valIn2="SSB_total_biom"),
+#                             hind    = 1,
+#                             plotSet = list("RCP 4.5" = c(rcp45_n),"RCP 8.5" = c(rcp85NoBio_n)),
+#                             prob    = c(.1,.50,.9),
+#                             showlinetype = TRUE,
+#                             plot_marginIN=c(-15,5,-10,5),
+#                             coll    = list(coll_use[1],coll_use[2:4],coll_use[5:7]),
+#                             plot_levels  = simnames[c(1,rcp45_n,rcp85NoBio_n)],
+#                             alpha   = c(0,0,100),
+#                             ylabb   = "Spawning biomass (million tons)",
+#                             lgnpos= "bottom")}
+
+
+figS2 <- function(){GGplot_aclimCEATTLE_delta(h=4.75*1.3,w=4.75*1.3,
+                          ydiv   = 1,
+                          deltaIN = FALSE,
+                          xlimmIN = c(2010,2100),
+                          esm_namesIN=simnames,
+                          ageLIST = list(6,6),
+                          ylabIN  = c(1,1,1),
+                          nmLIST  = list("2 MT cap"="dat_2_5_13","no cap"="dat_2_5_12"),
+                          nmLIST_mc = list(dat1=dat_2_5_13_mc,dat2=dat_2_5_12_mc),
+                          hLIST   = list("H13_2MT_219_CENaivecf1","H12_219_CENaivecf"),
+                          valLIST = list(valIn1="SSB_total_biom", valIn2="SSB_total_biom"),
+                          hind    = 1,
+                          plotSet = list("RCP 4.5" = c(rcp45_n),"RCP 8.5" = c(rcp85NoBio_n)),
+                          prob    = c(.1,.50,.9),
+                          lwdd    = c(.7,.3),
+                          ltyy    = c("solid","dashed"),
+                          showlinetype = TRUE,
+                          plot_marginIN=c(-15,5,-10,5),
+                          coll    = list(colors()[320],coll_use[2:4],coll_use[5:7]),
+                          plot_levels  = simnames[c(1,rcp45_n,rcp85NoBio_n)],
+                          alpha   = c(100,0,0), 
+                          ylabb   = "Spawning biomass (million tons)",
+                          lgnpos= "bottom")}
 
 # Fig S3: effective F
 
@@ -151,7 +176,7 @@ figS3 <- function(H=3.5,W=7){
 
 # Fig S4: risk plot
 figS4 <- function(){
-  GGplot_aclimCEATTLE_risk(h=4.75*1.3,w=3.2*1.3,coll= c(col2(6)),colvar="type",rowvar="sp",alpha=c(.4,1),sizeIN = 6,
+  GGplot_aclimCEATTLE_risk(h=4.75*1.3,w=3.2*1.3,coll= c(col2(12)[c(1,5,8,12)]),colvar="type",rowvar="sp",alpha=c(.9,1),sizeIN = 6,
                            plot_marginIN=c(-15,5,-10,5),mode="MSM",lwdd=c(.7,.4,.4),rcpIN=c("RCP 8.5"="rcp85"),pchh=c(15,16),
                            lgnpos= "bottom",RISKTYPES = riskTypes[c(1,3)],ltyy=c("solid","solid"))
   # grid.force()
