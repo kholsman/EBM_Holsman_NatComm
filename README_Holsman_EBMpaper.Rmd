@@ -25,9 +25,7 @@ output:
 
 
 
-*Data and code are under review and subject to change. Please do not use without permission from lead author: kirstin.holsman@noaa.gov*
-
-*7/9/2020 update:A co-author pointed out that two files were on figshare (the upload didn't overwrite and older version). This has now been corrected.*
+*Data and code are subject to change*
 
  
 ```{r, echo = F}
@@ -102,7 +100,7 @@ To run the analyses or create the paper figures you will now need to download th
 If you plan to use the data within the folder for purposes beyond rerunning the paper analyses and figures please contact kirstin.holsman@noaa.gov and provide the following citation for the data:
 
 
-Holsman, K. K., A. Haynie, A. Hollowed, J.C.P. Reum, K. Aydin, A. J. Hermann, W. Cheng, A. Faig, J. N. Ianelli, K. Kearney, A. E. Punt,2020.The Alaska Climate Integrated Modeling study Multispecies Ecosystem Based Fisheries Managment and climate change simulation and results data. DOI: 10.6084/m9.figshare.12568625
+Holsman, K. K., A. Haynie, A. Hollowed, J.C.P. Reum, K. Aydin, A. J. Hermann, W. Cheng, A. Faig, J. N. Ianelli, K. Kearney, A. E. Punt,2020.The Alaska Climate Integrated Modeling study Multispecies Ecosystem Based Fisheries Management and climate change simulation and results data. DOI: 10.6084/m9.figshare.12568625
 
 as well as the corresponding manuscript:
 
@@ -241,6 +239,6 @@ Three harvest simulations are included in the available simulations:
   
 ## 4.3. ATTACH  
 
-The catchfunction package (which we refer to as the ABC To TAC and Commercial Harvest, aka ATTACH, model: R package rename forthcoming) was created for the Alaska Climate Integrated Modeling Project (ACLIM) by Amanda Faig (University of Washington; School of Aquatic Fisheries and Sciences) and Alan Haynie (NOAA; NMFS). This function, in a nutshell, takes Bering Sea (BS) acceptable biological catch (ABC) as input and uses a series of regression estimates to predict total allowable catch (TAC) and from that the commercial harvest in the Bering Sea, based on ABC, TAC, and catch data from 1992 to 2017. Documentation and code for ATTACH can be found on the [attach github]("https://github.com/amandafaig/catchfunction").
+The catchfunction package (which we refer to as the ABC To TAC and Commercial Harvest, aka ATTACH, model: R package rename forthcoming) was created for the Alaska Climate Integrated Modeling Project (ACLIM) by Amanda Faig (University of Washington; School of Aquatic Fisheries and Sciences) and Alan Haynie (NOAA; NMFS). This function, in a nutshell, takes Bering Sea (BS) acceptable biological catch (ABC) as input and uses a series of regression estimates to predict total allowable catch (TAC) and from that the commercial harvest in the Bering Sea, based on ABC, TAC, and catch data from 1992 to 2017. Version 1 ATTACH code and documentation used in this study can be found at: https://zenodo.org/record/3965100#.XyD_rS3Mzyl (doi: https://doi.org/10.5281/zenodo.3965100). Updated documentation and code for ATTACH can be found on the [attach github]("https://github.com/amandafaig/catchfunction").
 
 
