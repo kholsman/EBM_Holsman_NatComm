@@ -1,12 +1,12 @@
 *Data and code are under review and subject to change. Please do not use without permission from lead author: <kirstin.holsman@noaa.gov>*
 
-*7/9/2020 update: A co-author pointed out that two files were on figshare (the upload didn't overwrite and older version). This has now been corrected. *
+*7/9/2020 update:A co-author pointed out that two files were on figshare (the upload didn't overwrite and older version). This has now been corrected.*
 
 Repo maintained by: Kirstin Holsman
 Alaska Fisheries Science Center
 NOAA Fisheries, Seattle WA
 **<kirstin.holsman@noaa.gov>**
-*Last updated: Jul 09, 2020*
+*Last updated: Jul 28, 2020*
 
 ------------------------------------------------------------------------
 
@@ -53,7 +53,6 @@ To run the analyses or create the paper figures you will now need to download th
 ``` r
     cat("The download takes a few mins (large data files)...\n")
 
-    #url <-  "https://ndownloader.figshare.com/files/23442137?private_link=81007e2dd5edee0a5a7a"
     url <-   "https://ndownloader.figshare.com/files/23756117?private_link=81007e2dd5edee0a5a7a"
   
     dest_path  <-  file.path(main,"data.zip")
@@ -67,7 +66,11 @@ To run the analyses or create the paper figures you will now need to download th
 
 If you plan to use the data within the folder for purposes beyond rerunning the paper analyses and figures please contact <kirstin.holsman@noaa.gov> and provide the following citation for the data:
 
-10.6084/m9.figshare.12568625 along with Holsman et al. 2020.
+Holsman, K. K., A. Haynie, A. Hollowed, J.C.P. Reum, K. Aydin, A. J. Hermann, W. Cheng, A. Faig, J. N. Ianelli, K. Kearney, A. E. Punt,2020.The Alaska Climate Integrated Modeling study Multispecies Ecosystem Based Fisheries Managment and climate change simulation and results data. DOI: 10.6084/m9.figshare.12568625
+
+as well as the corresponding manuscript:
+
+Holsman, K. K., A. Haynie, A. Hollowed, J.C.P. Reum, K. Aydin, A. J. Hermann, W. Cheng, A. Faig, J. N. Ianelli, K. Kearney, A. E. Punt, 2020.Ecosystem-based fisheries management forestalls climate-driven collapse, Nature Communications.
 
 3 Regenerating analyses and figures:
 ====================================
