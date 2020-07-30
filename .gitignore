@@ -3,6 +3,7 @@
 .Rhistory
 .RData
 .Ruserdata
+Figures
 data/in/NotShared
 data/out/NotShared
 data/out/*

@@ -30,6 +30,7 @@ if(!update.figs){
   figS4()
   figS5()
   figS6()
+  figS7()
 }else{
   cat("\n updating figures via make_plots.R....")
   
@@ -57,6 +58,11 @@ if(!update.figs){
                          scale = scaleIN, width = NA, height = NA, units = "in",
                          dpi = dpiIN)
   
+  figS1()
+  ggsave(file=paste0("Figures/FigS1.tiff"), device = "tiff",
+         scale = scaleIN, width = NA, height = NA, units = "in",
+         dpi = dpiIN) 
+  
   figS2()
   ggsave(file=paste0("Figures/FigS2.tiff"), device = "tiff", 
                          scale = scaleIN, width = NA, height = NA, units = "in",
@@ -77,19 +83,17 @@ if(!update.figs){
   dev.off()
   
   figS6()
-  quartz.save(file=paste0("Figures/FigS6.jpg"), type = "jpeg", dpi = dpiIN)
+  quartz.save(file=paste0("Figures/FigS6.pdf"), type = "pdf", dpi = dpiIN)
   dev.off()
   
-  figS7()
-  ggsave(file=paste0("Figures/FigS7.tiff"), device = "tiff",
-         scale = scaleIN, width = NA, height = NA, units = "in",
-         dpi = dpiIN) 
-  
-  tiff(filename = paste0("Figures/FigS1.tiff"), 
+  tiff(filename = paste0("Figures/FigS7.tiff"), 
          units = "in",height=3.75,width=8,res=dpiIN)
-  figS1()
+  figS7()
   dev.off()
   
-
+  # fig3_noerr()
+  # ggsave(file=paste0("Figures/Fig3_noerr.tiff"), device = "tiff", 
+  #        scale = scaleIN, width = NA, height = NA, units = "in",
+  #        dpi = dpiIN)
 
 }

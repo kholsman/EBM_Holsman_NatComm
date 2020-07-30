@@ -131,7 +131,7 @@ plot_Feffective<-function(
     theme(legend.key.width = unit(.5, "cm")) +
     theme(legend.text=element_text(size=5)) +
     theme(legend.key.size=unit(.01, "cm")) +
-    labs(x=expression(B[y]/B[0]), y=expression(~F[y]/F[target])) +
+    labs(x=expression(B[y]/B[0]), y=expression(~F[i,y]/F[ABC,i,y])) +
     #labs(tag=letters(1:6)) +
     theme(plot.margin=margin(t = 3, r = 3, b = 3, l =3)) 
   

@@ -23,6 +23,7 @@ GGplot_aclimCEATTLE_delta<-function(
   ylimm_up    = c(20,2,1.5)*1e6,
   ylimm_dwn   = c(0,0,0),
   xlimmIN     = NULL,
+  ylimmIN     = NULL,
   scalesIN    = "free_y",
   sublab      = TRUE,
   sublab_adj  = 0.95,
@@ -185,13 +186,35 @@ GGplot_aclimCEATTLE_delta<-function(
   DAT$species      <-  factor(sp.labs[DAT$sp],levels = sp.labs)
   #DAT$coll         <-  col_df$col[match(DAT$Scenario, col_df$scen)
   spp              <-  factor(unique(DAT$species),levels=levels(DAT$species))
-  
+  if(!is.null(ylimmIN[1])) {
+    DAT$ylimm <- ylimmIN[1]
+    
+    dummy <- data.frame(species =factor(sp.labs[1],levels = sp.labs) , 
+                        value = c(0,ylimmIN[1]),
+                        stringsAsFactors=FALSE)
+    for(sp in 2:nspp)
+      dummy <- rbind(dummy, data.frame(species =factor(sp.labs[sp],levels = sp.labs) , 
+                                       value = c(0,ylimmIN[sp]),
+                                       stringsAsFactors=FALSE))
+    
+   
+    if(!deltaIN){
+      for(sp in 1:nspp)
+        DAT$value[DAT$sp==sp&DAT$value>ylimmIN[sp]] <- NA
+      
+    } 
+    if(!deltaIN){
+      for(sp in 1:nspp)
+        DAT$delta_var_prcnt[DAT$sp==sp&DAT$delta_var_prcnt>ylimmIN[sp]] <- NA
+    }   
+  }
   # Now plot it:
   if(!deltaIN)       p <- ggplot(DAT) + geom_line(aes(x = Year, y = value/ydiv,colour=scenario,size=HCR),alpha=alpha[1]/100)
   if(deltaIN)      p <- ggplot(DAT) + geom_line(aes(x = Year, y = delta_var_prcnt/ydiv,colour=scenario,size=HCR),alpha=alpha[1]/100)
   p      <- p + facet_grid(species~rcp2,scales=scalesIN)
   p      <- p + geom_vline(aes(xintercept=projLine),col="gray",size=1,linetype="dashed") 
   pchIN  <-  DAT%>%filter(HCR==hcr[1])%>%select(pch)
+  if(!is.null(ylimmIN[1])) p      <- p  + geom_blank(data=dummy) 
   
   for(nn in 1:((nprob-1)/2)){
     for(h in 1:nHCR){
@@ -246,6 +269,8 @@ GGplot_aclimCEATTLE_delta<-function(
   p <- p + theme(plot.subtitle=element_text(face="bold"))
   if(!is.null(xlimmIN[1])) 
     p <- p + xlim(xlimmIN[1],xlimmIN[2]) 
+  
+  
   
   if(!is.null(sublab)){
     tmpd <- data.frame(

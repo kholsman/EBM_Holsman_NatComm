@@ -19,10 +19,12 @@
     update.outputs  <-  FALSE   # overwrite the existing Rdatafiles in data/out
     status          <-  TRUE   # print progress
     scaleIN         <-  1      # controls the ratio (relative scaling of window)
-    dpiIN           <-  150    # dpi for figures (set to lower res for smaller file size- these will be about 3.5 MB)
+    dpiIN           <-  600    # dpi for figures (set to lower res for smaller file size- these will be about 3.5 MB)
     
     infn            <- c("covariates.Rdata",
-                         "0_5_3_nohcr_simulations.Rdata",
+                         #"0_5_3_nohcr_simulations.Rdata",
+                         "2_1_3_nohcr_simulations.Rdata",
+                         "2_5_3_nohcr_simulations.Rdata",
                          "multispp_cap_simulations.Rdata",
                          "multispp_nocap_simulations.Rdata")
     outfn            <- c("Biomass_thresholds.Rdata",
