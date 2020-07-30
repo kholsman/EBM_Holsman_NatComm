@@ -4,7 +4,7 @@ Repo maintained by: Kirstin Holsman
 Alaska Fisheries Science Center
 NOAA Fisheries, Seattle WA
 **<kirstin.holsman@noaa.gov>**
-*Last updated: Jul 28, 2020*
+*Last updated: Jul 30, 2020*
 
 ------------------------------------------------------------------------
 
@@ -112,6 +112,7 @@ To generate the figures in the paper without overwriting them run the 'make\_plo
     figS4()
     figS5()
     figS6()
+    figS7()
 ```
 
 Alternatively, by setting `update.figs` to `TRUE` the script will overwrite the existing figures in the `Figures` folder:
@@ -120,8 +121,8 @@ Alternatively, by setting `update.figs` to `TRUE` the script will overwrite the 
     update.figs  <- TRUE  
     warning("warning! this will overwrite existing figures in the Figures folder")
     
-    source("R/sub_scripts/make_plots.R")
-    update.figs  <- FALSE   # return this to it's default setting
+    source("R/sub_scripts/make_plots.R")  # this throws warnings that can be ignored
+    update.figs  <- FALSE                 # return this to it's default setting
 ```
 
 3.3. Regenerate analyses and final data
@@ -136,7 +137,7 @@ Analysis results are located in the `data/out` folder and loaded during `R/make.
    C_thresh_12_2$thrsh_x # Temperature tipping point for p cod under "No cap" simulations
    C_thresh_12_3$thrsh_x # No tipping point was found for arrowtooth under "No cap" simulations
    
- tmp <- data.frame("No Cap" = c( 
+ tmp <- list("No Cap" = c( 
    C_thresh_12_1$thrsh_x,
    C_thresh_12_2$thrsh_x,
    C_thresh_12_3$thrsh_x),
@@ -144,6 +145,18 @@ Analysis results are located in the `data/out` folder and loaded during `R/make.
    C_thresh_13_1$thrsh_x,
    C_thresh_13_2$thrsh_x,
    C_thresh_13_3$thrsh_x))
+ 
+ # get mean and var for tipping points:
+ mean(as.numeric(unlist(tmp)))
+ sd(as.numeric(unlist(tmp)))
+   
+ # double check:
+ threshIN     <- C_thresh_13_2
+ thrsh2_all   <- intersect(threshIN$signif2,threshIN$ix_pks)
+ df2_qnt      <- threshIN$df2_qnt
+ df2_qnt$tmp[(thrsh2_all[which( abs(df2_qnt$smoothed_mn[thrsh2_all])  == max(abs(df2_qnt$smoothed_mn[thrsh2_all])) ) ] ) ]
+ df2_qnt$tmp[(thrsh2_all[which( abs(df2_qnt$smoothed_dwn[thrsh2_all]) == max(abs(df2_qnt$smoothed_dwn[thrsh2_all])) )])  ]
+ df2_qnt$tmp[(thrsh2_all[which( abs(df2_qnt$smoothed_up[thrsh2_all])  == max(abs(df2_qnt$smoothed_up[thrsh2_all]))  )])  ]
 ```
 
 To re-run the paper analyses, including risk calculations and threshold/tipping points, set `update.outputs = TRUE`(this is set to `FALSE` by default) and run the `SUB_EBM_paper.R` script:
