@@ -236,23 +236,39 @@ To recreate the Table S1 (uses kable to create table as html):
 
 Various simulation outputs were made available for use in this analysis through the interdisciplinary [Alaska Climate Integrated Modeling (ACLIM) project]("https://www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project"). An overview of the project and simulation experiments can be found in [Hollowed et al. 2020]("https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full").
 
-## 4.1. Bering10K ROMSNPZ  
+Hollowed, A. B., K. K. Holsman, A. C. Haynie, A. J. Hermann, A. E. Punt, K. Aydin, J. N. Ianelli, S. Kasperski, W. Cheng, A. Faig, K. A. Kearney, J. C. P. Reum, P. Spencer, I. Spies, W. Stockhausen, C. S. Szuwalski, G. A. Whitehouse, and T. K. Wilderbuer. 2020. Integrated Modeling to Evaluate Climate Change Impacts on Coupled Social-Ecological Systems in Alaska  .
+
+## 4.1. Bering10K ROMSNPZ model 
 
 ACLIM indices used in this analysis can be viewed interactively online at: https://kholsman.shinyapps.io/aclim. The indices were produced for the ACLIM project and derived from the outputs of the Bering10K ROMSNPZ model. Downscaled hindcasts and CMIP5 projections of oceanographic and lower trophic conditions from the Bering10K model were developed as part of the ACLIM project. An overview of these projections and the Bering10K ROMSNPZ model can be found in [Hermann et al. 2019]("https://academic.oup.com/icesjms/article/76/5/1280/5477847"), [Kearney et al. 2020]("https://gmd.copernicus.org/articles/13/597/2020/"), and [Hollowed et al. 2020]("https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full"). An overview of the Bering10K ROMSNPZ model can be found [here]("https://beringnpz.github.io/roms-bering-sea/intro/").
 
+Citation:
+
+Hermann, A. J., G. A. Gibson, W. Cheng, I. Ortiz, K. Aydin, M. Wang, A. B. Hollowed, and K. K. Holsman. 2019. Projected biophysical conditions of the Bering Sea to 2100 under multiple emission scenarios. ICES Journal of Marine Science.
+
 Kearney K, Hermann A, Cheng W, Ortiz I, Aydin K (2020) A coupled pelagic-benthic-sympagic biogeochemical model for the Bering Sea: documentation and validation of the BESTNPZ model (v2019.08.23) within a high-resolution regional ocean model. Geosci Model Dev 13:597-650. DOI:10.5194/gmd-13-597-2020.
 
-## 4.2. CEATTLE  
+
+## 4.2. CEATTLE multispecies model
 
 CEATTLE is a climate-enhanced multispecies stock assessment model for walleye pollock, Pacific cod, and arrowtooth flounder ([Holsman et al. 2016]("https://www.sciencedirect.com/science/article/pii/S0967064515002751"), [2019]("https://archive.afsc.noaa.gov/refm/docs/2019/EBSmultispp.pdf")) that has been updated annually and included as an appendix to the BSAI walleye pollock stock assessment ([Ianelli et al. 2019]("https://archive.afsc.noaa.gov/refm/docs/2019/GOApollock.pdf")) since 2016 as part of the Bering Sea fishery stock assessment process. As part of ACLIM CEATTLE was coupled to the ROMSNPZ model and the ATTACH model (below) to generate projections of species biomass and catch under future climate conditions in the Bering Sea. Methods for this coupling and projection simulation can be found in Holsman et al. submitted and Hollowed et al. 2020. The simulation outputs, scripts, and input data files used to generate these simulations can be found on the ACLIM-CEATTLE gitrepo and figshare sites. Details about the CEATTLE model can be found in the [2018 Multispecies assessment]("https://archive.fisheries.noaa.gov/afsc/REFM/Docs/2018/BSAI/2018EBSmultispp-508.pdf") and [2019 Assessments]("https://archive.afsc.noaa.gov/refm/docs/2019/EBSmultispp.pdf").
 
-Three harvest simulations are included in the available simulations:
-1. Catch = ABC where multispecies assessment simulations (run in ADMB) using climate naive reference points for BO  but climate specific B40 and projections (climate effects on growth, M2, and recruitment).
-2. Catch = ABC + sloping harvest control rule below B40, and with F = 0 when B < B20.
-3. As in 2 but where catch~f(ABC,TAC) via the ATTACH package (below).
-  
-## 4.3. ATTACH  
+Citation:
+Holsman, K. K., J. N. Ianelli, K. Aydin, and I. Spies. 2019. Multi-species supplement: 2019 Climate-enhanced multi-species Stock Assessment for walleye pollock, Pacific cod, and arrowtooth flounder in the Eastern Bering Sea. Pages 1–43 NPFMC Stock Assessment and Fishery Evaluation Report for the Groundfish Resources of the Bering Sea/Aleutian Islands Regions.
 
-The catchfunction package (which we refer to as the ABC To TAC and Commercial Harvest, aka ATTACH, model: R package rename forthcoming) was created for the Alaska Climate Integrated Modeling Project (ACLIM) by Amanda Faig (University of Washington; School of Aquatic Fisheries and Sciences) and Alan Haynie (NOAA; NMFS). This function, in a nutshell, takes Bering Sea (BS) acceptable biological catch (ABC) as input and uses a series of regression estimates to predict total allowable catch (TAC) and from that the commercial harvest in the Bering Sea, based on ABC, TAC, and catch data from 1992 to 2017. Version 1 ATTACH code and documentation used in this study can be found at: https://zenodo.org/record/3965100#.XyD_rS3Mzyl (doi: https://doi.org/10.5281/zenodo.3965100). Updated documentation and code for ATTACH can be found on the [attach github]("https://github.com/amandafaig/catchfunction").
+Holsman, K. K., J. Ianelli, K. Aydin, A. E. Punt, and E. A. Moffitt. 2016. A comparison of fisheries biological reference points estimated from temperature-specific multi-species and single-species climate-enhanced stock assessment models. Deep-Sea Research Part II: Topical Studies in Oceanography 134:360–378.
+
+
+Three harvest simulations are included in the available simulations:  
+  1.  Catch = ABC where multispecies assessment simulations (run in ADMB) using climate naive reference points for BO  but climate specific B40 and projections (climate effects on growth, M2, and recruitment).  
+  2.  Catch = ABC + sloping harvest control rule below B40, and with F = 0 when B < B20.  
+  3.  As in 2 but where catch~f(ABC,TAC) via the ATTACH package (below).  
+
+  
+## 4.3. ATTACH model
+
+The catchfunction package (which we refer to as the ABC To TAC and Commercial Harvest, aka ATTACH, model: R package rename forthcoming) was created for the Alaska Climate Integrated Modeling Project (ACLIM) by Amanda Faig (University of Washington; School of Aquatic Fisheries and Sciences) and Alan Haynie (NOAA; NMFS). This function, in a nutshell, takes Bering Sea (BS) acceptable biological catch (ABC) as input and uses a series of regression estimates to predict total allowable catch (TAC) and from that the commercial harvest in the Bering Sea, based on ABC, TAC, and catch data from 1992 to 2017. Version 1.6.0 ATTACH code and documentation used in this study can be found at: http://doi.org/10.5281/zenodo.3966545. Updated documentation and code for ATTACH can be found on the [attach github]("https://github.com/amandafaig/catchfunction").
+
+Faig, A., and A. Haynie. 2020. The ATTACH model Package Version 1.6.0 http://doi.org/10.5281/zenodo.3966545.
 
 

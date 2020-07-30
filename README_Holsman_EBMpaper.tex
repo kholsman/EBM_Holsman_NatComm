@@ -106,19 +106,13 @@ climate-driven collapse'}
 \begin{document}
 \maketitle
 
-\emph{Data and code are under review and subject to change. Please do
-not use without permission from lead author:
-\href{mailto:kirstin.holsman@noaa.gov}{\nolinkurl{kirstin.holsman@noaa.gov}}}
-
-\emph{7/9/2020 update: A co-author pointed out that two files were on
-figshare (the upload didn't overwrite and older version). This has now
-been corrected. }
+\emph{Data and code are subject to change}
 
 Repo maintained by: Kirstin Holsman\\
 Alaska Fisheries Science Center\\
 NOAA Fisheries, Seattle WA\\
 \textbf{\href{mailto:kirstin.holsman@noaa.gov}{\nolinkurl{kirstin.holsman@noaa.gov}}}\\
-\emph{Last updated: Jul 09, 2020}
+\emph{Last updated: Jul 30, 2020}
 
 \begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
 
@@ -181,7 +175,6 @@ to download and place the data in the correct sub-folders:
 \begin{Highlighting}[]
     \KeywordTok{cat}\NormalTok{(}\StringTok{"The download takes a few mins (large data files)...}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
 
-    \CommentTok{#url <-  "https://ndownloader.figshare.com/files/23442137?private_link=81007e2dd5edee0a5a7a"}
     \NormalTok{url <-}\StringTok{   "https://ndownloader.figshare.com/files/23756117?private_link=81007e2dd5edee0a5a7a"}
   
     \NormalTok{dest_path  <-}\StringTok{  }\KeywordTok{file.path}\NormalTok{(main,}\StringTok{"data.zip"}\NormalTok{)}
@@ -199,7 +192,18 @@ rerunning the paper analyses and figures please contact
 \href{mailto:kirstin.holsman@noaa.gov}{\nolinkurl{kirstin.holsman@noaa.gov}}
 and provide the following citation for the data:
 
-10.6084/m9.figshare.12568625 along with Holsman et al. 2020.
+Holsman, K. K., A. Haynie, A. Hollowed, J.C.P. Reum, K. Aydin, A. J.
+Hermann, W. Cheng, A. Faig, J. N. Ianelli, K. Kearney, A. E.
+Punt,2020.The Alaska Climate Integrated Modeling study Multispecies
+Ecosystem Based Fisheries Management and climate change simulation and
+results data. DOI: 10.6084/m9.figshare.12568625
+
+as well as the corresponding manuscript:
+
+Holsman, K. K., A. Haynie, A. Hollowed, J.C.P. Reum, K. Aydin, A. J.
+Hermann, W. Cheng, A. Faig, J. N. Ianelli, K. Kearney, A. E. Punt,
+2020.Ecosystem-based fisheries management forestalls climate-driven
+collapse, Nature Communications.
 
 \section{3 Regenerating analyses and
 figures:}\label{regenerating-analyses-and-figures}
@@ -252,6 +256,7 @@ To generate the figures in the paper without overwriting them run the
     \KeywordTok{figS4}\NormalTok{()}
     \KeywordTok{figS5}\NormalTok{()}
     \KeywordTok{figS6}\NormalTok{()}
+    \KeywordTok{figS7}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
 
@@ -264,8 +269,8 @@ folder:
     \NormalTok{update.figs  <-}\StringTok{ }\OtherTok{TRUE}  
     \KeywordTok{warning}\NormalTok{(}\StringTok{"warning! this will overwrite existing figures in the Figures folder"}\NormalTok{)}
     
-    \KeywordTok{source}\NormalTok{(}\StringTok{"R/sub_scripts/make_plots.R"}\NormalTok{)}
-    \NormalTok{update.figs  <-}\StringTok{ }\OtherTok{FALSE}   \CommentTok{# return this to it's default setting}
+    \KeywordTok{source}\NormalTok{(}\StringTok{"R/sub_scripts/make_plots.R"}\NormalTok{)  }\CommentTok{# this throws warnings that can be ignored}
+    \NormalTok{update.figs  <-}\StringTok{ }\OtherTok{FALSE}                 \CommentTok{# return this to it's default setting}
 \end{Highlighting}
 \end{Shaded}
 
@@ -283,7 +288,7 @@ during \texttt{R/make.R}:
    \NormalTok{C_thresh_12_2$thrsh_x }\CommentTok{# Temperature tipping point for p cod under "No cap" simulations}
    \NormalTok{C_thresh_12_3$thrsh_x }\CommentTok{# No tipping point was found for arrowtooth under "No cap" simulations}
    
- \NormalTok{tmp <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\StringTok{"No Cap"} \NormalTok{=}\StringTok{ }\KeywordTok{c}\NormalTok{( }
+ \NormalTok{tmp <-}\StringTok{ }\KeywordTok{list}\NormalTok{(}\StringTok{"No Cap"} \NormalTok{=}\StringTok{ }\KeywordTok{c}\NormalTok{( }
    \NormalTok{C_thresh_12_1$thrsh_x,}
    \NormalTok{C_thresh_12_2$thrsh_x,}
    \NormalTok{C_thresh_12_3$thrsh_x),}
@@ -291,6 +296,18 @@ during \texttt{R/make.R}:
    \NormalTok{C_thresh_13_1$thrsh_x,}
    \NormalTok{C_thresh_13_2$thrsh_x,}
    \NormalTok{C_thresh_13_3$thrsh_x))}
+ 
+ \CommentTok{# get mean and var for tipping points:}
+ \KeywordTok{mean}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(}\KeywordTok{unlist}\NormalTok{(tmp)))}
+ \KeywordTok{sd}\NormalTok{(}\KeywordTok{as.numeric}\NormalTok{(}\KeywordTok{unlist}\NormalTok{(tmp)))}
+   
+ \CommentTok{# double check:}
+ \NormalTok{threshIN     <-}\StringTok{ }\NormalTok{C_thresh_13_2}
+ \NormalTok{thrsh2_all   <-}\StringTok{ }\KeywordTok{intersect}\NormalTok{(threshIN$signif2,threshIN$ix_pks)}
+ \NormalTok{df2_qnt      <-}\StringTok{ }\NormalTok{threshIN$df2_qnt}
+ \NormalTok{df2_qnt$tmp[(thrsh2_all[}\KeywordTok{which}\NormalTok{( }\KeywordTok{abs}\NormalTok{(df2_qnt$smoothed_mn[thrsh2_all])  ==}\StringTok{ }\KeywordTok{max}\NormalTok{(}\KeywordTok{abs}\NormalTok{(df2_qnt$smoothed_mn[thrsh2_all])) ) ] ) ]}
+ \NormalTok{df2_qnt$tmp[(thrsh2_all[}\KeywordTok{which}\NormalTok{( }\KeywordTok{abs}\NormalTok{(df2_qnt$smoothed_dwn[thrsh2_all]) ==}\StringTok{ }\KeywordTok{max}\NormalTok{(}\KeywordTok{abs}\NormalTok{(df2_qnt$smoothed_dwn[thrsh2_all])) )])  ]}
+ \NormalTok{df2_qnt$tmp[(thrsh2_all[}\KeywordTok{which}\NormalTok{( }\KeywordTok{abs}\NormalTok{(df2_qnt$smoothed_up[thrsh2_all])  ==}\StringTok{ }\KeywordTok{max}\NormalTok{(}\KeywordTok{abs}\NormalTok{(df2_qnt$smoothed_up[thrsh2_all]))  )])  ]}
 \end{Highlighting}
 \end{Shaded}
 
@@ -336,7 +353,14 @@ and simulation experiments can be found in
 \href{\%22https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full\%22}{Hollowed
 et al. 2020}.
 
-\subsection{4.1. Bering10K ROMSNPZ}\label{bering10k-romsnpz}
+Hollowed, A. B., K. K. Holsman, A. C. Haynie, A. J. Hermann, A. E. Punt,
+K. Aydin, J. N. Ianelli, S. Kasperski, W. Cheng, A. Faig, K. A. Kearney,
+J. C. P. Reum, P. Spencer, I. Spies, W. Stockhausen, C. S. Szuwalski, G.
+A. Whitehouse, and T. K. Wilderbuer. 2020. Integrated Modeling to
+Evaluate Climate Change Impacts on Coupled Social-Ecological Systems in
+Alaska .
+
+\subsection{4.1. Bering10K ROMSNPZ model}\label{bering10k-romsnpz-model}
 
 ACLIM indices used in this analysis can be viewed interactively online
 at: \url{https://kholsman.shinyapps.io/aclim}. The indices were produced
@@ -353,13 +377,21 @@ et al. 2020}, and
 et al. 2020}. An overview of the Bering10K ROMSNPZ model can be found
 \href{\%22https://beringnpz.github.io/roms-bering-sea/intro/\%22}{here}.
 
+Citation:
+
+Hermann, A. J., G. A. Gibson, W. Cheng, I. Ortiz, K. Aydin, M. Wang, A.
+B. Hollowed, and K. K. Holsman. 2019. Projected biophysical conditions
+of the Bering Sea to 2100 under multiple emission scenarios. ICES
+Journal of Marine Science.
+
 Kearney K, Hermann A, Cheng W, Ortiz I, Aydin K (2020) A coupled
 pelagic-benthic-sympagic biogeochemical model for the Bering Sea:
 documentation and validation of the BESTNPZ model (v2019.08.23) within a
 high-resolution regional ocean model. Geosci Model Dev 13:597-650.
 \url{DOI:10.5194/gmd-13-597-2020}.
 
-\subsection{4.2. CEATTLE}\label{ceattle}
+\subsection{4.2. CEATTLE multispecies
+model}\label{ceattle-multispecies-model}
 
 CEATTLE is a climate-enhanced multispecies stock assessment model for
 walleye pollock, Pacific cod, and arrowtooth flounder
@@ -383,15 +415,29 @@ Multispecies assessment} and
 \href{\%22https://archive.afsc.noaa.gov/refm/docs/2019/EBSmultispp.pdf\%22}{2019
 Assessments}.
 
-Three harvest simulations are included in the available simulations: 1.
-Catch = ABC where multispecies assessment simulations (run in ADMB)
-using climate naive reference points for BO but climate specific B40 and
-projections (climate effects on growth, M2, and recruitment). 2. Catch =
-ABC + sloping harvest control rule below B40, and with F = 0 when B
-\textless{} B20. 3. As in 2 but where catch\textasciitilde{}f(ABC,TAC)
-via the ATTACH package (below).
+Citation: Holsman, K. K., J. N. Ianelli, K. Aydin, and I. Spies. 2019.
+Multi-species supplement: 2019 Climate-enhanced multi-species Stock
+Assessment for walleye pollock, Pacific cod, and arrowtooth flounder in
+the Eastern Bering Sea. Pages 1--43 NPFMC Stock Assessment and Fishery
+Evaluation Report for the Groundfish Resources of the Bering
+Sea/Aleutian Islands Regions.
 
-\subsection{4.3. ATTACH}\label{attach}
+Holsman, K. K., J. Ianelli, K. Aydin, A. E. Punt, and E. A. Moffitt.
+2016. A comparison of fisheries biological reference points estimated
+from temperature-specific multi-species and single-species
+climate-enhanced stock assessment models. Deep-Sea Research Part II:
+Topical Studies in Oceanography 134:360--378.
+
+Three harvest simulations are included in the available simulations:\\
+1. Catch = ABC where multispecies assessment simulations (run in ADMB)
+using climate naive reference points for BO but climate specific B40 and
+projections (climate effects on growth, M2, and recruitment).\\
+2. Catch = ABC + sloping harvest control rule below B40, and with F = 0
+when B \textless{} B20.\\
+3. As in 2 but where catch\textasciitilde{}f(ABC,TAC) via the ATTACH
+package (below).
+
+\subsection{4.3. ATTACH model}\label{attach-model}
 
 The catchfunction package (which we refer to as the ABC To TAC and
 Commercial Harvest, aka ATTACH, model: R package rename forthcoming) was
@@ -401,9 +447,14 @@ Sciences) and Alan Haynie (NOAA; NMFS). This function, in a nutshell,
 takes Bering Sea (BS) acceptable biological catch (ABC) as input and
 uses a series of regression estimates to predict total allowable catch
 (TAC) and from that the commercial harvest in the Bering Sea, based on
-ABC, TAC, and catch data from 1992 to 2017. Documentation and code for
-ATTACH can be found on the
+ABC, TAC, and catch data from 1992 to 2017. Version 1.6.0 ATTACH code
+and documentation used in this study can be found at:
+\url{http://doi.org/10.5281/zenodo.3966545}. Updated documentation and
+code for ATTACH can be found on the
 \href{\%22https://github.com/amandafaig/catchfunction\%22}{attach
 github}.
+
+Faig, A., and A. Haynie. 2020. The ATTACH model Package Version 1.6.0
+\url{http://doi.org/10.5281/zenodo.3966545}.
 
 \end{document}

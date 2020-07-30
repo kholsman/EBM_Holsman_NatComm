@@ -197,20 +197,19 @@ summary {
 <li><a href="#regenerate-analyses-and-final-data">3.3. Regenerate analyses and final data</a></li>
 </ul></li>
 <li><a href="#primary-and-intermediate-data-sources-and-models">4 Primary and Intermediate Data sources and models</a><ul>
-<li><a href="#bering10k-romsnpz">4.1. Bering10K ROMSNPZ</a></li>
-<li><a href="#ceattle">4.2. CEATTLE</a></li>
-<li><a href="#attach">4.3. ATTACH</a></li>
+<li><a href="#bering10k-romsnpz-model">4.1. Bering10K ROMSNPZ model</a></li>
+<li><a href="#ceattle-multispecies-model">4.2. CEATTLE multispecies model</a></li>
+<li><a href="#attach-model">4.3. ATTACH model</a></li>
 </ul></li>
 </ul>
 </div>
 
-<p><em>Data and code are under review and subject to change. Please do not use without permission from lead author: <a href="mailto:kirstin.holsman@noaa.gov">kirstin.holsman@noaa.gov</a></em></p>
-<p><em>7/9/2020 update:A co-author pointed out that two files were on figshare (the upload didn’t overwrite and older version). This has now been corrected.</em></p>
+<p><em>Data and code are subject to change</em></p>
 <p>Repo maintained by: Kirstin Holsman<br />
 Alaska Fisheries Science Center<br />
 NOAA Fisheries, Seattle WA<br />
 <strong><a href="mailto:kirstin.holsman@noaa.gov">kirstin.holsman@noaa.gov</a></strong><br />
-<em>Last updated: Jul 09, 2020</em></p>
+<em>Last updated: Jul 30, 2020</em></p>
 <hr />
 <div id="overview" class="section level1">
 <h1>1 Overview</h1>
@@ -245,7 +244,6 @@ NOAA Fisheries, Seattle WA<br />
 <p>To run the analyses or create the paper figures you will now need to download the large zipped data folder here: <a href="https://figshare.com/s/81007e2dd5edee0a5a7a" class="uri">https://figshare.com/s/81007e2dd5edee0a5a7a</a> (Data 10.6084/m9.figshare.12568625) and copy - paste the contents (folders “in” and “out”“) it in the directory: ‘[your local directory path]/EBM_Holsman_NatComm/data’ or simply run the following script to download and place the data in the correct sub-folders:</p>
 <pre class="r"><code>    cat(&quot;The download takes a few mins (large data files)...\n&quot;)
 
-    #url &lt;-  &quot;https://ndownloader.figshare.com/files/23442137?private_link=81007e2dd5edee0a5a7a&quot;
     url &lt;-   &quot;https://ndownloader.figshare.com/files/23756117?private_link=81007e2dd5edee0a5a7a&quot;
   
     dest_path  &lt;-  file.path(main,&quot;data.zip&quot;)
@@ -256,7 +254,9 @@ NOAA Fisheries, Seattle WA<br />
     unzip (file.path(main,&quot;data.zip&quot;), exdir = &quot;./&quot;,overwrite=T)
     cat(&quot;\nFiles unzipped successfully...\n&quot;)</code></pre>
 <p>If you plan to use the data within the folder for purposes beyond rerunning the paper analyses and figures please contact <a href="mailto:kirstin.holsman@noaa.gov">kirstin.holsman@noaa.gov</a> and provide the following citation for the data:</p>
-<p>10.6084/m9.figshare.12568625 along with Holsman et al. 2020.</p>
+<p>Holsman, K. K., A. Haynie, A. Hollowed, J.C.P. Reum, K. Aydin, A. J. Hermann, W. Cheng, A. Faig, J. N. Ianelli, K. Kearney, A. E. Punt,2020.The Alaska Climate Integrated Modeling study Multispecies Ecosystem Based Fisheries Management and climate change simulation and results data. DOI: 10.6084/m9.figshare.12568625</p>
+<p>as well as the corresponding manuscript:</p>
+<p>Holsman, K. K., A. Haynie, A. Hollowed, J.C.P. Reum, K. Aydin, A. J. Hermann, W. Cheng, A. Faig, J. N. Ianelli, K. Kearney, A. E. Punt, 2020.Ecosystem-based fisheries management forestalls climate-driven collapse, Nature Communications.</p>
 </div>
 </div>
 <div id="regenerating-analyses-and-figures" class="section level1">
@@ -291,13 +291,14 @@ NOAA Fisheries, Seattle WA<br />
     figS3() #  slow....
     figS4()
     figS5()
-    figS6()</code></pre>
+    figS6()
+    figS7()</code></pre>
 <p>Alternatively, by setting <code>update.figs</code> to <code>TRUE</code> the script will overwrite the existing figures in the <code>Figures</code> folder:</p>
 <pre class="r"><code>    update.figs  &lt;- TRUE  
     warning(&quot;warning! this will overwrite existing figures in the Figures folder&quot;)
     
-    source(&quot;R/sub_scripts/make_plots.R&quot;)
-    update.figs  &lt;- FALSE   # return this to it's default setting</code></pre>
+    source(&quot;R/sub_scripts/make_plots.R&quot;)  # this throws warnings that can be ignored
+    update.figs  &lt;- FALSE                 # return this to it's default setting</code></pre>
 </div>
 <div id="regenerate-analyses-and-final-data" class="section level2">
 <h2>3.3. Regenerate analyses and final data</h2>
@@ -308,14 +309,26 @@ NOAA Fisheries, Seattle WA<br />
    C_thresh_12_2$thrsh_x # Temperature tipping point for p cod under &quot;No cap&quot; simulations
    C_thresh_12_3$thrsh_x # No tipping point was found for arrowtooth under &quot;No cap&quot; simulations
    
- tmp &lt;- data.frame(&quot;No Cap&quot; = c( 
+ tmp &lt;- list(&quot;No Cap&quot; = c( 
    C_thresh_12_1$thrsh_x,
    C_thresh_12_2$thrsh_x,
    C_thresh_12_3$thrsh_x),
    &quot;2 MT Cap&quot; = c( 
    C_thresh_13_1$thrsh_x,
    C_thresh_13_2$thrsh_x,
-   C_thresh_13_3$thrsh_x))</code></pre>
+   C_thresh_13_3$thrsh_x))
+ 
+ # get mean and var for tipping points:
+ mean(as.numeric(unlist(tmp)))
+ sd(as.numeric(unlist(tmp)))
+   
+ # double check:
+ threshIN     &lt;- C_thresh_13_2
+ thrsh2_all   &lt;- intersect(threshIN$signif2,threshIN$ix_pks)
+ df2_qnt      &lt;- threshIN$df2_qnt
+ df2_qnt$tmp[(thrsh2_all[which( abs(df2_qnt$smoothed_mn[thrsh2_all])  == max(abs(df2_qnt$smoothed_mn[thrsh2_all])) ) ] ) ]
+ df2_qnt$tmp[(thrsh2_all[which( abs(df2_qnt$smoothed_dwn[thrsh2_all]) == max(abs(df2_qnt$smoothed_dwn[thrsh2_all])) )])  ]
+ df2_qnt$tmp[(thrsh2_all[which( abs(df2_qnt$smoothed_up[thrsh2_all])  == max(abs(df2_qnt$smoothed_up[thrsh2_all]))  )])  ]</code></pre>
 <p>To re-run the paper analyses, including risk calculations and threshold/tipping points, set <code>update.outputs = TRUE</code>(this is set to <code>FALSE</code> by default) and run the <code>SUB_EBM_paper.R</code> script:</p>
 <pre class="r"><code>    update.outputs  &lt;- TRUE  
     warning(&quot;warning! Setting update.outputs to TRUE will overwrite Rdata files in the data folder&quot;)
@@ -336,19 +349,28 @@ NOAA Fisheries, Seattle WA<br />
 <div id="primary-and-intermediate-data-sources-and-models" class="section level1">
 <h1>4 Primary and Intermediate Data sources and models</h1>
 <p>Various simulation outputs were made available for use in this analysis through the interdisciplinary <a href="%22https://www.fisheries.noaa.gov/alaska/ecosystems/alaska-climate-integrated-modeling-project%22">Alaska Climate Integrated Modeling (ACLIM) project</a>. An overview of the project and simulation experiments can be found in <a href="%22https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full%22">Hollowed et al. 2020</a>.</p>
-<div id="bering10k-romsnpz" class="section level2">
-<h2>4.1. Bering10K ROMSNPZ</h2>
+<p>Hollowed, A. B., K. K. Holsman, A. C. Haynie, A. J. Hermann, A. E. Punt, K. Aydin, J. N. Ianelli, S. Kasperski, W. Cheng, A. Faig, K. A. Kearney, J. C. P. Reum, P. Spencer, I. Spies, W. Stockhausen, C. S. Szuwalski, G. A. Whitehouse, and T. K. Wilderbuer. 2020. Integrated Modeling to Evaluate Climate Change Impacts on Coupled Social-Ecological Systems in Alaska .</p>
+<div id="bering10k-romsnpz-model" class="section level2">
+<h2>4.1. Bering10K ROMSNPZ model</h2>
 <p>ACLIM indices used in this analysis can be viewed interactively online at: <a href="https://kholsman.shinyapps.io/aclim" class="uri">https://kholsman.shinyapps.io/aclim</a>. The indices were produced for the ACLIM project and derived from the outputs of the Bering10K ROMSNPZ model. Downscaled hindcasts and CMIP5 projections of oceanographic and lower trophic conditions from the Bering10K model were developed as part of the ACLIM project. An overview of these projections and the Bering10K ROMSNPZ model can be found in <a href="%22https://academic.oup.com/icesjms/article/76/5/1280/5477847%22">Hermann et al. 2019</a>, <a href="%22https://gmd.copernicus.org/articles/13/597/2020/%22">Kearney et al. 2020</a>, and <a href="%22https://www.frontiersin.org/articles/10.3389/fmars.2019.00775/full%22">Hollowed et al. 2020</a>. An overview of the Bering10K ROMSNPZ model can be found <a href="%22https://beringnpz.github.io/roms-bering-sea/intro/%22">here</a>.</p>
+<p>Citation:</p>
+<p>Hermann, A. J., G. A. Gibson, W. Cheng, I. Ortiz, K. Aydin, M. Wang, A. B. Hollowed, and K. K. Holsman. 2019. Projected biophysical conditions of the Bering Sea to 2100 under multiple emission scenarios. ICES Journal of Marine Science.</p>
 <p>Kearney K, Hermann A, Cheng W, Ortiz I, Aydin K (2020) A coupled pelagic-benthic-sympagic biogeochemical model for the Bering Sea: documentation and validation of the BESTNPZ model (v2019.08.23) within a high-resolution regional ocean model. Geosci Model Dev 13:597-650. <a href="DOI:10.5194/gmd-13-597-2020" class="uri">DOI:10.5194/gmd-13-597-2020</a>.</p>
 </div>
-<div id="ceattle" class="section level2">
-<h2>4.2. CEATTLE</h2>
+<div id="ceattle-multispecies-model" class="section level2">
+<h2>4.2. CEATTLE multispecies model</h2>
 <p>CEATTLE is a climate-enhanced multispecies stock assessment model for walleye pollock, Pacific cod, and arrowtooth flounder (<a href="%22https://www.sciencedirect.com/science/article/pii/S0967064515002751%22">Holsman et al. 2016</a>, <a href="%22https://archive.afsc.noaa.gov/refm/docs/2019/EBSmultispp.pdf%22">2019</a>) that has been updated annually and included as an appendix to the BSAI walleye pollock stock assessment (<a href="%22https://archive.afsc.noaa.gov/refm/docs/2019/GOApollock.pdf%22">Ianelli et al. 2019</a>) since 2016 as part of the Bering Sea fishery stock assessment process. As part of ACLIM CEATTLE was coupled to the ROMSNPZ model and the ATTACH model (below) to generate projections of species biomass and catch under future climate conditions in the Bering Sea. Methods for this coupling and projection simulation can be found in Holsman et al. submitted and Hollowed et al. 2020. The simulation outputs, scripts, and input data files used to generate these simulations can be found on the ACLIM-CEATTLE gitrepo and figshare sites. Details about the CEATTLE model can be found in the <a href="%22https://archive.fisheries.noaa.gov/afsc/REFM/Docs/2018/BSAI/2018EBSmultispp-508.pdf%22">2018 Multispecies assessment</a> and <a href="%22https://archive.afsc.noaa.gov/refm/docs/2019/EBSmultispp.pdf%22">2019 Assessments</a>.</p>
-<p>Three harvest simulations are included in the available simulations: 1. Catch = ABC where multispecies assessment simulations (run in ADMB) using climate naive reference points for BO but climate specific B40 and projections (climate effects on growth, M2, and recruitment). 2. Catch = ABC + sloping harvest control rule below B40, and with F = 0 when B &lt; B20. 3. As in 2 but where catch~f(ABC,TAC) via the ATTACH package (below).</p>
+<p>Citation: Holsman, K. K., J. N. Ianelli, K. Aydin, and I. Spies. 2019. Multi-species supplement: 2019 Climate-enhanced multi-species Stock Assessment for walleye pollock, Pacific cod, and arrowtooth flounder in the Eastern Bering Sea. Pages 1–43 NPFMC Stock Assessment and Fishery Evaluation Report for the Groundfish Resources of the Bering Sea/Aleutian Islands Regions.</p>
+<p>Holsman, K. K., J. Ianelli, K. Aydin, A. E. Punt, and E. A. Moffitt. 2016. A comparison of fisheries biological reference points estimated from temperature-specific multi-species and single-species climate-enhanced stock assessment models. Deep-Sea Research Part II: Topical Studies in Oceanography 134:360–378.</p>
+<p>Three harvest simulations are included in the available simulations:<br />
+1. Catch = ABC where multispecies assessment simulations (run in ADMB) using climate naive reference points for BO but climate specific B40 and projections (climate effects on growth, M2, and recruitment).<br />
+2. Catch = ABC + sloping harvest control rule below B40, and with F = 0 when B &lt; B20.<br />
+3. As in 2 but where catch~f(ABC,TAC) via the ATTACH package (below).</p>
 </div>
-<div id="attach" class="section level2">
-<h2>4.3. ATTACH</h2>
-<p>The catchfunction package (which we refer to as the ABC To TAC and Commercial Harvest, aka ATTACH, model: R package rename forthcoming) was created for the Alaska Climate Integrated Modeling Project (ACLIM) by Amanda Faig (University of Washington; School of Aquatic Fisheries and Sciences) and Alan Haynie (NOAA; NMFS). This function, in a nutshell, takes Bering Sea (BS) acceptable biological catch (ABC) as input and uses a series of regression estimates to predict total allowable catch (TAC) and from that the commercial harvest in the Bering Sea, based on ABC, TAC, and catch data from 1992 to 2017. Documentation and code for ATTACH can be found on the <a href="%22https://github.com/amandafaig/catchfunction%22">attach github</a>.</p>
+<div id="attach-model" class="section level2">
+<h2>4.3. ATTACH model</h2>
+<p>The catchfunction package (which we refer to as the ABC To TAC and Commercial Harvest, aka ATTACH, model: R package rename forthcoming) was created for the Alaska Climate Integrated Modeling Project (ACLIM) by Amanda Faig (University of Washington; School of Aquatic Fisheries and Sciences) and Alan Haynie (NOAA; NMFS). This function, in a nutshell, takes Bering Sea (BS) acceptable biological catch (ABC) as input and uses a series of regression estimates to predict total allowable catch (TAC) and from that the commercial harvest in the Bering Sea, based on ABC, TAC, and catch data from 1992 to 2017. Version 1.6.0 ATTACH code and documentation used in this study can be found at: <a href="http://doi.org/10.5281/zenodo.3966545" class="uri">http://doi.org/10.5281/zenodo.3966545</a>. Updated documentation and code for ATTACH can be found on the <a href="%22https://github.com/amandafaig/catchfunction%22">attach github</a>.</p>
+<p>Faig, A., and A. Haynie. 2020. The ATTACH model Package Version 1.6.0 <a href="http://doi.org/10.5281/zenodo.3966545" class="uri">http://doi.org/10.5281/zenodo.3966545</a>.</p>
 </div>
 </div>
 
