@@ -42,8 +42,8 @@ PLOT_THRESHOLD<-function(
   nspp <- length(sppIN)
   snames <- rep("",nspp)
   for(s in sppIN){snames[s] <- sppINFO[[s]]$plotSPP}
-  diftxt     <- "s'(x)"
-  if(!firstdiff)    diftxt   <- "s''(x)"
+  diftxt     <- "s(x)'"
+  if(!firstdiff)    diftxt   <- "s(x)''"
   
   # pre-allocate:
   p_thresh   <- matrix(FALSE,ndat,nspp)
